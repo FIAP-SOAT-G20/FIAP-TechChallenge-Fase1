@@ -29,6 +29,20 @@ type createProductRequest struct {
 	CategoryID  uint64  `json:"categoryID" binding:"required" example:"1"`
 }
 
+// CreateProduct godoc
+//
+//	@Summary		Create a product
+//	@Description	Create a product
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			product	body		createProductRequest	true	"Product"
+//	@Success		201		{object}	domain.Product
+//	@Failure		400		{object}	map[string]string
+//	@Failure		404		{object}	map[string]string
+//	@Failure		500		{object}	map[string]string
+//	@Security		BearerAuth
+//	@Router			/api/v1/products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	var req createProductRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

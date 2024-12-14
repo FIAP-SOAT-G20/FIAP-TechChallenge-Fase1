@@ -11,6 +11,14 @@ import (
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/service"
 )
 
+//	@title			FIAP Tech Challenge Fase 1 - G20 - 10 SOAT
+//	@version		1
+//	@description	API para o Tech Challenge da FIAP - Fase 1 - G20 - 10 SOAT
+
+// @securityDefinitions.apikey	BearerAuth
+// @in							header
+// @name						Authorization
+// @description				Type "Bearer" followed by a space and the access token.
 func main() {
 	environment, err := config.LoadEnvironment()
 	if err != nil {

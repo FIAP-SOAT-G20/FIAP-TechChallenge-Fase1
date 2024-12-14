@@ -1,0 +1,106 @@
+definitions:
+  domain.Category:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  domain.Product:
+    properties:
+      active:
+        type: boolean
+      category:
+        $ref: '#/definitions/domain.Category'
+      categoryID:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      updatedAt:
+        type: string
+    type: object
+  handler.createProductRequest:
+    properties:
+      categoryID:
+        example: 1
+        type: integer
+      description:
+        example: The best burger in the world
+        type: string
+      name:
+        example: BK Mega Stacker 2.0
+        type: string
+      price:
+        example: 29.9
+        type: number
+    required:
+    - categoryID
+    - description
+    - name
+    - price
+    type: object
+info:
+  contact: {}
+  description: API para o Tech Challenge da FIAP - Fase 1 - G20 - 10 SOAT
+  title: FIAP Tech Challenge Fase 1 - G20 - 10 SOAT
+  version: "1"
+paths:
+  /api/v1/products:
+    post:
+      consumes:
+      - application/json
+      description: Create a product
+      parameters:
+      - description: Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Product'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a product
+      tags:
+      - products
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and the access token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
