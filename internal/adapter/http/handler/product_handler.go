@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -20,6 +21,7 @@ func NewProductHandler(service port.ProductService) *ProductHandler {
 
 func (h *ProductHandler) Register(router *gin.RouterGroup) {
 	router.POST("/", h.CreateProduct)
+	router.GET("/:id", h.GetProduct)
 }
 
 type createProductRequest struct {
@@ -41,7 +43,6 @@ type createProductRequest struct {
 //	@Failure		400		{object}	map[string]string
 //	@Failure		404		{object}	map[string]string
 //	@Failure		500		{object}	map[string]string
-//	@Security		BearerAuth
 //	@Router			/api/v1/products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	var req createProductRequest
@@ -68,4 +69,40 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, product)
+}
+
+// GetProduct godoc
+//
+//	@Summary		Get a product
+//	@Description	Get a product
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"Product ID"
+//	@Success		200	{object}	domain.Product
+//	@Failure		400	{object}	map[string]string
+//	@Failure		404	{object}	map[string]string
+//	@Failure		500	{object}	map[string]string
+//	@Router			/api/v1/products/{id} [get]
+func (h *ProductHandler) GetProduct(c *gin.Context) {
+	id := c.Param("id")
+
+	idUint64, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+
+	product, err := h.service.GetByID(idUint64)
+	if err != nil {
+		if errors.Is(err, domain.ErrNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, product)
 }
