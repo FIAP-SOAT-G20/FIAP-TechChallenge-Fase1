@@ -1,7 +1,9 @@
 package domain
 
+import "time"
+
 type Category struct {
 	ID        uint64
 	Name      string
-	CreatedAt string
+	CreatedAt time.Time
 }

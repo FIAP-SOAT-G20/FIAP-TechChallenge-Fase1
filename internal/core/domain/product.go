@@ -1,5 +1,7 @@
 package domain
 
+import "time"
+
 type Product struct {
 	ID          uint64
 	Name        string
@@ -8,7 +10,7 @@ type Product struct {
 	Active      bool
 	CategoryID  uint64
 	Category    Category
-	CreatedAt   string
-	UpdateAt    string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 	// TODO: add staff id
 }
