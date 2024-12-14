@@ -167,6 +167,44 @@ paths:
       tags:
       - products
   /api/v1/products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a product
+      tags:
+      - products
     get:
       consumes:
       - application/json

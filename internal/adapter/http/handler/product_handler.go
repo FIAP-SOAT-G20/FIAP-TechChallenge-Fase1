@@ -25,6 +25,7 @@ func (h *ProductHandler) Register(router *gin.RouterGroup) {
 	router.GET("/", h.ListProducts)
 	router.GET("/:id", h.GetProduct)
 	router.PUT("/:id", h.UpdateProduct)
+	router.DELETE("/:id", h.DeleteProduct)
 }
 
 type createProductRequest struct {
@@ -222,4 +223,39 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, product)
+}
+
+// DeleteProduct godoc
+//
+//	@Summary		Delete a product
+//	@Description	Delete a product
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"Product ID"
+//	@Success		204	{object}	string
+//	@Failure		400	{object}	map[string]string
+//	@Failure		404	{object}	map[string]string
+//	@Failure		500	{object}	map[string]string
+//	@Router			/api/v1/products/{id} [delete]
+func (h *ProductHandler) DeleteProduct(c *gin.Context) {
+	id := c.Param("id")
+
+	idUint64, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+
+	if err := h.service.Delete(idUint64); err != nil {
+		if errors.Is(err, domain.ErrNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
