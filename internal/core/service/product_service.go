@@ -18,10 +18,13 @@ func NewProductService(productRepository port.ProductRepository, categoryReposit
 }
 
 func (ps *ProductService) Create(product *domain.Product) error {
-	_, err := ps.categoryRepository.GetByID(product.CategoryID)
+	category, err := ps.categoryRepository.GetByID(product.CategoryID)
 	if err != nil {
 		return domain.ErrNotFound
 	}
+
+	product.Category = *category
+	product.Active = true
 
 	return ps.productRepository.Insert(product)
 }
