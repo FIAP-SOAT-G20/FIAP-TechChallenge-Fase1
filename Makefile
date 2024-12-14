@@ -17,6 +17,12 @@ migrate-up:
 migrate-down:
 	migrate -path ./internal/adapter/storage/postgres/migrations -database ${DATABASE_URL} -verbose down
 
+docs:
+	swag init -g cmd/server/main.go --parseInternal true
+
+docs-fmt:
+	swag fmt ./...
+
 help:
 	@echo "run: Run the application"
 	@echo "install: Install the dependencies"
