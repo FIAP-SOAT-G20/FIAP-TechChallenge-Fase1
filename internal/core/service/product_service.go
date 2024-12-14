@@ -30,7 +30,7 @@ func (ps *ProductService) GetByID(id uint64) (*domain.Product, error) {
 	return ps.productRepository.GetByID(id)
 }
 
-func (ps *ProductService) List(name string, categoryID, page, limit uint64) ([]domain.Product, error) {
+func (ps *ProductService) List(name string, categoryID uint64, page, limit int) ([]domain.Product, int64, error) {
 	return ps.productRepository.GetAll(name, categoryID, page, limit)
 }
 
