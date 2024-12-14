@@ -49,6 +49,19 @@ definitions:
     - name
     - price
     type: object
+  response.ProductPaginated:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/domain.Product'
+        type: array
+      total:
+        type: integer
+    type: object
 info:
   contact: {}
   description: API para o Tech Challenge da FIAP - Fase 1 - G20 - 10 SOAT
@@ -56,6 +69,49 @@ info:
   version: "1"
 paths:
   /api/v1/products:
+    get:
+      consumes:
+      - application/json
+      description: List products
+      parameters:
+      - description: Product name
+        in: query
+        name: name
+        type: string
+      - description: Category ID
+        in: query
+        name: categoryID
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductPaginated'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List products
+      tags:
+      - products
     post:
       consumes:
       - application/json

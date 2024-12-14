@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
 )
@@ -21,6 +22,7 @@ func NewProductHandler(service port.ProductService) *ProductHandler {
 
 func (h *ProductHandler) Register(router *gin.RouterGroup) {
 	router.POST("/", h.CreateProduct)
+	router.GET("/", h.ListProducts)
 	router.GET("/:id", h.GetProduct)
 }
 
@@ -105,4 +107,61 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, product)
+}
+
+// ListProducts godoc
+//
+//	@Summary		List products
+//	@Description	List products
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			name	query	string	false	"Product name"
+//	@Param			categoryID	query	uint64	false	"Category ID"
+//	@Param			page	query	int	false	"Page"
+//	@Param			limit	query	int	false	"Limit"
+//	@Success		200	{object}	response.ProductPaginated
+//	@Failure		400	{object}	map[string]string
+//	@Failure		500	{object}	map[string]string
+//	@Router			/api/v1/products [get]
+func (h *ProductHandler) ListProducts(c *gin.Context) {
+	name := c.Query("name")
+	categoryID := c.DefaultQuery("categoryID", "0")
+	page := c.DefaultQuery("page", "1")
+	limit := c.DefaultQuery("limit", "10")
+
+	categoryIDUint64, err := strconv.ParseUint(categoryID, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid categoryID"})
+		return
+	}
+
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid page"})
+		return
+	}
+
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid limit"})
+		return
+	}
+
+	products, total, err := h.service.List(name, categoryIDUint64, pageInt, limitInt)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	productPaginated := response.ProductPaginated{
+		Paginated: response.Paginated{
+			Total: total,
+			Page:  pageInt,
+			Limit: limitInt,
+		},
+		Products: products,
+	}
+
+	c.JSON(http.StatusOK, productPaginated)
 }
