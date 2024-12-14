@@ -28,7 +28,7 @@ func NewRouter(productHandler *handler.ProductHandler) *gin.Engine {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.BasePath = ""
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	productHandler.Register(router.Group("/api/v1/products"))
