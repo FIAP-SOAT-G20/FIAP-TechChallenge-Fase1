@@ -29,6 +29,21 @@ definitions:
       updatedAt:
         type: string
     type: object
+  handler.UpdateProduct:
+    properties:
+      categoryID:
+        example: 1
+        type: integer
+      description:
+        example: The best burger in the world
+        type: string
+      name:
+        example: McDonald's Big Mac
+        type: string
+      price:
+        example: 29.9
+        type: number
+    type: object
   handler.createProductRequest:
     properties:
       categoryID:
@@ -188,6 +203,50 @@ paths:
               type: string
             type: object
       summary: Get a product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update a product
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Product
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Product'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a product
       tags:
       - products
 securityDefinitions:

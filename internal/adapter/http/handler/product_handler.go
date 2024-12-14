@@ -24,6 +24,7 @@ func (h *ProductHandler) Register(router *gin.RouterGroup) {
 	router.POST("/", h.CreateProduct)
 	router.GET("/", h.ListProducts)
 	router.GET("/:id", h.GetProduct)
+	router.PUT("/:id", h.UpdateProduct)
 }
 
 type createProductRequest struct {
@@ -116,13 +117,13 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			name	query	string	false	"Product name"
-//	@Param			categoryID	query	uint64	false	"Category ID"
-//	@Param			page	query	int	false	"Page"
-//	@Param			limit	query	int	false	"Limit"
-//	@Success		200	{object}	response.ProductPaginated
-//	@Failure		400	{object}	map[string]string
-//	@Failure		500	{object}	map[string]string
+//	@Param			name		query		string	false	"Product name"
+//	@Param			categoryID	query		uint64	false	"Category ID"
+//	@Param			page		query		int		false	"Page"
+//	@Param			limit		query		int		false	"Limit"
+//	@Success		200			{object}	response.ProductPaginated
+//	@Failure		400			{object}	map[string]string
+//	@Failure		500			{object}	map[string]string
 //	@Router			/api/v1/products [get]
 func (h *ProductHandler) ListProducts(c *gin.Context) {
 	name := c.Query("name")
@@ -164,4 +165,61 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, productPaginated)
+}
+
+type UpdateProduct struct {
+	Name        string  `json:"name" example:"McDonald's Big Mac"`
+	Description string  `json:"description" example:"The best burger in the world"`
+	Price       float64 `json:"price" example:"29.90"`
+	CategoryID  uint64  `json:"categoryID" example:"1"`
+}
+
+// UpdateProduct godoc
+//
+//	@Summary		Update a product
+//	@Description	Update a product
+//	@Tags			products
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int				true	"Product ID"
+//	@Param			product	body		UpdateProduct	true	"Product"
+//	@Success		200		{object}	domain.Product
+//	@Failure		400		{object}	map[string]string
+//	@Failure		404		{object}	map[string]string
+//	@Failure		500		{object}	map[string]string
+//	@Router			/api/v1/products/{id} [put]
+func (h *ProductHandler) UpdateProduct(c *gin.Context) {
+	id := c.Param("id")
+
+	idUint64, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+
+	var req UpdateProduct
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	product := &domain.Product{
+		ID:          idUint64,
+		Name:        req.Name,
+		Description: req.Description,
+		Price:       req.Price,
+		CategoryID:  req.CategoryID,
+	}
+
+	if err := h.service.Update(product); err != nil {
+		if errors.Is(err, domain.ErrNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, product)
 }
