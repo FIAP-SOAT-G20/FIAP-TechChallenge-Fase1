@@ -1,10 +1,12 @@
 package router
 
 import (
+	"log/slog"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	sloggin "github.com/samber/slog-gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
@@ -13,17 +15,17 @@ import (
 )
 
 type Router struct {
-	environment     string
-	productHandler  *handler.ProductHandler
-	customerHandler *handler.CustomerHandler
+	Engine *gin.Engine
 }
 
-func NewRouter(environment string, productHandler *handler.ProductHandler, customerHandler *handler.CustomerHandler) *gin.Engine {
-	router := gin.Default()
+func NewRouter(environment string, productHandler *handler.ProductHandler, customerHandler *handler.CustomerHandler) *Router {
+	router := gin.New()
 
 	if environment == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
+
+	router.Use(sloggin.New(slog.Default()), gin.Recovery())
 
 	router.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true,
@@ -40,5 +42,9 @@ func NewRouter(environment string, productHandler *handler.ProductHandler, custo
 	productHandler.Register(router.Group("/api/v1/products"))
 	customerHandler.Register(router.Group("/api/v1/customers"))
 
-	return router
+	return &Router{Engine: router}
+}
+
+func (r *Router) Serve(listenAddr string) error {
+	return r.Engine.Run(listenAddr)
 }
