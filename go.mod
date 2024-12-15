@@ -3,6 +3,7 @@ module github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1
 go 1.23
 
 require (
+	aidanwoods.dev/go-paseto v1.5.3
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-migrate/migrate/v4 v4.18.1
@@ -18,6 +19,7 @@ require (
 )
 
 require (
+	aidanwoods.dev/go-result v0.1.0 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/bytedance/sonic v1.12.5 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
