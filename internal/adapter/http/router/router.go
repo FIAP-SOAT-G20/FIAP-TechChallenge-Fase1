@@ -19,11 +19,11 @@ type Router struct {
 }
 
 func NewRouter(environment string, productHandler *handler.ProductHandler, customerHandler *handler.CustomerHandler) *Router {
-	router := gin.New()
-
 	if environment == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
+
+	router := gin.New()
 
 	router.Use(sloggin.New(slog.Default()), gin.Recovery())
 
