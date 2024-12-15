@@ -12,7 +12,8 @@ type Environment struct {
 	SecretKey string
 
 	// Database
-	DatabaseURL string
+	DatabaseURL    string
+	AppEnvironment string
 }
 
 func LoadEnvironment() (*Environment, error) {
@@ -22,8 +23,9 @@ func LoadEnvironment() (*Environment, error) {
 
 	return &Environment{
 		// Application
-		Port:      getEnv("PORT", "8080"),
-		SecretKey: os.Getenv("SECRET_KEY"),
+		Port:           getEnv("PORT", "8080"),
+		SecretKey:      os.Getenv("SECRET_KEY"),
+		AppEnvironment: getEnv("APP_ENVIRONMENT", "development"),
 
 		// Database
 		DatabaseURL: os.Getenv("DATABASE_URL"),

@@ -13,12 +13,17 @@ import (
 )
 
 type Router struct {
+	environment     string
 	productHandler  *handler.ProductHandler
 	customerHandler *handler.CustomerHandler
 }
 
-func NewRouter(productHandler *handler.ProductHandler, customerHandler *handler.CustomerHandler) *gin.Engine {
+func NewRouter(environment string, productHandler *handler.ProductHandler, customerHandler *handler.CustomerHandler) *gin.Engine {
 	router := gin.Default()
+
+	if environment == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	router.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true,
