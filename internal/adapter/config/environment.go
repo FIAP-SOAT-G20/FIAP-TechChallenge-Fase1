@@ -17,7 +17,7 @@ type Environment struct {
 }
 
 func LoadEnvironment() (*Environment, error) {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
 
@@ -25,7 +25,7 @@ func LoadEnvironment() (*Environment, error) {
 		// Application
 		Port:           getEnv("PORT", "8080"),
 		SecretKey:      os.Getenv("SECRET_KEY"),
-		AppEnvironment: getEnv("APP_ENVIRONMENT", "development"),
+		AppEnvironment: getEnv("APP_ENV", "development"),
 
 		// Database
 		DatabaseURL: os.Getenv("DATABASE_URL"),
