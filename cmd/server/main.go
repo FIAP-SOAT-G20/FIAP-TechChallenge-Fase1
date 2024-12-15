@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"os"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/config"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/handler"
@@ -28,15 +29,27 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	database, err := postgres.Connect(environment.DatabaseURL)
+	// logger
+	logger.Set(environment.AppEnvironment)
+	slog.Info("Starting the application", "app", "TC 01 G20 10SOAT", "env", environment.AppEnvironment)
+
+	// init database connection
+	dbConnection, err := postgres.New(environment.DatabaseURL)
 	if err != nil {
-		log.Fatalln("failed to connect database", err)
+		slog.Error("Error initializing database connection", "error", err)
+		os.Exit(1)
+	}
+
+	// migrate database
+	if err = dbConnection.Migrate(); err != nil {
+		slog.Error("error migrating database", "error", err)
+		os.Exit(1)
 	}
 
 	// repositories
-	categoryRepository := repository.NewCategoryRepository(database)
-	productRepository := repository.NewProductRepository(database)
-	customerRepository := repository.NewCustomerRepository(database)
+	categoryRepository := repository.NewCategoryRepository(dbConnection.DB)
+	productRepository := repository.NewProductRepository(dbConnection.DB)
+	customerRepository := repository.NewCustomerRepository(dbConnection.DB)
 
 	// services
 	productServive := service.NewProductService(productRepository, categoryRepository)
@@ -45,10 +58,6 @@ func main() {
 	// handlers
 	productHandler := handler.NewProductHandler(productServive)
 	customerHandler := handler.NewCustomerHandler(customerService)
-
-	// logger
-	logger.Set(environment.AppEnvironment)
-	slog.Info("Starting the application", "app", "TC 01 G20 10SOAT", "env", environment.AppEnvironment)
 
 	// router
 	listenAddress := fmt.Sprintf(":%s", environment.Port)
