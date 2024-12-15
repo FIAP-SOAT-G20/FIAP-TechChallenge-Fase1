@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
@@ -20,13 +22,23 @@ func (r *CustomerRepository) Insert(customer *domain.Customer) error {
 
 func (r *CustomerRepository) GetByID(id uint64) (*domain.Customer, error) {
 	var customer domain.Customer
+
 	err := r.db.First(&customer, id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, domain.ErrNotFound
+	}
+
 	return &customer, err
 }
 
 func (r *CustomerRepository) GetByCPF(cpf string) (*domain.Customer, error) {
 	var customer domain.Customer
+
 	err := r.db.Where("cpf = ?", cpf).First(&customer).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, domain.ErrNotFound
+	}
+
 	return &customer, err
 }
 

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
@@ -20,7 +22,12 @@ func (r *ProductRepository) Insert(product *domain.Product) error {
 
 func (r *ProductRepository) GetByID(id uint64) (*domain.Product, error) {
 	var product domain.Product
+
 	err := r.db.First(&product, id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, domain.ErrNotFound
+	}
+
 	return &product, err
 }
 
