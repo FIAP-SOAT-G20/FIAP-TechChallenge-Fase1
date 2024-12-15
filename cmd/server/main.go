@@ -33,15 +33,18 @@ func main() {
 	// repositories
 	categoryRepository := repository.NewCategoryRepository(database)
 	productRepository := repository.NewProductRepository(database)
+	customerRepository := repository.NewCustomerRepository(database)
 
 	// services
 	productServive := service.NewProductService(productRepository, categoryRepository)
+	customerService := service.NewCustomerService(customerRepository)
 
 	// handlers
 	productHandler := handler.NewProductHandler(productServive)
+	customerHandler := handler.NewCustomerHandler(customerService)
 
 	// router
-	routes := router.NewRouter(productHandler)
+	routes := router.NewRouter(productHandler, customerHandler)
 	if err := routes.Run(":" + environment.Port); err != nil {
 		log.Fatalln("failed to run server", err)
 	}

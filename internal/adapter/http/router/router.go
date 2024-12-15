@@ -13,10 +13,11 @@ import (
 )
 
 type Router struct {
-	productHandler *handler.ProductHandler
+	productHandler  *handler.ProductHandler
+	customerHandler *handler.CustomerHandler
 }
 
-func NewRouter(productHandler *handler.ProductHandler) *gin.Engine {
+func NewRouter(productHandler *handler.ProductHandler, customerHandler *handler.CustomerHandler) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
@@ -32,6 +33,7 @@ func NewRouter(productHandler *handler.ProductHandler) *gin.Engine {
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	productHandler.Register(router.Group("/api/v1/products"))
+	customerHandler.Register(router.Group("/api/v1/customers"))
 
 	return router
 }

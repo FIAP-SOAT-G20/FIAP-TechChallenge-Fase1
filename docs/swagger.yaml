@@ -8,6 +8,21 @@ definitions:
       name:
         type: string
     type: object
+  domain.Customer:
+    properties:
+      cpf:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   domain.Product:
     properties:
       active:
@@ -44,6 +59,22 @@ definitions:
         example: 29.9
         type: number
     type: object
+  handler.createCustomerRequest:
+    properties:
+      cpf:
+        example: 123.456.789-00
+        type: string
+      email:
+        example: johndoe@contact.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+    required:
+    - cpf
+    - email
+    - name
+    type: object
   handler.createProductRequest:
     properties:
       categoryID:
@@ -64,6 +95,31 @@ definitions:
     - name
     - price
     type: object
+  handler.updateCustomerRequest:
+    properties:
+      cpf:
+        example: 123.456.789-00
+        type: string
+      email:
+        example: johndoe@email.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+    type: object
+  response.CustomersPaginated:
+    properties:
+      customers:
+        items:
+          $ref: '#/definitions/domain.Customer'
+        type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
   response.ProductPaginated:
     properties:
       limit:
@@ -83,6 +139,184 @@ info:
   title: FIAP Tech Challenge Fase 1 - G20 - 10 SOAT
   version: "1"
 paths:
+  /api/v1/customers:
+    get:
+      consumes:
+      - application/json
+      description: List customers
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CustomersPaginated'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List customers
+      tags:
+      - customers
+    post:
+      consumes:
+      - application/json
+      description: Create a customer
+      parameters:
+      - description: Customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a customer
+      tags:
+      - customers
+  /api/v1/customers/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a customer
+      tags:
+      - customers
+    get:
+      consumes:
+      - application/json
+      description: Get a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Customer'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a customer
+      tags:
+      - customers
+    put:
+      consumes:
+      - application/json
+      description: Update a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/handler.updateCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a customer
+      tags:
+      - customers
   /api/v1/products:
     get:
       consumes:
