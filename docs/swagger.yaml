@@ -120,6 +120,16 @@ definitions:
       total:
         type: integer
     type: object
+  response.ErrorResponse:
+    properties:
+      errors:
+        example:
+        - '[''Validation failed: field X is required'''
+        - ' ''Invalid format for field Y'']'
+        items:
+          type: string
+        type: array
+    type: object
   response.ProductPaginated:
     properties:
       limit:
@@ -165,11 +175,9 @@ paths:
           schema:
             $ref: '#/definitions/response.CustomersPaginated'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       summary: List customers
       tags:
       - customers
@@ -192,17 +200,13 @@ paths:
           schema:
             $ref: '#/definitions/domain.Customer'
         "400":
-          description: Bad Request
+          description: Validation error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Create a customer
       tags:
       - customers
@@ -227,17 +231,13 @@ paths:
               type: string
             type: object
         "404":
-          description: Not Found
+          description: Data not found error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Delete a customer
       tags:
       - customers
@@ -259,17 +259,13 @@ paths:
           schema:
             $ref: '#/definitions/domain.Customer'
         "404":
-          description: Not Found
+          description: Data not found error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Get a customer
       tags:
       - customers
@@ -297,23 +293,17 @@ paths:
           schema:
             $ref: '#/definitions/domain.Customer'
         "400":
-          description: Bad Request
+          description: Validation error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "404":
-          description: Not Found
+          description: Data not found error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Update a customer
       tags:
       - customers
@@ -346,18 +336,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.ProductPaginated'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       summary: List products
       tags:
       - products
@@ -380,23 +358,17 @@ paths:
           schema:
             $ref: '#/definitions/domain.Product'
         "400":
-          description: Bad Request
+          description: Validation error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "404":
-          description: Not Found
+          description: Data not found error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Create a product
       tags:
       - products
@@ -419,23 +391,17 @@ paths:
           schema:
             type: string
         "400":
-          description: Bad Request
+          description: Validation error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "404":
-          description: Not Found
+          description: Data not found error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Delete a product
       tags:
       - products
@@ -457,23 +423,17 @@ paths:
           schema:
             $ref: '#/definitions/domain.Product'
         "400":
-          description: Bad Request
+          description: Validation error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "404":
-          description: Not Found
+          description: Data not found error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Get a product
       tags:
       - products
@@ -501,23 +461,17 @@ paths:
           schema:
             $ref: '#/definitions/domain.Product'
         "400":
-          description: Bad Request
+          description: Validation error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "404":
-          description: Not Found
+          description: Data not found error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: Internal server error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/response.ErrorResponse'
       summary: Update a product
       tags:
       - products

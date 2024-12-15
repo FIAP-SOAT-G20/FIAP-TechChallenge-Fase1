@@ -43,13 +43,13 @@ type createCustomerRequest struct {
 //	@Produce		json
 //	@Param			customer	body		createCustomerRequest	true	"Customer"
 //	@Success		201			{object}	domain.Customer
-//	@Failure		400			{object}	map[string]string
-//	@Failure		500			{object}	map[string]string
+//	@Failure		400			{object}	response.ErrorResponse	"Validation error"
+//	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers [post]
 func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 	var req createCustomerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response.ValidationError(c, err)
 		return
 	}
 
@@ -61,7 +61,7 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 
 	err := h.customerService.Create(customer)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 
@@ -79,7 +79,7 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 //	@Param			page	query		int		false	"Page"
 //	@Param			limit	query		int		false	"Limit"
 //	@Success		200		{object}	response.CustomersPaginated
-//	@Failure		500		{object}	map[string]string
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers [get]
 func (h *CustomerHandler) ListCustomers(c *gin.Context) {
 	name := c.Query("name")
@@ -88,19 +88,19 @@ func (h *CustomerHandler) ListCustomers(c *gin.Context) {
 
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response.HandleError(c, errors.New("invalid page"))
 		return
 	}
 
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response.HandleError(c, errors.New("invalid limit"))
 		return
 	}
 
 	customers, total, err := h.customerService.List(name, pageInt, limitInt)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 
@@ -123,8 +123,8 @@ func (h *CustomerHandler) ListCustomers(c *gin.Context) {
 //	@Produce		json
 //	@Param			id	path		uint64	true	"Customer ID"
 //	@Success		200	{object}	domain.Customer
-//	@Failure		404	{object}	map[string]string
-//	@Failure		500	{object}	map[string]string
+//	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers/{id} [get]
 func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 	id := c.Param("id")
@@ -137,12 +137,7 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 
 	customer, err := h.customerService.GetByID(idUint64)
 	if err != nil {
-		if errors.Is(err, domain.ErrNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 
@@ -165,22 +160,22 @@ type updateCustomerRequest struct {
 //	@Param			id			path		uint64					true	"Customer ID"
 //	@Param			customer	body		updateCustomerRequest	true	"Customer"
 //	@Success		200			{object}	domain.Customer
-//	@Failure		400			{object}	map[string]string
-//	@Failure		404			{object}	map[string]string
-//	@Failure		500			{object}	map[string]string
+//	@Failure		400			{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404			{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers/{id} [put]
 func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 	id := c.Param("id")
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		response.HandleError(c, errors.New("invalid id"))
 		return
 	}
 
 	var req updateCustomerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response.ValidationError(c, err)
 		return
 	}
 
@@ -193,12 +188,7 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 
 	err = h.customerService.Update(customer)
 	if err != nil {
-		if errors.Is(err, domain.ErrNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 
@@ -214,26 +204,21 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 //	@Produce		json
 //	@Param			id	path		uint64	true	"Customer ID"
 //	@Success		204	{object}	map[string]string
-//	@Failure		404	{object}	map[string]string
-//	@Failure		500	{object}	map[string]string
+//	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers/{id} [delete]
 func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
 	id := c.Param("id")
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		response.HandleError(c, err)
 		return
 	}
 
 	err = h.customerService.Delete(idUint64)
 	if err != nil {
-		if errors.Is(err, domain.ErrNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 

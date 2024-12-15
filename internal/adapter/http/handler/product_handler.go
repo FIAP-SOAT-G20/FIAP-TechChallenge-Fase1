@@ -44,14 +44,14 @@ type createProductRequest struct {
 //	@Produce		json
 //	@Param			product	body		createProductRequest	true	"Product"
 //	@Success		201		{object}	domain.Product
-//	@Failure		400		{object}	map[string]string
-//	@Failure		404		{object}	map[string]string
-//	@Failure		500		{object}	map[string]string
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	var req createProductRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response.ValidationError(c, err)
 		return
 	}
 
@@ -63,12 +63,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 	}
 
 	if err := h.service.Create(product); err != nil {
-		if errors.Is(err, domain.ErrNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 
@@ -84,27 +79,22 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 //	@Produce		json
 //	@Param			id	path		int	true	"Product ID"
 //	@Success		200	{object}	domain.Product
-//	@Failure		400	{object}	map[string]string
-//	@Failure		404	{object}	map[string]string
-//	@Failure		500	{object}	map[string]string
+//	@Failure		400	{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/products/{id} [get]
 func (h *ProductHandler) GetProduct(c *gin.Context) {
 	id := c.Param("id")
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		response.HandleError(c, errors.New("invalid id"))
 		return
 	}
 
 	product, err := h.service.GetByID(idUint64)
 	if err != nil {
-		if errors.Is(err, domain.ErrNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 
@@ -123,8 +113,6 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 //	@Param			page		query		int		false	"Page"
 //	@Param			limit		query		int		false	"Limit"
 //	@Success		200			{object}	response.ProductPaginated
-//	@Failure		400			{object}	map[string]string
-//	@Failure		500			{object}	map[string]string
 //	@Router			/api/v1/products [get]
 func (h *ProductHandler) ListProducts(c *gin.Context) {
 	name := c.Query("name")
@@ -134,25 +122,25 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 
 	categoryIDUint64, err := strconv.ParseUint(categoryID, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid categoryID"})
+		response.HandleError(c, errors.New("invalid categoryID"))
 		return
 	}
 
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid page"})
+		response.HandleError(c, errors.New("invalid page"))
 		return
 	}
 
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid limit"})
+		response.HandleError(c, errors.New("invalid limit"))
 		return
 	}
 
 	products, total, err := h.service.List(name, categoryIDUint64, pageInt, limitInt)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 
@@ -185,22 +173,22 @@ type UpdateProduct struct {
 //	@Param			id		path		int				true	"Product ID"
 //	@Param			product	body		UpdateProduct	true	"Product"
 //	@Success		200		{object}	domain.Product
-//	@Failure		400		{object}	map[string]string
-//	@Failure		404		{object}	map[string]string
-//	@Failure		500		{object}	map[string]string
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/products/{id} [put]
 func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	id := c.Param("id")
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		response.HandleError(c, errors.New("invalid id"))
 		return
 	}
 
 	var req UpdateProduct
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		response.ValidationError(c, err)
 		return
 	}
 
@@ -213,12 +201,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 	}
 
 	if err := h.service.Update(product); err != nil {
-		if errors.Is(err, domain.ErrNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 
@@ -234,26 +217,21 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 //	@Produce		json
 //	@Param			id	path		int	true	"Product ID"
 //	@Success		204	{object}	string
-//	@Failure		400	{object}	map[string]string
-//	@Failure		404	{object}	map[string]string
-//	@Failure		500	{object}	map[string]string
+//	@Failure		400	{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/products/{id} [delete]
 func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 	id := c.Param("id")
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		response.HandleError(c, errors.New("invalid id"))
 		return
 	}
 
 	if err := h.service.Delete(idUint64); err != nil {
-		if errors.Is(err, domain.ErrNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		response.HandleError(c, err)
 		return
 	}
 
