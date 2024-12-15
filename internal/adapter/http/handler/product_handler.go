@@ -41,8 +41,8 @@ type createProductRequest struct {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			product	body		createProductRequest	true	"Product"
-//	@Success		201		{object}	domain.Product
+//	@Param			product	body		createProductRequest	true	"ProductResponse"
+//	@Success		201		{object}	response.ProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
@@ -66,7 +66,8 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, product)
+	productResponse := response.NewProductResponse(product)
+	c.JSON(http.StatusCreated, productResponse)
 }
 
 // GetProduct godoc
@@ -76,8 +77,8 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		int	true	"Product ID"
-//	@Success		200	{object}	domain.Product
+//	@Param			id	path		int	true	"ProductResponse ID"
+//	@Success		200	{object}	response.ProductResponse
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
@@ -97,7 +98,8 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, product)
+	productResponse := response.NewProductResponse(product)
+	c.JSON(http.StatusOK, productResponse)
 }
 
 // ListProducts godoc
@@ -107,7 +109,7 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			name		query		string	false	"Product name"
+//	@Param			name		query		string	false	"ProductResponse name"
 //	@Param			categoryID	query		uint64	false	"Category ID"
 //	@Param			page		query		int		false	"Page"
 //	@Param			limit		query		int		false	"Limit"
@@ -143,16 +145,8 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 		return
 	}
 
-	productPaginated := response.ProductPaginated{
-		Paginated: response.Paginated{
-			Total: total,
-			Page:  pageInt,
-			Limit: limitInt,
-		},
-		Products: products,
-	}
-
-	c.JSON(http.StatusOK, productPaginated)
+	productResponses := response.NewProductPaginated(products, total, pageInt, limitInt)
+	c.JSON(http.StatusOK, productResponses)
 }
 
 type UpdateProduct struct {
@@ -169,9 +163,9 @@ type UpdateProduct struct {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		int				true	"Product ID"
-//	@Param			product	body		UpdateProduct	true	"Product"
-//	@Success		200		{object}	domain.Product
+//	@Param			id		path		int				true	"ProductResponse ID"
+//	@Param			product	body		UpdateProduct	true	"ProductResponse"
+//	@Success		200		{object}	response.ProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
@@ -204,7 +198,8 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, product)
+	productResponse := response.NewProductResponse(product)
+	c.JSON(http.StatusOK, productResponse)
 }
 
 // DeleteProduct godoc
@@ -214,7 +209,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		int	true	"Product ID"
+//	@Param			id	path		int	true	"ProductResponse ID"
 //	@Success		204	{object}	string
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"

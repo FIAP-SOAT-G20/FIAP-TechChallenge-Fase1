@@ -90,7 +90,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/domain.Customer"
+                            "$ref": "#/definitions/response.CustomerResponse"
                         }
                     },
                     "400": {
@@ -134,7 +134,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Customer"
+                            "$ref": "#/definitions/response.CustomerResponse"
                         }
                     },
                     "404": {
@@ -185,7 +185,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Customer"
+                            "$ref": "#/definitions/response.CustomerResponse"
                         }
                     },
                     "400": {
@@ -264,7 +264,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Product name",
+                        "description": "ProductResponse name",
                         "name": "name",
                         "in": "query"
                     },
@@ -310,7 +310,7 @@ const docTemplate = `{
                 "summary": "Create a product",
                 "parameters": [
                     {
-                        "description": "Product",
+                        "description": "ProductResponse",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -323,7 +323,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/domain.Product"
+                            "$ref": "#/definitions/response.ProductResponse"
                         }
                     },
                     "400": {
@@ -363,7 +363,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Product ID",
+                        "description": "ProductResponse ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -373,7 +373,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Product"
+                            "$ref": "#/definitions/response.ProductResponse"
                         }
                     },
                     "400": {
@@ -411,13 +411,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Product ID",
+                        "description": "ProductResponse ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Product",
+                        "description": "ProductResponse",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -430,7 +430,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Product"
+                            "$ref": "#/definitions/response.ProductResponse"
                         }
                     },
                     "400": {
@@ -468,7 +468,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Product ID",
+                        "description": "ProductResponse ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -504,20 +504,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.Category": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
         "domain.Customer": {
             "type": "object",
             "properties": {
@@ -535,38 +521,6 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "domain.Product": {
-            "type": "object",
-            "properties": {
-                "active": {
-                    "type": "boolean"
-                },
-                "category": {
-                    "$ref": "#/definitions/domain.Category"
-                },
-                "categoryID": {
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "number"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -660,6 +614,43 @@ const docTemplate = `{
                 }
             }
         },
+        "response.CategoryResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.CustomerResponse": {
+            "type": "object",
+            "properties": {
+                "cpf": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "response.CustomersPaginated": {
             "type": "object",
             "properties": {
@@ -707,11 +698,43 @@ const docTemplate = `{
                 "products": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/domain.Product"
+                        "$ref": "#/definitions/response.ProductResponse"
                     }
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "response.ProductResponse": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean"
+                },
+                "category": {
+                    "$ref": "#/definitions/response.CategoryResponse"
+                },
+                "categoryID": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         }

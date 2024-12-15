@@ -1,13 +1,4 @@
 definitions:
-  domain.Category:
-    properties:
-      createdAt:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
   domain.Customer:
     properties:
       cpf:
@@ -20,27 +11,6 @@ definitions:
         type: integer
       name:
         type: string
-      updatedAt:
-        type: string
-    type: object
-  domain.Product:
-    properties:
-      active:
-        type: boolean
-      category:
-        $ref: '#/definitions/domain.Category'
-      categoryID:
-        type: integer
-      createdAt:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      price:
-        type: number
       updatedAt:
         type: string
     type: object
@@ -107,6 +77,30 @@ definitions:
         example: John Doe
         type: string
     type: object
+  response.CategoryResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  response.CustomerResponse:
+    properties:
+      cpf:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   response.CustomersPaginated:
     properties:
       customers:
@@ -138,10 +132,31 @@ definitions:
         type: integer
       products:
         items:
-          $ref: '#/definitions/domain.Product'
+          $ref: '#/definitions/response.ProductResponse'
         type: array
       total:
         type: integer
+    type: object
+  response.ProductResponse:
+    properties:
+      active:
+        type: boolean
+      category:
+        $ref: '#/definitions/response.CategoryResponse'
+      categoryID:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      updatedAt:
+        type: string
     type: object
 info:
   contact: {}
@@ -198,7 +213,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/domain.Customer'
+            $ref: '#/definitions/response.CustomerResponse'
         "400":
           description: Validation error
           schema:
@@ -253,7 +268,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Customer'
+            $ref: '#/definitions/response.CustomerResponse'
         "404":
           description: Data not found error
           schema:
@@ -287,7 +302,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Customer'
+            $ref: '#/definitions/response.CustomerResponse'
         "400":
           description: Validation error
           schema:
@@ -309,7 +324,7 @@ paths:
       - application/json
       description: List products
       parameters:
-      - description: Product name
+      - description: ProductResponse name
         in: query
         name: name
         type: string
@@ -340,7 +355,7 @@ paths:
       - application/json
       description: Create a product
       parameters:
-      - description: Product
+      - description: ProductResponse
         in: body
         name: product
         required: true
@@ -352,7 +367,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/domain.Product'
+            $ref: '#/definitions/response.ProductResponse'
         "400":
           description: Validation error
           schema:
@@ -374,7 +389,7 @@ paths:
       - application/json
       description: Delete a product
       parameters:
-      - description: Product ID
+      - description: ProductResponse ID
         in: path
         name: id
         required: true
@@ -406,7 +421,7 @@ paths:
       - application/json
       description: Get a product
       parameters:
-      - description: Product ID
+      - description: ProductResponse ID
         in: path
         name: id
         required: true
@@ -417,7 +432,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Product'
+            $ref: '#/definitions/response.ProductResponse'
         "400":
           description: Validation error
           schema:
@@ -438,12 +453,12 @@ paths:
       - application/json
       description: Update a product
       parameters:
-      - description: Product ID
+      - description: ProductResponse ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Product
+      - description: ProductResponse
         in: body
         name: product
         required: true
@@ -455,7 +470,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Product'
+            $ref: '#/definitions/response.ProductResponse'
         "400":
           description: Validation error
           schema:

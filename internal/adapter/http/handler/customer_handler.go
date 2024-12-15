@@ -41,7 +41,7 @@ type createCustomerRequest struct {
 //	@Accept			json
 //	@Produce		json
 //	@Param			customer	body		createCustomerRequest	true	"Customer"
-//	@Success		201			{object}	domain.Customer
+//	@Success		201			{object}	response.CustomerResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers [post]
@@ -64,7 +64,8 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, customer)
+	customerResponse := response.NewCustomerResponse(customer)
+	c.JSON(http.StatusCreated, customerResponse)
 }
 
 // ListCustomers godoc
@@ -103,14 +104,8 @@ func (h *CustomerHandler) ListCustomers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.CustomersPaginated{
-		Paginated: response.Paginated{
-			Total: total,
-			Page:  pageInt,
-			Limit: limitInt,
-		},
-		Customers: customers,
-	})
+	customersResponse := response.NewCustomersPaginated(customers, total, pageInt, limitInt)
+	c.JSON(http.StatusOK, customersResponse)
 }
 
 // GetCustomer godoc
@@ -121,7 +116,7 @@ func (h *CustomerHandler) ListCustomers(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		uint64	true	"Customer ID"
-//	@Success		200	{object}	domain.Customer
+//	@Success		200	{object}	response.CustomerResponse
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers/{id} [get]
@@ -140,7 +135,8 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, customer)
+	customerResponse := response.NewCustomerResponse(customer)
+	c.JSON(http.StatusOK, customerResponse)
 }
 
 type updateCustomerRequest struct {
@@ -158,7 +154,7 @@ type updateCustomerRequest struct {
 //	@Produce		json
 //	@Param			id			path		uint64					true	"Customer ID"
 //	@Param			customer	body		updateCustomerRequest	true	"Customer"
-//	@Success		200			{object}	domain.Customer
+//	@Success		200			{object}	response.CustomerResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404			{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
@@ -191,7 +187,8 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, customer)
+	customerResponse := response.NewCustomerResponse(customer)
+	c.JSON(http.StatusOK, customerResponse)
 }
 
 // DeleteCustomer godoc
