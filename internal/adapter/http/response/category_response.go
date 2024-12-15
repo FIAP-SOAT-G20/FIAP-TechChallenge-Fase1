@@ -13,6 +13,10 @@ type CategoryResponse struct {
 }
 
 func NewCategoryResponse(category *domain.Category) *CategoryResponse {
+	if category == nil {
+		return nil
+	}
+
 	return &CategoryResponse{
 		ID:        category.ID,
 		Name:      category.Name,

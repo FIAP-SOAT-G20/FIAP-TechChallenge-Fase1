@@ -7,25 +7,30 @@ import (
 )
 
 type ProductResponse struct {
-	ID          uint64           `json:"id"`
-	Name        string           `json:"name"`
-	Description string           `json:"description"`
-	Price       float64          `json:"price"`
-	Active      bool             `json:"active"`
-	CategoryID  uint64           `json:"categoryID"`
-	Category    CategoryResponse `json:"category"`
-	CreatedAt   time.Time        `json:"createdAt"`
-	UpdatedAt   time.Time        `json:"updatedAt"`
+	ID          uint64            `json:"id"`
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Price       float64           `json:"price"`
+	Active      bool              `json:"active"`
+	CategoryID  uint64            `json:"categoryID"`
+	Category    *CategoryResponse `json:"category,omitempty"`
+	CreatedAt   time.Time         `json:"createdAt"`
+	UpdatedAt   time.Time         `json:"updatedAt"`
 }
 
-func NewProductResponse(product *domain.Product) *ProductResponse {
-	return &ProductResponse{
+func NewProductResponse(product *domain.Product) ProductResponse {
+	if product == nil {
+		return ProductResponse{}
+	}
+
+	return ProductResponse{
 		ID:          product.ID,
 		Name:        product.Name,
 		Description: product.Description,
 		Price:       product.Price,
 		Active:      product.Active,
 		CategoryID:  product.CategoryID,
+		Category:    NewCategoryResponse(&product.Category),
 		CreatedAt:   product.CreatedAt,
 		UpdatedAt:   product.UpdatedAt,
 	}
@@ -33,21 +38,21 @@ func NewProductResponse(product *domain.Product) *ProductResponse {
 
 type ProductPaginated struct {
 	Paginated
-	Product []ProductResponse `json:"products"`
+	Products []ProductResponse `json:"products"`
 }
 
-func NewProductPaginated(products []domain.Product, total int64, page int, limit int) *ProductPaginated {
-	var productResponses []ProductResponse
+func NewProductPaginated(products []domain.Product, total int64, page int, limit int) ProductPaginated {
+	productResponses := make([]ProductResponse, 0, len(products))
 	for _, product := range products {
-		productResponses = append(productResponses, *NewProductResponse(&product))
+		productResponses = append(productResponses, NewProductResponse(&product))
 	}
 
-	return &ProductPaginated{
+	return ProductPaginated{
 		Paginated: Paginated{
 			Total: total,
 			Page:  page,
 			Limit: limit,
 		},
-		Product: productResponses,
+		Products: productResponses,
 	}
 }
