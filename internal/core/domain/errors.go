@@ -3,8 +3,10 @@ package domain
 import "errors"
 
 var (
-	ErrConflict = errors.New("data conflicts with existing data")
-	ErrNotFound = errors.New("data not found")
+	ErrConflict           = errors.New("data conflicts with existing data")
+	ErrNotFound           = errors.New("data not found")
+	ErrInvalidParam       = errors.New("invalid parameter")
+	ErrInvalidQueryParams = errors.New("invalid query parameters")
 )
 
 var (

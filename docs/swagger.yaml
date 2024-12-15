@@ -226,10 +226,6 @@ paths:
       responses:
         "204":
           description: No Content
-          schema:
-            additionalProperties:
-              type: string
-            type: object
         "404":
           description: Data not found error
           schema:

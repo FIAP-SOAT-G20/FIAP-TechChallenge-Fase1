@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -88,7 +87,7 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		response.HandleError(c, errors.New("invalid id"))
+		response.HandleError(c, domain.ErrInvalidParam)
 		return
 	}
 
@@ -122,19 +121,19 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 
 	categoryIDUint64, err := strconv.ParseUint(categoryID, 10, 64)
 	if err != nil {
-		response.HandleError(c, errors.New("invalid categoryID"))
+		response.HandleError(c, domain.ErrInvalidQueryParams)
 		return
 	}
 
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
-		response.HandleError(c, errors.New("invalid page"))
+		response.HandleError(c, domain.ErrInvalidQueryParams)
 		return
 	}
 
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
-		response.HandleError(c, errors.New("invalid limit"))
+		response.HandleError(c, domain.ErrInvalidQueryParams)
 		return
 	}
 
@@ -182,7 +181,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		response.HandleError(c, errors.New("invalid id"))
+		response.HandleError(c, domain.ErrInvalidParam)
 		return
 	}
 
@@ -226,7 +225,7 @@ func (h *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		response.HandleError(c, errors.New("invalid id"))
+		response.HandleError(c, domain.ErrInvalidParam)
 		return
 	}
 

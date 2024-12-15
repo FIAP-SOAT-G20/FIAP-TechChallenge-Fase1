@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -88,13 +87,13 @@ func (h *CustomerHandler) ListCustomers(c *gin.Context) {
 
 	pageInt, err := strconv.Atoi(page)
 	if err != nil {
-		response.HandleError(c, errors.New("invalid page"))
+		response.HandleError(c, domain.ErrInvalidQueryParams)
 		return
 	}
 
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
-		response.HandleError(c, errors.New("invalid limit"))
+		response.HandleError(c, domain.ErrInvalidQueryParams)
 		return
 	}
 
@@ -131,7 +130,7 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		response.HandleError(c, domain.ErrInvalidParam)
 		return
 	}
 
@@ -169,7 +168,7 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		response.HandleError(c, errors.New("invalid id"))
+		response.HandleError(c, domain.ErrInvalidParam)
 		return
 	}
 
@@ -202,8 +201,8 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 //	@Tags			customers
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		uint64	true	"Customer ID"
-//	@Success		204	{object}	map[string]string
+//	@Param			id	path	uint64	true	"Customer ID"
+//	@Success		204
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers/{id} [delete]
@@ -212,7 +211,7 @@ func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		response.HandleError(c, err)
+		response.HandleError(c, domain.ErrInvalidParam)
 		return
 	}
 
@@ -222,5 +221,5 @@ func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, nil)
+	c.Status(http.StatusNoContent)
 }
