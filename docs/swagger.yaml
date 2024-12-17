@@ -1,0 +1,495 @@
+definitions:
+  domain.Customer:
+    properties:
+      cpf:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  handler.UpdateProduct:
+    properties:
+      categoryID:
+        example: 1
+        type: integer
+      description:
+        example: The best burger in the world
+        type: string
+      name:
+        example: McDonald's Big Mac
+        type: string
+      price:
+        example: 29.9
+        type: number
+    type: object
+  handler.createCustomerRequest:
+    properties:
+      cpf:
+        example: 123.456.789-00
+        type: string
+      email:
+        example: johndoe@contact.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+    required:
+    - cpf
+    - email
+    - name
+    type: object
+  handler.createProductRequest:
+    properties:
+      categoryID:
+        example: 1
+        type: integer
+      description:
+        example: The best burger in the world
+        type: string
+      name:
+        example: BK Mega Stacker 2.0
+        type: string
+      price:
+        example: 29.9
+        type: number
+    required:
+    - categoryID
+    - description
+    - name
+    - price
+    type: object
+  handler.updateCustomerRequest:
+    properties:
+      cpf:
+        example: 123.456.789-00
+        type: string
+      email:
+        example: johndoe@email.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+    type: object
+  response.CategoryResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  response.CustomerResponse:
+    properties:
+      cpf:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  response.CustomersPaginated:
+    properties:
+      customers:
+        items:
+          $ref: '#/definitions/domain.Customer'
+        type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  response.ErrorResponse:
+    properties:
+      errors:
+        example:
+        - '[''Validation failed: field X is required'''
+        - ' ''Invalid format for field Y'']'
+        items:
+          type: string
+        type: array
+    type: object
+  response.ProductPaginated:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/response.ProductResponse'
+        type: array
+      total:
+        type: integer
+    type: object
+  response.ProductResponse:
+    properties:
+      active:
+        type: boolean
+      category:
+        $ref: '#/definitions/response.CategoryResponse'
+      categoryID:
+        type: integer
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      updatedAt:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API para o Tech Challenge da FIAP - Fase 1 - G20 - 10 SOAT
+  title: FIAP Tech Challenge Fase 1 - G20 - 10 SOAT
+  version: "1"
+paths:
+  /api/v1/customers:
+    get:
+      consumes:
+      - application/json
+      description: List customers
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CustomersPaginated'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: List customers
+      tags:
+      - customers
+    post:
+      consumes:
+      - application/json
+      description: Create a customer
+      parameters:
+      - description: Customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.CustomerResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create a customer
+      tags:
+      - customers
+  /api/v1/customers/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete a customer
+      tags:
+      - customers
+    get:
+      consumes:
+      - application/json
+      description: Get a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CustomerResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get a customer
+      tags:
+      - customers
+    put:
+      consumes:
+      - application/json
+      description: Update a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/handler.updateCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CustomerResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update a customer
+      tags:
+      - customers
+  /api/v1/products:
+    get:
+      consumes:
+      - application/json
+      description: List products
+      parameters:
+      - description: ProductResponse name
+        in: query
+        name: name
+        type: string
+      - description: Category ID
+        in: query
+        name: categoryID
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductPaginated'
+      summary: List products
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      description: Create a product
+      parameters:
+      - description: ProductResponse
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.ProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create a product
+      tags:
+      - products
+  /api/v1/products/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a product
+      parameters:
+      - description: ProductResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete a product
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: Get a product
+      parameters:
+      - description: ProductResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get a product
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update a product
+      parameters:
+      - description: ProductResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ProductResponse
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateProduct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update a product
+      tags:
+      - products
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and the access token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
