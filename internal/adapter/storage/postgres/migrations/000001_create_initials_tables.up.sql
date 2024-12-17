@@ -1,4 +1,4 @@
-CREATE TABLE customers
+CREATE TABLE IF NOT EXISTS customers
 (
     id         SERIAL PRIMARY KEY,
     name       VARCHAR   NOT NULL,
@@ -8,21 +8,21 @@ CREATE TABLE customers
     updated_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE categories
+CREATE TABLE IF NOT EXISTS categories
 (
     id         SERIAL PRIMARY KEY,
     name       VARCHAR   NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE staffs
+CREATE TABLE IF NOT EXISTS staffs
 (
     id   SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
     role VARCHAR CHECK (role IN ('COOK', 'ATTENDANT', 'MANAGER'))
 );
 
-CREATE TABLE products
+CREATE TABLE IF NOT EXISTS products
 (
     id          SERIAL PRIMARY KEY,
     name        VARCHAR        NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE products
     updated_at  TIMESTAMP      NOT NULL DEFAULT now()
 );
 
-CREATE TABLE payments
+CREATE TABLE IF NOT EXISTS payments
 (
     id         SERIAL PRIMARY KEY,
     status     VARCHAR CHECK (status IN ('PENDING', 'CONFIRMED', 'CANCELED')) DEFAULT 'PENDING',
@@ -44,7 +44,7 @@ CREATE TABLE payments
     updated_at TIMESTAMP NOT NULL                                             DEFAULT now()
 );
 
-CREATE TABLE orders
+CREATE TABLE IF NOT EXISTS orders
 (
     id          SERIAL PRIMARY KEY,
     payment_id  INT REFERENCES payments (id),
@@ -54,7 +54,7 @@ CREATE TABLE orders
     updated_at  TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE order_history
+CREATE TABLE IF NOT EXISTS order_history
 (
     order_id   INT REFERENCES orders (id),
     staff_id   INT REFERENCES staffs (id),
@@ -64,7 +64,7 @@ CREATE TABLE order_history
     PRIMARY KEY (order_id, staff_id)
 );
 
-CREATE TABLE order_product
+CREATE TABLE IF NOT EXISTS order_product
 (
     order_id   INT REFERENCES orders (id),
     product_id INT REFERENCES products (id),

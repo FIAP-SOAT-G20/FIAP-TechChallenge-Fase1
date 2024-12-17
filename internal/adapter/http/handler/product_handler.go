@@ -31,7 +31,7 @@ type createProductRequest struct {
 	Name        string  `json:"name" binding:"required" example:"BK Mega Stacker 2.0"`
 	Description string  `json:"description" binding:"required" example:"The best burger in the world"`
 	Price       float64 `json:"price" binding:"required" example:"29.90"`
-	CategoryID  uint64  `json:"categoryID" binding:"required" example:"1"`
+	CategoryID  uint64  `json:"category_id" binding:"required" example:"1"`
 }
 
 // CreateProduct godoc
@@ -110,14 +110,14 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			name		query		string	false	"ProductResponse name"
-//	@Param			categoryID	query		uint64	false	"Category ID"
+//	@Param			category_id	query		uint64	false	"Category ID"
 //	@Param			page		query		int		false	"Page"
 //	@Param			limit		query		int		false	"Limit"
 //	@Success		200			{object}	response.ProductPaginated
 //	@Router			/api/v1/products [get]
 func (h *ProductHandler) ListProducts(c *gin.Context) {
 	name := c.Query("name")
-	categoryID := c.DefaultQuery("categoryID", "0")
+	categoryID := c.DefaultQuery("category_id", "0")
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "10")
 
@@ -153,7 +153,7 @@ type UpdateProduct struct {
 	Name        string  `json:"name" example:"McDonald's Big Mac"`
 	Description string  `json:"description" example:"The best burger in the world"`
 	Price       float64 `json:"price" example:"29.90"`
-	CategoryID  uint64  `json:"categoryID" example:"1"`
+	CategoryID  uint64  `json:"category_id" example:"1"`
 }
 
 // UpdateProduct godoc
