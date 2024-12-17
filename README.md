@@ -96,6 +96,10 @@ git clone git@github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1.git
 cd FIAP-TechChallenge-Fase1
 ```
 
+```sh
+cp .env.example .env
+```
+
 ### :whale: Docker
 
 ```sh
