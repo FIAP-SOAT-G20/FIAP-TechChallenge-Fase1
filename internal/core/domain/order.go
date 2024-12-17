@@ -26,8 +26,8 @@ type Order struct {
 type OrderProduct struct {
 	OrderID   uint64
 	ProductID uint64
-	price     float32
-	quantity  uint32
+	Price     float32
+	Quantity  uint32
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Order     Order
