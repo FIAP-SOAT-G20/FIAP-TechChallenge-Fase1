@@ -12,6 +12,11 @@ run: build
 	docker-compose up -d db
 	go run cmd/http/main.go
 
+run-air: build
+	@echo "Running the application"
+	docker-compose up -d db
+	air -c air.toml
+
 stop:
 	@echo "Stopping the application"
 	docker-compose down
