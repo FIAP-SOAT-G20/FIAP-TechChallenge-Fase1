@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o app cmd/server/main.go
+RUN go build -o app cmd/http/main.go
 
 FROM alpine:3.20.3 AS final
 
