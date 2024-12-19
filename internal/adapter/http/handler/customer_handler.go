@@ -12,10 +12,10 @@ import (
 )
 
 type CustomerHandler struct {
-	customerService port.CustomerService
+	customerService port.ICustomerService
 }
 
-func NewCustomerHandler(customerService port.CustomerService) *CustomerHandler {
+func NewCustomerHandler(customerService port.ICustomerService) *CustomerHandler {
 	return &CustomerHandler{customerService: customerService}
 }
 
@@ -25,6 +25,10 @@ func (h *CustomerHandler) Register(router *gin.RouterGroup) {
 	router.GET("/:id", h.GetCustomer)
 	router.PUT("/:id", h.UpdateCustomer)
 	router.DELETE("/:id", h.DeleteCustomer)
+}
+
+func (h *CustomerHandler) GroupRouterPattern() string {
+	return "/api/v1/customers"
 }
 
 type createCustomerRequest struct {

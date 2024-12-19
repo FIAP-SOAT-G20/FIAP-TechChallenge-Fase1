@@ -12,10 +12,10 @@ import (
 )
 
 type ProductHandler struct {
-	service port.ProductService
+	service port.IProductService
 }
 
-func NewProductHandler(service port.ProductService) *ProductHandler {
+func NewProductHandler(service port.IProductService) *ProductHandler {
 	return &ProductHandler{service: service}
 }
 
@@ -25,6 +25,10 @@ func (h *ProductHandler) Register(router *gin.RouterGroup) {
 	router.GET("/:id", h.GetProduct)
 	router.PUT("/:id", h.UpdateProduct)
 	router.DELETE("/:id", h.DeleteProduct)
+}
+
+func (h *ProductHandler) GroupRouterPattern() string {
+	return "/api/v1/products"
 }
 
 type createProductRequest struct {
