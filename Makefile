@@ -1,7 +1,7 @@
 include .env
 export
 
-.PHONE: run stop install migrate-up migrate-down docs docs-fmt compose-build run-compose stop-compose test help
+.PHONE: build run run-air stop install migrate-up migrate-down docs docs-fmt compose-build run-compose stop-compose test help
 
 build: install
 	@echo "Building the application"
@@ -52,16 +52,17 @@ test:
 	go test -v ./...
 
 help:
-	@echo "install: Install the dependencies"
 	@echo "build: Build the application"
-	@echo "run: Run the application"
-	@echo "stop: Stop the application"
+	@echo "compose-build: Build the docker compose"
 	@echo "docs: Generate the swagger documentation"
 	@echo "docs-fmt: Format the swagger documentation"
-	@echo "compose-build: Build the docker compose"
+	@echo "help: Show this help message"
+	@echo "install: Install the dependencies"
+	@echo "migrate-down: Rollback the migrations"
+	@echo "migrate-up: Run the migrations"
+	@echo "run: Run the application"
+	@echo "run-air: Run the application with air"
 	@echo "run-compose: Run the docker compose"
+	@echo "stop: Stop the application"
 	@echo "stop-compose: Stop the docker compose"
 	@echo "test: Run the tests"
-	@echo "migrate-up: Run the migrations"
-	@echo "migrate-down: Rollback the migrations"
-	@echo "help: Show this help message"
