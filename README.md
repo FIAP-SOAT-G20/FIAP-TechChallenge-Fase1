@@ -62,6 +62,13 @@ TBD
 - [x] Dockerfile: small image with multi-stage docker build, and independent of the host environment
 - [x] Makefile: to simplify the build and run commands
 - [x] Hexagonal architecture
+- [x] PostgreSQL database
+- [x] Conventional commits
+- [x] Unit tests
+- [x] Code coverage
+- [x] Swagger documentation
+- [x] Feature branch workflow
+- [x] Air to run go
 
 
 ## :computer: Technologies
