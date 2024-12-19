@@ -18,7 +18,12 @@ type Router struct {
 	Engine *gin.Engine
 }
 
-func NewRouter(environment string, productHandler *handler.ProductHandler, customerHandler *handler.CustomerHandler) *Router {
+func NewRouter(
+	environment string, 
+	signInHandler *handler.SignInHandler, 
+	productHandler *handler.ProductHandler, 
+	customerHandler *handler.CustomerHandler,
+) *Router {
 	if environment == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -39,6 +44,7 @@ func NewRouter(environment string, productHandler *handler.ProductHandler, custo
 	docs.SwaggerInfo.BasePath = ""
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	signInHandler.Register(router.Group("/api/v1/sign-in"))
 	productHandler.Register(router.Group("/api/v1/products"))
 	customerHandler.Register(router.Group("/api/v1/customers"))
 

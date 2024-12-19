@@ -52,10 +52,12 @@ func main() {
 	customerRepository := repository.NewCustomerRepository(dbConnection.DB)
 
 	// services
+	signInService := service.NewSignInService(customerRepository)
 	productServive := service.NewProductService(productRepository, categoryRepository)
 	customerService := service.NewCustomerService(customerRepository)
 
 	// handlers
+	signInHandler := handler.NewSignInHandler(signInService)
 	productHandler := handler.NewProductHandler(productServive)
 	customerHandler := handler.NewCustomerHandler(customerService)
 
@@ -65,6 +67,7 @@ func main() {
 
 	routes := router.NewRouter(
 		environment.AppEnvironment,
+		signInHandler,
 		productHandler,
 		customerHandler,
 	)
