@@ -1,7 +1,7 @@
 include .env
 export
 
-.PHONE: build run run-air stop install migrate-up migrate-down docs docs-fmt compose-build run-compose stop-compose test help
+.PHONE: build run run-air stop install migrate-up migrate-down docs-swag docs-fmt compose-build run-compose stop-compose test help
 
 build: install
 	@echo "Building the application"
@@ -33,7 +33,7 @@ migrate-up:
 migrate-down:
 	migrate -path ./internal/adapter/storage/postgres/migrations -database ${DATABASE_URL} -verbose down
 
-docs:
+docs-swag:
 	swag init -g cmd/http/main.go --parseInternal true
 
 docs-fmt:
@@ -54,7 +54,7 @@ test:
 help:
 	@echo "build: Build the application"
 	@echo "compose-build: Build the docker compose"
-	@echo "docs: Generate the swagger documentation"
+	@echo "docs-swag: Generate the swagger documentation"
 	@echo "docs-fmt: Format the swagger documentation"
 	@echo "help: Show this help message"
 	@echo "install: Install the dependencies"
