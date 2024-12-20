@@ -1,7 +1,7 @@
 include .env
 export
 
-.PHONE: run stop install migrate-up migrate-down docs docs-fmt compose-build run-compose stop-compose test help
+.PHONE: build run run-air stop install migrate-up migrate-down docs-swag docs-fmt compose-build run-compose stop-compose test help
 
 build: install
 	@echo "Building the application"
@@ -11,6 +11,11 @@ run: build
 	@echo "Running the application"
 	docker-compose up -d db
 	go run cmd/http/main.go
+
+run-air: build
+	@echo "Running the application"
+	docker-compose up -d db
+	air -c air.toml
 
 stop:
 	@echo "Stopping the application"
@@ -28,7 +33,7 @@ migrate-up:
 migrate-down:
 	migrate -path ./internal/adapter/storage/postgres/migrations -database ${DATABASE_URL} -verbose down
 
-docs:
+docs-swag:
 	swag init -g cmd/http/main.go --parseInternal true
 
 docs-fmt:
@@ -47,16 +52,17 @@ test:
 	go test -v ./...
 
 help:
-	@echo "install: Install the dependencies"
 	@echo "build: Build the application"
-	@echo "run: Run the application"
-	@echo "stop: Stop the application"
-	@echo "docs: Generate the swagger documentation"
-	@echo "docs-fmt: Format the swagger documentation"
 	@echo "compose-build: Build the docker compose"
+	@echo "docs-swag: Generate the swagger documentation"
+	@echo "docs-fmt: Format the swagger documentation"
+	@echo "help: Show this help message"
+	@echo "install: Install the dependencies"
+	@echo "migrate-down: Rollback the migrations"
+	@echo "migrate-up: Run the migrations"
+	@echo "run: Run the application"
+	@echo "run-air: Run the application with air"
 	@echo "run-compose: Run the docker compose"
+	@echo "stop: Stop the application"
 	@echo "stop-compose: Stop the docker compose"
 	@echo "test: Run the tests"
-	@echo "migrate-up: Run the migrations"
-	@echo "migrate-down: Rollback the migrations"
-	@echo "help: Show this help message"

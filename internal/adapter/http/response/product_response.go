@@ -12,10 +12,10 @@ type ProductResponse struct {
 	Description string            `json:"description"`
 	Price       float64           `json:"price"`
 	Active      bool              `json:"active"`
-	CategoryID  uint64            `json:"categoryID"`
+	CategoryID  uint64            `json:"category_id"`
 	Category    *CategoryResponse `json:"category,omitempty"`
-	CreatedAt   time.Time         `json:"createdAt"`
-	UpdatedAt   time.Time         `json:"updatedAt"`
+	CreatedAt   time.Time         `json:"created_at"`
+	UpdatedAt   time.Time         `json:"updated_at"`
 }
 
 func NewProductResponse(product *domain.Product) ProductResponse {

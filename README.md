@@ -62,6 +62,13 @@ TBD
 - [x] Dockerfile: small image with multi-stage docker build, and independent of the host environment
 - [x] Makefile: to simplify the build and run commands
 - [x] Hexagonal architecture
+- [x] PostgreSQL database
+- [x] Conventional commits
+- [x] Unit tests
+- [x] Code coverage
+- [x] Swagger documentation
+- [x] Feature branch workflow
+- [x] Air to run go
 
 
 ## :computer: Technologies
@@ -130,7 +137,8 @@ make run
 ```
 
 > [!NOTE]
-> `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose
+> `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose  
+> You can check the application swagger documentation at `http://localhost:8080/docs/index.html`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

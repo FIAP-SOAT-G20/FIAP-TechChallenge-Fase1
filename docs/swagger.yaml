@@ -1,22 +1,7 @@
 definitions:
-  domain.Customer:
-    properties:
-      cpf:
-        type: string
-      createdAt:
-        type: string
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      updatedAt:
-        type: string
-    type: object
   handler.UpdateProduct:
     properties:
-      categoryID:
+      category_id:
         example: 1
         type: integer
       description:
@@ -47,7 +32,7 @@ definitions:
     type: object
   handler.createProductRequest:
     properties:
-      categoryID:
+      category_id:
         example: 1
         type: integer
       description:
@@ -60,10 +45,18 @@ definitions:
         example: 29.9
         type: number
     required:
-    - categoryID
+    - category_id
     - description
     - name
     - price
+    type: object
+  handler.signInRequest:
+    properties:
+      cpf:
+        example: 000.000.000-00
+        type: string
+    required:
+    - cpf
     type: object
   handler.updateCustomerRequest:
     properties:
@@ -79,7 +72,7 @@ definitions:
     type: object
   response.CategoryResponse:
     properties:
-      createdAt:
+      created_at:
         type: string
       id:
         type: integer
@@ -90,22 +83,18 @@ definitions:
     properties:
       cpf:
         type: string
-      createdAt:
-        type: string
       email:
         type: string
       id:
         type: integer
       name:
         type: string
-      updatedAt:
-        type: string
     type: object
   response.CustomersPaginated:
     properties:
       customers:
         items:
-          $ref: '#/definitions/domain.Customer'
+          $ref: '#/definitions/response.CustomerResponse'
         type: array
       limit:
         type: integer
@@ -143,9 +132,9 @@ definitions:
         type: boolean
       category:
         $ref: '#/definitions/response.CategoryResponse'
-      categoryID:
+      category_id:
         type: integer
-      createdAt:
+      created_at:
         type: string
       description:
         type: string
@@ -155,7 +144,18 @@ definitions:
         type: string
       price:
         type: number
-      updatedAt:
+      updated_at:
+        type: string
+    type: object
+  response.SignInResponse:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
         type: string
     type: object
 info:
@@ -330,7 +330,7 @@ paths:
         type: string
       - description: Category ID
         in: query
-        name: categoryID
+        name: category_id
         type: integer
       - description: Page
         in: query
@@ -486,6 +486,40 @@ paths:
       summary: Update a product
       tags:
       - products
+  /api/v1/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Sign in a customer
+      parameters:
+      - description: SignInResponse
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.signInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Succesfully signed in
+          schema:
+            $ref: '#/definitions/response.SignInResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Sign in a customer
+      tags:
+      - customers
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and the access token.
