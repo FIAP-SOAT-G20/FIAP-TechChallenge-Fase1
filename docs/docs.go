@@ -271,7 +271,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Category ID",
-                        "name": "categoryID",
+                        "name": "category_id",
                         "in": "query"
                     },
                     {
@@ -501,36 +501,65 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/sign-in": {
+            "post": {
+                "description": "Sign in a customer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Sign in a customer",
+                "parameters": [
+                    {
+                        "description": "SignInResponse",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.signInRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succesfully signed in",
+                        "schema": {
+                            "$ref": "#/definitions/response.SignInResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "domain.Customer": {
-            "type": "object",
-            "properties": {
-                "cpf": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
         "handler.UpdateProduct": {
             "type": "object",
             "properties": {
-                "categoryID": {
+                "category_id": {
                     "type": "integer",
                     "example": 1
                 },
@@ -573,13 +602,13 @@ const docTemplate = `{
         "handler.createProductRequest": {
             "type": "object",
             "required": [
-                "categoryID",
+                "category_id",
                 "description",
                 "name",
                 "price"
             ],
             "properties": {
-                "categoryID": {
+                "category_id": {
                     "type": "integer",
                     "example": 1
                 },
@@ -594,6 +623,18 @@ const docTemplate = `{
                 "price": {
                     "type": "number",
                     "example": 29.9
+                }
+            }
+        },
+        "handler.signInRequest": {
+            "type": "object",
+            "required": [
+                "cpf"
+            ],
+            "properties": {
+                "cpf": {
+                    "type": "string",
+                    "example": "000.000.000-00"
                 }
             }
         },
@@ -617,7 +658,7 @@ const docTemplate = `{
         "response.CategoryResponse": {
             "type": "object",
             "properties": {
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "id": {
@@ -634,9 +675,6 @@ const docTemplate = `{
                 "cpf": {
                     "type": "string"
                 },
-                "createdAt": {
-                    "type": "string"
-                },
                 "email": {
                     "type": "string"
                 },
@@ -644,9 +682,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "updatedAt": {
                     "type": "string"
                 }
             }
@@ -657,7 +692,7 @@ const docTemplate = `{
                 "customers": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/domain.Customer"
+                        "$ref": "#/definitions/response.CustomerResponse"
                     }
                 },
                 "limit": {
@@ -715,10 +750,10 @@ const docTemplate = `{
                 "category": {
                     "$ref": "#/definitions/response.CategoryResponse"
                 },
-                "categoryID": {
+                "category_id": {
                     "type": "integer"
                 },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "description": {
@@ -733,7 +768,24 @@ const docTemplate = `{
                 "price": {
                     "type": "number"
                 },
-                "updatedAt": {
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.SignInResponse": {
+            "type": "object",
+            "properties": {
+                "cpf": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }
