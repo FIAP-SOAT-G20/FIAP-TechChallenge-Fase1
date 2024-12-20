@@ -32,16 +32,16 @@ type signInRequest struct {
 // SignIn godoc
 //
 //	@Summary		Sign in a customer
-//	@Description 	Sign in a customer
-//	@Tags			Users
+//	@Description	Sign in a customer
+//	@Tags			customers
 //	@Accept			json
 //	@Produce		json
-//	@Param			request	body		signInRequest	true	"Sign in request body"
-//	@Success		200		{object}	authResponse	"Succesfully signed in"
-//	@Failure		400		{object}	errorResponse	"Validation error"
-//	@Failure		401		{object}	errorResponse	"Unauthorized error"
-//	@Failure		500		{object}	errorResponse	"Internal server error"
-//	@Router			/sign-in [post]
+//	@Param			request	body		signInRequest			true	"SignInResponse"
+//	@Success		200		{object}	response.SignInResponse	"Succesfully signed in"
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		401		{object}	response.ErrorResponse	"Unauthorized error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Router			/api/v1/sign-in [post]
 func (ah *SignInHandler) SignIn(c *gin.Context) {
 	var req signInRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

@@ -137,7 +137,8 @@ make run
 ```
 
 > [!NOTE]
-> `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose
+> `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose  
+> You can check the application swagger documentation at `http://localhost:8080/docs/index.html`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
