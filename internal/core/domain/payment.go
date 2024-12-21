@@ -5,9 +5,10 @@ import "time"
 type PaymentStatus string
 
 const (
-	PENDING   PaymentStatus = "PENDING"
-	CONFIRMED PaymentStatus = "CONFIRMED"
-	CANCELED  PaymentStatus = "CANCELED"
+	PROCESSING PaymentStatus = "PROCESSING"
+	CONFIRMED  PaymentStatus = "CONFIRMED"
+	FAILED     PaymentStatus = "FAILED"
+	CANCELED   PaymentStatus = "CANCELED"
 )
 
 type Payment struct {

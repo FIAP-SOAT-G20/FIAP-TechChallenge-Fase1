@@ -3,8 +3,8 @@ package internal
 import (
 	adapters "github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/config"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/server"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core"
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/infrastructure/server"
 	"go.uber.org/fx"
 )
 

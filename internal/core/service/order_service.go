@@ -7,13 +7,13 @@ import (
 )
 
 type OrderService struct {
-	orderRepository        port.OrderRepository
-	orderHistoryRepository port.OrderHistoryRepository
-	orderProductRepository port.OrderProductRepository
-	customerRepository     port.CustomerRepository
+	orderRepository        port.IOrderRepository
+	orderHistoryRepository port.IOrderHistoryRepository
+	orderProductRepository port.IOrderProductRepository
+	customerRepository     port.ICustomerRepository
 }
 
-func NewOrderService(orderRepository port.OrderRepository, orderHistoryRepo port.OrderHistoryRepository, orderProductRepo port.OrderProductRepository, customerRepository port.CustomerRepository) *OrderService {
+func NewOrderService(orderRepository port.IOrderRepository, orderHistoryRepo port.IOrderHistoryRepository, orderProductRepo port.IOrderProductRepository, customerRepository port.ICustomerRepository) *OrderService {
 	return &OrderService{
 		orderRepository:        orderRepository,
 		orderHistoryRepository: orderHistoryRepo,

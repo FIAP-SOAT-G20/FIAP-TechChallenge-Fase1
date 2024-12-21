@@ -5,6 +5,9 @@ import "time"
 type OrderStatus string
 
 const (
+	OPEN      OrderStatus = "OPEN"
+	CANCELLED OrderStatus = "CANCELLED"
+	PENDING   OrderStatus = "PENDING"
 	RECEIVED  OrderStatus = "RECEIVED"
 	PREPARING OrderStatus = "PREPARING"
 	READY     OrderStatus = "READY"

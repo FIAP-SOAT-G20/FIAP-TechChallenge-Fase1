@@ -2,7 +2,7 @@ package port
 
 import "github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 
-type OrderRepository interface {
+type IOrderRepository interface {
 	Insert(order *domain.Order) error
 	GetByID(id uint64) (*domain.Order, error)
 	GetAll(clientID uint64, page, limit int) ([]domain.Order, int64, error)
@@ -10,16 +10,16 @@ type OrderRepository interface {
 	Delete(id uint64) error
 }
 
-type OrderProductRepository interface {
+type IOrderProductRepository interface {
 	Insert(orderProduct *domain.OrderProduct) error
 	InsertMany(orderProduct []domain.OrderProduct) error
 }
 
-type OrderHistoryRepository interface {
+type IOrderHistoryRepository interface {
 	Insert(orderHistory *domain.OrderHistory) error
 }
 
-type OrderService interface {
+type IOrderService interface {
 	Create(order *domain.Order) error
 	GetByID(id uint64) (*domain.Order, error)
 	List(clientID uint64, page, limit int) ([]domain.Order, int64, error)
