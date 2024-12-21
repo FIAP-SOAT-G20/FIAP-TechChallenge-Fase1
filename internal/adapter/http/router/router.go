@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/config"
 	"log/slog"
 	"time"
 
@@ -11,18 +12,24 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/docs"
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/handler"
 )
+
+type IRouter interface {
+	GroupRouterPattern() string
+	Register(router *gin.RouterGroup)
+}
 
 type Router struct {
 	Engine *gin.Engine
 }
 
-func NewRouter(environment string, productHandler *handler.ProductHandler, customerHandler *handler.CustomerHandler) *Router {
-	if environment == "production" {
+func InitGinEngine(cfg *config.Environment) {
+	if cfg.AppEnvironment == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
+}
 
+func NewRouter(handlers []IRouter) *Router {
 	router := gin.New()
 
 	router.Use(sloggin.New(slog.Default()), gin.Recovery())
@@ -39,8 +46,9 @@ func NewRouter(environment string, productHandler *handler.ProductHandler, custo
 	docs.SwaggerInfo.BasePath = ""
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	productHandler.Register(router.Group("/api/v1/products"))
-	customerHandler.Register(router.Group("/api/v1/customers"))
+	for _, handler := range handlers {
+		handler.Register(router.Group(handler.GroupRouterPattern()))
+	}
 
 	return &Router{Engine: router}
 }

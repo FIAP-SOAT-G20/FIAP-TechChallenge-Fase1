@@ -9,7 +9,7 @@ import (
 type CategoryResponse struct {
 	ID        uint64    `json:"id"`
 	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func NewCategoryResponse(category *domain.Category) *CategoryResponse {

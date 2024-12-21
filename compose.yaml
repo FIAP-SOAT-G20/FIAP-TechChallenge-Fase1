@@ -1,31 +1,39 @@
 services:
   server:
+    container_name: server.10soat-g20.dev
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     env_file:
-      - .env
+      - .env.local
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - 10soat-g20-network
 
   db:
+    container_name: postgres.10soat-g20.dev
     image: postgres:17.2-alpine3.20
     restart: always
     user: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
-    env_file:
-      - .env
-    expose:
-      - 5432
+    ports:
+      - 5432:5432
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - 10soat-g20-network
 
 volumes:
   db-data:
+
+networks:
+  10soat-g20-network:
+    driver: bridge

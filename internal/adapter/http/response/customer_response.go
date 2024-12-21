@@ -1,18 +1,14 @@
 package response
 
 import (
-	"time"
-
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 )
 
 type CustomerResponse struct {
-	ID        uint64    `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	CPF       string    `json:"cpf"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID    uint64 `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	CPF   string `json:"cpf"`
 }
 
 func NewCustomerResponse(customer *domain.Customer) *CustomerResponse {
@@ -21,12 +17,10 @@ func NewCustomerResponse(customer *domain.Customer) *CustomerResponse {
 	}
 
 	return &CustomerResponse{
-		ID:        customer.ID,
-		Name:      customer.Name,
-		Email:     customer.Email,
-		CPF:       customer.CPF,
-		CreatedAt: customer.CreatedAt,
-		UpdatedAt: customer.UpdatedAt,
+		ID:    customer.ID,
+		Name:  customer.Name,
+		Email: customer.Email,
+		CPF:   customer.CPF,
 	}
 }
 
