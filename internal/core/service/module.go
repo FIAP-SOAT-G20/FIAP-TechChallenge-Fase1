@@ -10,5 +10,6 @@ var Module = fx.Options(
 		fx.Annotate(NewCustomerService, fx.As(new(port.ICustomerService))),
 		fx.Annotate(NewProductService, fx.As(new(port.IProductService))),
 		fx.Annotate(NewSignInService, fx.As(new(port.ISignInService))),
+		fx.Annotate(NewPaymentService, fx.As(new(port.IPaymentService))),
 	),
 )

@@ -1,9 +1,10 @@
 package service
 
 import (
+	"time"
+
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
-	"time"
 )
 
 type OrderService struct {

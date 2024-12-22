@@ -15,6 +15,9 @@ type Environment struct {
 	// Database
 	DatabaseURL    string
 	AppEnvironment string
+
+	// Mercado Pago
+	MercadoPagoToken string
 }
 
 func LoadEnvironment() (*Environment, error) {
@@ -31,6 +34,9 @@ func LoadEnvironment() (*Environment, error) {
 
 		// Database
 		DatabaseURL: os.Getenv("DATABASE_URL"),
+
+		// Mercado Pago
+		MercadoPagoToken: os.Getenv("MERCADO_PAGO_TOKEN"),
 	}, nil
 }
 

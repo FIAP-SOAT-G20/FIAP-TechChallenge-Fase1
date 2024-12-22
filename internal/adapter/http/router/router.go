@@ -1,9 +1,10 @@
 package router
 
 import (
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/config"
 	"log/slog"
 	"time"
+
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/config"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
