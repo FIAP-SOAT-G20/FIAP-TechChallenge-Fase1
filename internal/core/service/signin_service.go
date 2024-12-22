@@ -6,16 +6,15 @@ import (
 )
 
 type SignInService struct {
-	customerRepository  port.CustomerRepository
+	customerRepository port.ICustomerRepository
 }
 
-func NewSignInService(customerRepository  port.CustomerRepository) *SignInService {
+func NewSignInService(customerRepository port.ICustomerRepository) *SignInService {
 	return &SignInService{
 		customerRepository: customerRepository,
 	}
 }
 
-func (ps *SignInService) GetByCPF(cpf string)  (*domain.Customer, error) {
+func (ps *SignInService) GetByCPF(cpf string) (*domain.Customer, error) {
 	return ps.customerRepository.GetByCPF(cpf)
 }
-

@@ -10,14 +10,18 @@ import (
 
 // SignInHandler represents the HTTP handler for authentication-related requests
 type SignInHandler struct {
-	svc port.SigninService
+	svc port.ISignInService
 }
 
 // NewSignInHandler creates a new SignInHandler instance
-func NewSignInHandler(svc port.SigninService) *SignInHandler {
+func NewSignInHandler(svc port.ISignInService) *SignInHandler {
 	return &SignInHandler{
 		svc,
 	}
+}
+
+func (h *SignInHandler) GroupRouterPattern() string {
+	return "/api/v1/sign-in"
 }
 
 func (h *SignInHandler) Register(router *gin.RouterGroup) {

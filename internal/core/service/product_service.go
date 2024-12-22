@@ -6,11 +6,11 @@ import (
 )
 
 type ProductService struct {
-	productRepository  port.ProductRepository
-	categoryRepository port.CategoryRepository
+	productRepository  port.IProductRepository
+	categoryRepository port.ICategoryRepository
 }
 
-func NewProductService(productRepository port.ProductRepository, categoryRepository port.CategoryRepository) *ProductService {
+func NewProductService(productRepository port.IProductRepository, categoryRepository port.ICategoryRepository) *ProductService {
 	return &ProductService{
 		productRepository:  productRepository,
 		categoryRepository: categoryRepository,

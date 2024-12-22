@@ -6,10 +6,10 @@ import (
 )
 
 type CustomerService struct {
-	customerRepository port.CustomerRepository
+	customerRepository port.ICustomerRepository
 }
 
-func NewCustomerService(customerRepository port.CustomerRepository) *CustomerService {
+func NewCustomerService(customerRepository port.ICustomerRepository) *CustomerService {
 	return &CustomerService{
 		customerRepository: customerRepository,
 	}
