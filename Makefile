@@ -14,6 +14,7 @@ run: build
 
 run-air: build
 	@echo "Running the application"
+	docker-compose up -d db
 	air -c air.toml
 
 stop:
