@@ -6,7 +6,7 @@ type CreatePayment struct {
 	Items             []Items `json:"items"`
 	Title             string  `json:"title"`
 	Description       string  `json:"description"`
-	NotificationURL   string  `json:"notification_url`
+	NotificationURL   string  `json:"notification_url"`
 }
 
 type Items struct {
