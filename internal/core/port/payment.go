@@ -13,6 +13,6 @@ type IPaymentService interface {
 	CreatePayment(orderID uint64) (*domain.Payment, error)
 }
 
-type IMercadoPagoService interface {
+type IExternalPaymentService interface {
 	CreatePayment(payment *domain.CreatePayment) (*domain.CreatePaymentResponse, error)
 }

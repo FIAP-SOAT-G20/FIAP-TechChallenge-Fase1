@@ -10,14 +10,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type MercadoPagoService struct {
+type ExternalPaymentService struct {
 }
 
-func NewMercadoPagoService() *MercadoPagoService {
-	return &MercadoPagoService{}
+func NewExternalPaymentService() *ExternalPaymentService {
+	return &ExternalPaymentService{}
 }
 
-func (ps *MercadoPagoService) CreatePayment(payment *domain.CreatePayment) (*domain.CreatePaymentResponse, error) {
+func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePayment) (*domain.CreatePaymentResponse, error) {
 	client := resty.New().
 		SetTimeout(10*time.Second).
 		SetRetryCount(2).

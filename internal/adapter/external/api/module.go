@@ -7,6 +7,6 @@ import (
 
 var Module = fx.Options(
 	fx.Provide(
-		fx.Annotate(NewMercadoPagoService, fx.As(new(port.IMercadoPagoService))),
+		fx.Annotate(NewExternalPaymentService, fx.As(new(port.IExternalPaymentService))),
 	),
 )

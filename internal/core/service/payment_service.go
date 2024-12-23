@@ -5,24 +5,23 @@ import (
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
-	"github.com/sirupsen/logrus"
 )
 
 type PaymentService struct {
-	paymentRepository  port.IPaymentRepository
-	orderRepository    port.IOrderRepository
-	mercadoPagoService port.IMercadoPagoService
+	paymentRepository      port.IPaymentRepository
+	orderRepository        port.IOrderRepository
+	externalPaymentService port.IExternalPaymentService
 }
 
 func NewPaymentService(
 	paymentRepository port.IPaymentRepository,
 	orderRepository port.IOrderRepository,
-	mercadoPagoService port.IMercadoPagoService,
+	externalPaymentService port.IExternalPaymentService,
 ) *PaymentService {
 	return &PaymentService{
-		paymentRepository:  paymentRepository,
-		orderRepository:    orderRepository,
-		mercadoPagoService: mercadoPagoService,
+		paymentRepository:      paymentRepository,
+		orderRepository:        orderRepository,
+		externalPaymentService: externalPaymentService,
 	}
 }
 
@@ -36,8 +35,6 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 		return existentPedingPayment, nil
 	}
 
-	logrus.Info("AQUI 2")
-
 	order, err := ps.orderRepository.GetByID(orderID)
 	if err != nil {
 		return nil, domain.ErrNotFound
@@ -45,7 +42,7 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 
 	paymentPayload := ps.createPaymentPayload(order)
 
-	mpPayment, err := ps.mercadoPagoService.CreatePayment(paymentPayload)
+	mpPayment, err := ps.externalPaymentService.CreatePayment(paymentPayload)
 	if err != nil {
 		return nil, err
 	}
