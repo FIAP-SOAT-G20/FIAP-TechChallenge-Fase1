@@ -27,10 +27,6 @@ func (ps *OrderService) Create(order *domain.Order) error {
 		return domain.ErrNotFound
 	}
 
-	//if order.TotalBill <= 0 {
-	//	return domain.ErrInvalidParam
-	//}
-
 	order.CreatedAt = time.Now()
 	order.UpdatedAt = time.Now()
 
@@ -60,7 +56,7 @@ func (ps *OrderService) Update(order *domain.Order) error {
 	if existing.CustomerID != order.CustomerID {
 		return domain.ErrInvalidParam
 	}
-	
+
 	order.UpdatedAt = time.Now()
 
 	return ps.orderRepository.Update(order)
