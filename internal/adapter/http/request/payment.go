@@ -1,6 +1,6 @@
 package request
 
-type CreatePayment struct {
+type CreatePaymentRequest struct {
 	ExternalReference string  `json:"external_reference"`
 	TotalAmount       float32 `json:"total_amount"`
 	Items             []Items `json:"items"`

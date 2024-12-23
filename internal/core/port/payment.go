@@ -16,5 +16,5 @@ type IPaymentService interface {
 }
 
 type IExternalPaymentService interface {
-	CreatePayment(payment *request.CreatePayment) (*response.CreatePaymentResponse, error)
+	CreatePayment(payment *request.CreatePaymentRequest) (*response.CreatePaymentResponse, error)
 }

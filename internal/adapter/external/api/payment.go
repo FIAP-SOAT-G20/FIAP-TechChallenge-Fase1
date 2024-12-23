@@ -18,7 +18,7 @@ func NewExternalPaymentService() *ExternalPaymentService {
 	return &ExternalPaymentService{}
 }
 
-func (ps *ExternalPaymentService) CreatePayment(payment *request.CreatePayment) (*response.CreatePaymentResponse, error) {
+func (ps *ExternalPaymentService) CreatePayment(payment *request.CreatePaymentRequest) (*response.CreatePaymentResponse, error) {
 	client := resty.New().
 		SetTimeout(10*time.Second).
 		SetRetryCount(2).
@@ -28,9 +28,9 @@ func (ps *ExternalPaymentService) CreatePayment(payment *request.CreatePayment) 
 	resp, err := client.R().
 		SetBody(payment).
 		SetResult(&response.CreatePaymentResponse{}).
-		Post("https://api.mercadopago.com/instore/orders/qr/seller/collectors/339709477/pos/FTC01/qrs")
+		Post(os.Getenv("MERCADO_PAGO_URL"))
 	if err != nil {
-		return nil, fmt.Errorf("error to create mercado pago payment: %w", err)
+		return nil, fmt.Errorf("error to create payment: %w", err)
 	}
 
 	if resp.StatusCode() != 201 {

@@ -64,7 +64,7 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 	return payment, nil
 }
 
-func (ps *PaymentService) createPaymentPayload(order *domain.Order) *request.CreatePayment {
+func (ps *PaymentService) createPaymentPayload(order *domain.Order) *request.CreatePaymentRequest {
 	var items []request.Items
 
 	externalReference := strconv.FormatUint(order.ID, 10)
@@ -81,7 +81,7 @@ func (ps *PaymentService) createPaymentPayload(order *domain.Order) *request.Cre
 		})
 	}
 
-	return &request.CreatePayment{
+	return &request.CreatePaymentRequest{
 		ExternalReference: externalReference,
 		TotalAmount:       order.TotalBill,
 		Items:             items,
