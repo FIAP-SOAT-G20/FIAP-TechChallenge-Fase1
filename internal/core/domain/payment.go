@@ -20,27 +20,3 @@ type Payment struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 }
-
-type CreatePayment struct {
-	ExternalReference string
-	TotalAmount       float32
-	Items             []Items
-	Title             string
-	Description       string
-	NotificationURL   string
-}
-
-type Items struct {
-	Category    string
-	Title       string
-	Description string
-	UnitPrice   float32
-	Quantity    uint64
-	UnitMeasure string
-	TotalAmount float32
-}
-
-type CreatePaymentResponse struct {
-	InStoreOrderID string
-	QrData         string
-}

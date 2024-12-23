@@ -1,6 +1,8 @@
 package port
 
 import (
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 )
 
@@ -14,5 +16,5 @@ type IPaymentService interface {
 }
 
 type IExternalPaymentService interface {
-	CreatePayment(payment *domain.CreatePayment) (*domain.CreatePaymentResponse, error)
+	CreatePayment(payment *request.CreatePayment) (*response.CreatePaymentResponse, error)
 }

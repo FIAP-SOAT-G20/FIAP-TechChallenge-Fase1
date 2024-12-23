@@ -1,8 +1,10 @@
 package service
 
 import (
+	"os"
 	"strconv"
 
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
 )
@@ -62,13 +64,13 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 	return payment, nil
 }
 
-func (ps *PaymentService) createPaymentPayload(order *domain.Order) *domain.CreatePayment {
-	var items []domain.Items
+func (ps *PaymentService) createPaymentPayload(order *domain.Order) *request.CreatePayment {
+	var items []request.Items
 
 	externalReference := strconv.FormatUint(order.ID, 10)
 
 	for _, v := range order.OrderProducts {
-		items = append(items, domain.Items{
+		items = append(items, request.Items{
 			Title:       v.Product.Name,
 			Description: v.Product.Description,
 			UnitPrice:   float32(v.Product.Price),
@@ -79,12 +81,12 @@ func (ps *PaymentService) createPaymentPayload(order *domain.Order) *domain.Crea
 		})
 	}
 
-	return &domain.CreatePayment{
+	return &request.CreatePayment{
 		ExternalReference: externalReference,
 		TotalAmount:       order.TotalBill,
 		Items:             items,
 		Title:             "FIAP Tech Challenge - Product Order",
 		Description:       "Purchases made at the FIAP Tech Challenge store",
-		NotificationURL:   "https://webhook.site/31b4ef55-e926-44d7-b4cd-8639d420af9a",
+		NotificationURL:   os.Getenv("MERCADO_PAGO_NOTIFICATION_URL"),
 	}
 }

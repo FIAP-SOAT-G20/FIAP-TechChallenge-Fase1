@@ -5,7 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 )
@@ -17,7 +18,7 @@ func NewExternalPaymentService() *ExternalPaymentService {
 	return &ExternalPaymentService{}
 }
 
-func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePayment) (*domain.CreatePaymentResponse, error) {
+func (ps *ExternalPaymentService) CreatePayment(payment *request.CreatePayment) (*response.CreatePaymentResponse, error) {
 	client := resty.New().
 		SetTimeout(10*time.Second).
 		SetRetryCount(2).
@@ -26,7 +27,7 @@ func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePayment) (
 
 	resp, err := client.R().
 		SetBody(payment).
-		SetResult(&domain.CreatePaymentResponse{}).
+		SetResult(&response.CreatePaymentResponse{}).
 		Post("https://api.mercadopago.com/instore/orders/qr/seller/collectors/339709477/pos/FTC01/qrs")
 	if err != nil {
 		return nil, fmt.Errorf("error to create mercado pago payment: %w", err)
@@ -37,5 +38,5 @@ func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePayment) (
 		return nil, fmt.Errorf("error: response status %d", resp.StatusCode())
 	}
 
-	return resp.Result().(*domain.CreatePaymentResponse), nil
+	return resp.Result().(*response.CreatePaymentResponse), nil
 }
