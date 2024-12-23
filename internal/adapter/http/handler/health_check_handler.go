@@ -29,7 +29,7 @@ func (h *HealthCheckHandler) GroupRouterPattern() string {
 //	@Tags			healthCheck
 //	@Produce		json
 //	@Success		200			{object}	response.HealthCheckResponse
-//	@Failure		500			{object}	response.ErrorRespose	"Internal server error"
+//	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/healthCheck [GET]
 func (h *HealthCheckHandler) HealthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, response.NewHealthCheckResponse())
