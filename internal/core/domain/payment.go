@@ -12,8 +12,10 @@ const (
 )
 
 type Payment struct {
-	ID        uint64
-	Status    PaymentStatus
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID                uint64
+	Status            PaymentStatus
+	OrderID           uint64
+	ExternalPaymentId string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }

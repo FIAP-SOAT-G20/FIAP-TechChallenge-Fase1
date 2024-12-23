@@ -38,6 +38,7 @@ type OrderProduct struct {
 }
 
 type OrderHistory struct {
+	ID        uint64
 	OrderID   uint64
 	StaffID   uint64
 	Status    OrderStatus

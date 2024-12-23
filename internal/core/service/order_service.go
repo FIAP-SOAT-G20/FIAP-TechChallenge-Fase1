@@ -13,12 +13,10 @@ type OrderService struct {
 	customerRepository     port.ICustomerRepository
 }
 
-func NewOrderService(orderRepository port.IOrderRepository, orderHistoryRepo port.IOrderHistoryRepository, orderProductRepo port.IOrderProductRepository, customerRepository port.ICustomerRepository) *OrderService {
+func NewOrderService(orderRepository port.IOrderRepository, customerRepository port.ICustomerRepository) *OrderService {
 	return &OrderService{
-		orderRepository:        orderRepository,
-		orderHistoryRepository: orderHistoryRepo,
-		orderProductRepository: orderProductRepo,
-		customerRepository:     customerRepository,
+		orderRepository:    orderRepository,
+		customerRepository: customerRepository,
 	}
 }
 
@@ -29,9 +27,9 @@ func (ps *OrderService) Create(order *domain.Order) error {
 		return domain.ErrNotFound
 	}
 
-	if order.TotalBill <= 0 {
-		return domain.ErrInvalidParam
-	}
+	//if order.TotalBill <= 0 {
+	//	return domain.ErrInvalidParam
+	//}
 
 	order.CreatedAt = time.Now()
 	order.UpdatedAt = time.Now()
@@ -54,11 +52,15 @@ func (ps *OrderService) List(clientId uint64, page, limit int) ([]domain.Order, 
 }
 
 func (ps *OrderService) Update(order *domain.Order) error {
-	_, err := ps.orderRepository.GetByID(order.ID)
+	existing, err := ps.orderRepository.GetByID(order.ID)
 	if err != nil {
 		return domain.ErrNotFound
 	}
 
+	if existing.CustomerID != order.CustomerID {
+		return domain.ErrInvalidParam
+	}
+	
 	order.UpdatedAt = time.Now()
 
 	return ps.orderRepository.Update(order)
