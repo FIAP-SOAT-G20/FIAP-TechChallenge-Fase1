@@ -1,0 +1,224 @@
+package handler
+
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
+)
+
+type OrderHandler struct {
+	service port.IOrderService
+}
+
+func NewOrderHandler(service port.IOrderService) *OrderHandler {
+	return &OrderHandler{service: service}
+}
+
+func (h *OrderHandler) Register(router *gin.RouterGroup) {
+	router.POST("/", h.CreateOrder)
+	router.GET("/", h.ListOrders)
+	router.GET("/:id", h.GetOrder)
+	router.PUT("/:id", h.UpdateOrder)
+	router.DELETE("/:id", h.DeleteOrder)
+}
+
+func (h *OrderHandler) GroupRouterPattern() string {
+	return "/api/v1/orders"
+}
+
+type createOrderRequest struct {
+	CustomerID uint64 `json:"customer_id" binding:"required" example:"1"`
+}
+
+// CreateOrder godoc
+//
+//	@Summary		Create an order
+//	@Description	Create an order
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			order	body		createOrderRequest	true	"OrderResponse"
+//	@Success		201		{object}	response.OrderResponse
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Router			/api/v1/order [post]
+func (h *OrderHandler) CreateOrder(c *gin.Context) {
+	var req createOrderRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.ValidationError(c, err)
+		return
+	}
+
+	order := &domain.Order{
+		CustomerID: req.CustomerID,
+	}
+
+	if err := h.service.Create(order); err != nil {
+		response.HandleError(c, err)
+		return
+	}
+
+	orderResponse := response.NewOrderResponse(order)
+	c.JSON(http.StatusCreated, orderResponse)
+}
+
+// GetOrder godoc
+//
+//	@Summary		Get an order
+//	@Description	Get an order
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"OrderResponse ID"
+//	@Success		200	{object}	response.OrderResponse
+//	@Failure		400	{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
+//	@Router			/api/v1/orders/{id} [get]
+func (h *OrderHandler) GetOrder(c *gin.Context) {
+	id := c.Param("id")
+
+	idUint64, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidParam)
+		return
+	}
+
+	order, err := h.service.GetByID(idUint64)
+	if err != nil {
+		response.HandleError(c, err)
+		return
+	}
+
+	productResponse := response.NewOrderResponse(order)
+	c.JSON(http.StatusOK, productResponse)
+}
+
+// ListOrders godoc
+//
+//	@Summary		List orders
+//	@Description	List orders
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			name		query		string	false	"OrderResponse name"
+//	@Param			customer_id	query		uint64	false	"Customer ID"
+//	@Param			page		query		int		false	"Page"
+//	@Param			limit		query		int		false	"Limit"
+//	@Success		200			{object}	response.OrderPaginated
+//	@Router			/api/v1/orders [get]
+func (h *OrderHandler) ListOrders(c *gin.Context) {
+	categoryID := c.DefaultQuery("category_id", "0")
+	page := c.DefaultQuery("page", "1")
+	limit := c.DefaultQuery("limit", "10")
+
+	categoryIDUint64, err := strconv.ParseUint(categoryID, 10, 64)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidQueryParams)
+		return
+	}
+
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidQueryParams)
+		return
+	}
+
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidQueryParams)
+		return
+	}
+
+	orders, total, err := h.service.List(categoryIDUint64, pageInt, limitInt)
+	if err != nil {
+		response.HandleError(c, err)
+		return
+	}
+
+	responses := response.NewOrderPaginated(orders, total, pageInt, limitInt)
+	c.JSON(http.StatusOK, responses)
+}
+
+type UpdateOrder struct {
+	TotalBill float32 `json:"total_bill" example:"29.90"`
+}
+
+// UpdateOrder godoc
+//
+//	@Summary		Update an order
+//	@Description	Update an order
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		int				true	"OrderResponse ID"
+//	@Param			order	body		UpdateOrder	true	"OrderResponse"
+//	@Success		200		{object}	response.OrderResponse
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Router			/api/v1/products/{id} [put]
+func (h *OrderHandler) UpdateOrder(c *gin.Context) {
+	id := c.Param("id")
+
+	idUint64, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidParam)
+		return
+	}
+
+	var req UpdateOrder
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.ValidationError(c, err)
+		return
+	}
+
+	order := &domain.Order{
+		ID:        idUint64,
+		TotalBill: req.TotalBill,
+	}
+
+	if err := h.service.Update(order); err != nil {
+		response.HandleError(c, err)
+		return
+	}
+
+	orderResponse := response.NewOrderResponse(order)
+	c.JSON(http.StatusOK, orderResponse)
+}
+
+// DeleteOrder godoc
+//
+//	@Summary		Delete an order
+//	@Description	Delete an order
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"OrderResponse ID"
+//	@Success		204	{object}	string
+//	@Failure		400	{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
+//	@Router			/api/v1/products/{id} [delete]
+func (h *OrderHandler) DeleteOrder(c *gin.Context) {
+	id := c.Param("id")
+
+	idUint64, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidParam)
+		return
+	}
+
+	if err := h.service.Delete(idUint64); err != nil {
+		response.HandleError(c, err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
