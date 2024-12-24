@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 )
@@ -18,7 +18,7 @@ func NewExternalPaymentService() *ExternalPaymentService {
 	return &ExternalPaymentService{}
 }
 
-func (ps *ExternalPaymentService) CreatePayment(payment *request.CreatePaymentRequest) (*response.CreatePaymentResponse, error) {
+func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error) {
 	client := resty.New().
 		SetTimeout(10*time.Second).
 		SetRetryCount(2).
@@ -38,5 +38,5 @@ func (ps *ExternalPaymentService) CreatePayment(payment *request.CreatePaymentRe
 		return nil, fmt.Errorf("error: response status %d", resp.StatusCode())
 	}
 
-	return resp.Result().(*response.CreatePaymentResponse), nil
+	return resp.Result().(*domain.CreatePaymentOUT), nil
 }

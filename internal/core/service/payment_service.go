@@ -4,7 +4,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
 )
@@ -44,16 +43,16 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 
 	paymentPayload := ps.createPaymentPayload(order)
 
-	mpPayment, err := ps.externalPaymentService.CreatePayment(paymentPayload)
+	extPayment, err := ps.externalPaymentService.CreatePayment(paymentPayload)
 	if err != nil {
 		return nil, err
 	}
 
 	iPayment := &domain.Payment{
 		Status:            domain.PROCESSING,
-		ExternalPaymentID: mpPayment.InStoreOrderID,
+		ExternalPaymentID: extPayment.OrderID,
 		OrderID:           orderID,
-		QrData:            mpPayment.QrData,
+		QrData:            extPayment.QrData,
 	}
 
 	payment, err := ps.paymentRepository.Insert(iPayment)
@@ -64,13 +63,13 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 	return payment, nil
 }
 
-func (ps *PaymentService) createPaymentPayload(order *domain.Order) *request.CreatePaymentRequest {
-	var items []request.Items
+func (ps *PaymentService) createPaymentPayload(order *domain.Order) *domain.CreatePaymentIN {
+	var items []domain.ItemsIN
 
 	externalReference := strconv.FormatUint(order.ID, 10)
 
 	for _, v := range order.OrderProducts {
-		items = append(items, request.Items{
+		items = append(items, domain.ItemsIN{
 			Title:       v.Product.Name,
 			Description: v.Product.Description,
 			UnitPrice:   float32(v.Product.Price),
@@ -81,12 +80,12 @@ func (ps *PaymentService) createPaymentPayload(order *domain.Order) *request.Cre
 		})
 	}
 
-	return &request.CreatePaymentRequest{
+	return &domain.CreatePaymentIN{
 		ExternalReference: externalReference,
 		TotalAmount:       order.TotalBill,
 		Items:             items,
 		Title:             "FIAP Tech Challenge - Product Order",
 		Description:       "Purchases made at the FIAP Tech Challenge store",
-		NotificationURL:   os.Getenv("MERCADO_PAGO_NOTIFICATION_URL"),
+		NotificationUrl:   os.Getenv("MERCADO_PAGO_NOTIFICATION_URL"),
 	}
 }

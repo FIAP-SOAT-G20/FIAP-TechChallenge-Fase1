@@ -34,7 +34,7 @@ func (h *PaymentHandler) GroupRouterPattern() string {
 //
 //	@Summary		Create a checkout on a order
 //	@Description	Create a checkout on a order
-//	@Tags			products
+//	@Tags			products, payments
 //	@Accept			json
 //	@Produce		json
 //	@Param			orderId		path		int				true	"Order ID"
