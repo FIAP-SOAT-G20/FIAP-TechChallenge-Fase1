@@ -42,11 +42,11 @@ func NewPaymentRequest(payment *domain.CreatePaymentIN) *CreatePaymentRequest {
 	}
 
 	return &CreatePaymentRequest{
-		ExternalReference: payment.OrderID,
+		ExternalReference: payment.ExternalReference,
 		TotalAmount:       payment.TotalAmount,
 		Items:             items,
 		Title:             payment.Title,
 		Description:       payment.Description,
-		NotificationURL:   payment.Webhook,
+		NotificationURL:   payment.NotificationUrl,
 	}
 }
