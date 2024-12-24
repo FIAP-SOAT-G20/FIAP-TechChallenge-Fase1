@@ -248,6 +248,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/payments/{orderId}/checkout": {
+            "put": {
+                "description": "Create a checkout on a order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products",
+                    "payments"
+                ],
+                "summary": "Create a checkout on a order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "orderId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.PaymentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/products": {
             "get": {
                 "description": "List products",
@@ -553,9 +604,54 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/healthCheck": {
+            "get": {
+                "description": "Checks application health",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/json"
+                ],
+                "tags": [
+                    "healthCheck"
+                ],
+                "summary": "Application HealthCheck",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.HealthCheckResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "domain.PaymentStatus": {
+            "type": "string",
+            "enum": [
+                "PROCESSING",
+                "CONFIRMED",
+                "FAILED",
+                "CANCELED"
+            ],
+            "x-enum-varnames": [
+                "PROCESSING",
+                "CONFIRMED",
+                "FAILED",
+                "CANCELED"
+            ]
+        },
         "handler.UpdateProduct": {
             "type": "object",
             "properties": {
@@ -718,6 +814,34 @@ const docTemplate = `{
                         "['Validation failed: field X is required'",
                         " 'Invalid format for field Y']"
                     ]
+                }
+            }
+        },
+        "response.HealthCheckResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.PaymentResponse": {
+            "type": "object",
+            "properties": {
+                "external_payment_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "order_id": {
+                    "type": "integer"
+                },
+                "qr_data": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/domain.PaymentStatus"
                 }
             }
         },

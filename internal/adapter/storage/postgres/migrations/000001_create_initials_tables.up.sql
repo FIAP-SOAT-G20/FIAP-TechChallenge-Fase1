@@ -36,18 +36,9 @@ CREATE TABLE IF NOT EXISTS products
     updated_at  TIMESTAMP      NOT NULL DEFAULT now()
 );
 
-CREATE TABLE IF NOT EXISTS payments
-(
-    id         SERIAL PRIMARY KEY,
-    status     VARCHAR CHECK (status IN ('PENDING', 'CONFIRMED', 'CANCELED')) DEFAULT 'PENDING',
-    created_at TIMESTAMP NOT NULL                                             DEFAULT now(),
-    updated_at TIMESTAMP NOT NULL                                             DEFAULT now()
-);
-
 CREATE TABLE IF NOT EXISTS orders
 (
     id          SERIAL PRIMARY KEY,
-    payment_id  INT REFERENCES payments (id),
     customer_id INT REFERENCES customers (id),
     total_bill  DECIMAL(19, 2),
     created_at  TIMESTAMP NOT NULL DEFAULT now(),
@@ -64,11 +55,22 @@ CREATE TABLE IF NOT EXISTS order_history
     PRIMARY KEY (order_id, staff_id)
 );
 
-CREATE TABLE IF NOT EXISTS order_product
+CREATE TABLE IF NOT EXISTS order_products
 (
     order_id   INT REFERENCES orders (id),
     product_id INT REFERENCES products (id),
     price      DECIMAL(19, 2),
     quantity   INT NOT NULL,
     PRIMARY KEY (order_id, product_id)
+);
+
+CREATE TABLE IF NOT EXISTS payments
+(
+    id                  SERIAL PRIMARY KEY,
+    status              VARCHAR CHECK (status IN ('PROCESSING', 'CONFIRMED', 'CANCELED', 'FAILED')) DEFAULT 'PROCESSING',
+    external_payment_id VARCHAR,
+    order_id            INT REFERENCES orders (id),
+    qr_data             VARCHAR,
+    created_at          TIMESTAMP NOT NULL                                             DEFAULT now(),
+    updated_at          TIMESTAMP NOT NULL                                             DEFAULT now()
 );

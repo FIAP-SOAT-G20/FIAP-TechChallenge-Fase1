@@ -1,4 +1,16 @@
 definitions:
+  domain.PaymentStatus:
+    enum:
+    - PROCESSING
+    - CONFIRMED
+    - FAILED
+    - CANCELED
+    type: string
+    x-enum-varnames:
+    - PROCESSING
+    - CONFIRMED
+    - FAILED
+    - CANCELED
   handler.UpdateProduct:
     properties:
       category_id:
@@ -112,6 +124,24 @@ definitions:
         items:
           type: string
         type: array
+    type: object
+  response.HealthCheckResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  response.PaymentResponse:
+    properties:
+      external_payment_id:
+        type: string
+      id:
+        type: integer
+      order_id:
+        type: integer
+      qr_data:
+        type: string
+      status:
+        $ref: '#/definitions/domain.PaymentStatus'
     type: object
   response.ProductPaginated:
     properties:
@@ -318,6 +348,40 @@ paths:
       summary: Update a customer
       tags:
       - customers
+  /api/v1/payments/{orderId}/checkout:
+    put:
+      consumes:
+      - application/json
+      description: Create a checkout on a order
+      parameters:
+      - description: Order ID
+        in: path
+        name: orderId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaymentResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create a checkout on a order
+      tags:
+      - products
+      - payments
   /api/v1/products:
     get:
       consumes:
@@ -520,6 +584,26 @@ paths:
       summary: Sign in a customer
       tags:
       - customers
+  /healthCheck:
+    get:
+      consumes:
+      - application/json
+      description: Checks application health
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.HealthCheckResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Application HealthCheck
+      tags:
+      - healthCheck
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and the access token.
