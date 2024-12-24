@@ -8,7 +8,6 @@ import (
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/go-resty/resty/v2"
-	"github.com/sirupsen/logrus"
 )
 
 type ExternalPaymentService struct {
@@ -34,7 +33,6 @@ func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePaymentIN)
 	}
 
 	if resp.StatusCode() != 201 {
-		logrus.Infof("Response body: %s", resp.String())
 		return nil, fmt.Errorf("error: response status %d", resp.StatusCode())
 	}
 
