@@ -11,6 +11,12 @@ definitions:
     - CONFIRMED
     - FAILED
     - CANCELED
+  handler.UpdateOrder:
+    properties:
+      total_bill:
+        example: 29.9
+        type: number
+    type: object
   handler.UpdateProduct:
     properties:
       category_id:
@@ -41,6 +47,14 @@ definitions:
     - cpf
     - email
     - name
+    type: object
+  handler.createOrderRequest:
+    properties:
+      customer_id:
+        example: 1
+        type: integer
+    required:
+    - customer_id
     type: object
   handler.createProductRequest:
     properties:
@@ -128,6 +142,32 @@ definitions:
   response.HealthCheckResponse:
     properties:
       message:
+        type: string
+    type: object
+  response.OrderPaginated:
+    properties:
+      limit:
+        type: integer
+      orders:
+        items:
+          $ref: '#/definitions/response.OrderResponse'
+        type: array
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  response.OrderResponse:
+    properties:
+      created_at:
+        type: string
+      customerId:
+        type: integer
+      id:
+        type: integer
+      totalBill:
+        type: number
+      updated_at:
         type: string
     type: object
   response.PaymentResponse:
@@ -348,6 +388,105 @@ paths:
       summary: Update a customer
       tags:
       - customers
+  /api/v1/order:
+    post:
+      consumes:
+      - application/json
+      description: Create an order
+      parameters:
+      - description: OrderResponse
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create an order
+      tags:
+      - orders
+  /api/v1/orders:
+    get:
+      consumes:
+      - application/json
+      description: List orders
+      parameters:
+      - description: OrderResponse name
+        in: query
+        name: name
+        type: string
+      - description: Customer ID
+        in: query
+        name: customer_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderPaginated'
+      summary: List orders
+      tags:
+      - orders
+  /api/v1/orders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an order
+      parameters:
+      - description: OrderResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get an order
+      tags:
+      - orders
   /api/v1/payments/{orderId}/checkout:
     put:
       consumes:
@@ -586,11 +725,8 @@ paths:
       - customers
   /healthCheck:
     get:
-      consumes:
-      - application/json
       description: Checks application health
       produces:
-      - application/json
       - application/json
       responses:
         "200":
