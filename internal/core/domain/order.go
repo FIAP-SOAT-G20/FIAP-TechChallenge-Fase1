@@ -16,7 +16,6 @@ const (
 
 type Order struct {
 	ID            uint64
-	PaymentID     uint64
 	CustomerID    uint64
 	TotalBill     float32
 	CreatedAt     time.Time

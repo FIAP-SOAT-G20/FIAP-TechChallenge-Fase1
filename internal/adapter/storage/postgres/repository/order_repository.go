@@ -3,9 +3,8 @@ package repository
 import (
 	"errors"
 
-	"gorm.io/gorm"
-
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
+	"gorm.io/gorm"
 )
 
 type OrderRepository struct {
@@ -16,44 +15,30 @@ func NewOrderRepository(db *gorm.DB) *OrderRepository {
 	return &OrderRepository{db}
 }
 
-func (r *OrderRepository) Insert(product *domain.Order) error {
-	return r.db.Create(product).Error
-}
-
 func (r *OrderRepository) GetByID(id uint64) (*domain.Order, error) {
-	var product domain.Order
+	var order domain.Order
 
-	err := r.db.First(&product, id).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	if err := r.db.
+		Preload("Customer").
+		Preload("OrderProducts.Product").
+		First(&order, id); errors.Is(err.Error, gorm.ErrRecordNotFound) {
 		return nil, domain.ErrNotFound
 	}
 
-	return &product, err
+	return &order, nil
 }
 
-func (r *OrderRepository) GetAll(name string, categoryID uint64, page, limit int) ([]domain.Order, int64, error) {
-	var products []domain.Order
-	var count int64
-
-	query := r.db.Model(&domain.Order{})
-
-	if name != "" {
-		query = query.Where("name LIKE ?", "%"+name+"%")
-	}
-
-	if categoryID > 0 {
-		query = query.Where("category_id = ?", categoryID)
-	}
-
-	query.Count(&count)
-
-	err := query.Offset((page - 1) * limit).Limit(limit).Find(&products).Error
-
-	return products, count, err
+func (r *OrderRepository) Insert(order *domain.Order) error {
+	return r.db.Create(order).Error
 }
 
-func (r *OrderRepository) Update(product *domain.Order) error {
-	return r.db.Save(product).Error
+func (r *OrderRepository) GetAll(clientID uint64, page, limit int) ([]domain.Order, int64, error) {
+	// Add the order get all
+	return nil, 0, nil
+}
+
+func (r *OrderRepository) Update(order *domain.Order) error {
+	return r.db.Save(order).Error
 }
 
 func (r *OrderRepository) Delete(id uint64) error {
