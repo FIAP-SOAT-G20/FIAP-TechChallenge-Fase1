@@ -138,7 +138,7 @@ make run
 
 > [!NOTE]
 > `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose  
-> Alternatively, you can run `make run-air` to run the application using Air (live reload)
+> Alternatively, you can run `make run-air` to run the application using Air (live reload)  
 > You can check the application swagger documentation at `http://localhost:8080/docs/index.html`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
