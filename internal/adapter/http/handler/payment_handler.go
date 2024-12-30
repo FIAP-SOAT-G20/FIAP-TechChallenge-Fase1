@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
@@ -24,6 +25,7 @@ func NewPaymentHandler(paymentService port.IPaymentService) *PaymentHandler {
 
 func (h *PaymentHandler) Register(router *gin.RouterGroup) {
 	router.POST("/:orderId/checkout", h.CreatePayment)
+	router.POST("/callback", h.UpdatePayment)
 }
 
 func (h *PaymentHandler) GroupRouterPattern() string {
@@ -59,4 +61,37 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 
 	paymentReponse := response.NewPaymentResponse(payment)
 	c.JSON(http.StatusCreated, paymentReponse)
+}
+
+// Update Payment godoc
+//
+//	@Summary		Update a payment on a order
+//	@Description	Update a payment on a order
+//	@Tags			products, payments
+//	@Accept			json
+//	@Produce		json
+//	@Param			product	body		request.UpdatePaymentRequest	true	"PaymentResponse"
+//	@Success		200		{object}	response.PaymentResponse
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Router			/api/v1/callback [put]
+func (h *PaymentHandler) UpdatePayment(c *gin.Context) {
+	var req request.UpdatePaymentRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.ValidationError(c, err)
+		return
+	}
+
+	paymentIN := request.NewUpdatePaymentRequest(&req)
+
+	payment, err := h.paymentService.UpdatePayment(paymentIN)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidParam)
+		return
+	}
+
+	paymentReponse := response.NewPaymentResponse(payment)
+	c.JSON(http.StatusOK, paymentReponse)
 }

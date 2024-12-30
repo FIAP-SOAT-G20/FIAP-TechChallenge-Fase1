@@ -50,7 +50,7 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 
 	iPayment := &domain.Payment{
 		Status:            domain.PROCESSING,
-		ExternalPaymentID: extPayment.OrderID,
+		ExternalPaymentID: extPayment.InStoreOrderID,
 		OrderID:           orderID,
 		QrData:            extPayment.QrData,
 	}
@@ -88,4 +88,17 @@ func (ps *PaymentService) createPaymentPayload(order *domain.Order) *domain.Crea
 		Description:       "Purchases made at the FIAP Tech Challenge store",
 		NotificationUrl:   os.Getenv("MERCADO_PAGO_NOTIFICATION_URL"),
 	}
+}
+
+func (ps *PaymentService) UpdatePayment(payment *domain.UpdatePaymentIN) (*domain.Payment, error) {
+	if err := ps.paymentRepository.UpdateStatus(domain.CONFIRMED, payment.Resource); err != nil {
+		return nil, err
+	}
+
+	paymentOUT, err := ps.paymentRepository.GetByExternalPaymentID(payment.Resource)
+	if err != nil {
+		return nil, err
+	}
+
+	return paymentOUT, nil
 }

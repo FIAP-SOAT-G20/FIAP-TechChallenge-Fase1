@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/go-resty/resty/v2"
@@ -18,6 +19,8 @@ func NewExternalPaymentService() *ExternalPaymentService {
 }
 
 func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error) {
+	body := request.NewPaymentRequest(payment)
+
 	client := resty.New().
 		SetTimeout(10*time.Second).
 		SetRetryCount(2).
@@ -25,7 +28,7 @@ func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePaymentIN)
 		SetHeader("Content-Type", "application/json")
 
 	resp, err := client.R().
-		SetBody(payment).
+		SetBody(body).
 		SetResult(&response.CreatePaymentResponse{}).
 		Post(os.Getenv("MERCADO_PAGO_URL"))
 	if err != nil {
@@ -36,5 +39,7 @@ func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePaymentIN)
 		return nil, fmt.Errorf("error: response status %d", resp.StatusCode())
 	}
 
-	return resp.Result().(*domain.CreatePaymentOUT), nil
+	response := request.NewPaymentRequestOutput(resp.Result().(*response.CreatePaymentResponse))
+
+	return response, nil
 }

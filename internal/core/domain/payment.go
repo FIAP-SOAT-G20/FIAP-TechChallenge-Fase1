@@ -41,6 +41,15 @@ type ItemsIN struct {
 }
 
 type CreatePaymentOUT struct {
-	OrderID string
-	QrData  string
+	InStoreOrderID string
+	QrData         string
+}
+
+type UpdatePaymentIN struct {
+	Resource string
+	Topic    string
+}
+
+type GetPaymentOUT struct {
+	ExternalReference string
 }

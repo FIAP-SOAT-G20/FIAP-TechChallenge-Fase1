@@ -1,6 +1,7 @@
 package request
 
 import (
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 )
 
@@ -48,5 +49,24 @@ func NewPaymentRequest(payment *domain.CreatePaymentIN) *CreatePaymentRequest {
 		Title:             payment.Title,
 		Description:       payment.Description,
 		NotificationURL:   payment.NotificationUrl,
+	}
+}
+
+func NewPaymentRequestOutput(payment *response.CreatePaymentResponse) *domain.CreatePaymentOUT {
+	return &domain.CreatePaymentOUT{
+		InStoreOrderID: payment.InStoreOrderID,
+		QrData:         payment.QrData,
+	}
+}
+
+type UpdatePaymentRequest struct {
+	Resource string `json:"resource" example:"c16896f0-483b-4573-a493-f4d2eb59ba31"`
+	Topic    string `json:"topic" enum:"payment" example:"payment"`
+}
+
+func NewUpdatePaymentRequest(payment *UpdatePaymentRequest) *domain.UpdatePaymentIN {
+	return &domain.UpdatePaymentIN{
+		Resource: payment.Resource,
+		Topic:    payment.Topic,
 	}
 }
