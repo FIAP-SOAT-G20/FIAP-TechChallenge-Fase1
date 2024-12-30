@@ -60,8 +60,8 @@ func NewPaymentRequestOutput(payment *response.CreatePaymentResponse) *domain.Cr
 }
 
 type UpdatePaymentRequest struct {
-	Resource string `json:"resource"`
-	Topic    string `json:"topic" enum:"payment"`
+	Resource string `json:"resource" example:"c16896f0-483b-4573-a493-f4d2eb59ba31"`
+	Topic    string `json:"topic" enum:"payment" example:"payment"`
 }
 
 func NewUpdatePaymentRequest(payment *UpdatePaymentRequest) *domain.UpdatePaymentIN {

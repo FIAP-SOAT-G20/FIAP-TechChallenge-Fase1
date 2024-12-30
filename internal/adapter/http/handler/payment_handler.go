@@ -63,6 +63,19 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 	c.JSON(http.StatusCreated, paymentReponse)
 }
 
+// Update Payment godoc
+//
+//	@Summary		Update a payment on a order
+//	@Description	Update a payment on a order
+//	@Tags			products, payments
+//	@Accept			json
+//	@Produce		json
+//	@Param			product	body		request.UpdatePaymentRequest	true	"PaymentResponse"
+//	@Success		200		{object}	response.PaymentResponse
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Router			/api/v1/callback [put]
 func (h *PaymentHandler) UpdatePayment(c *gin.Context) {
 	var req request.UpdatePaymentRequest
 
@@ -80,5 +93,5 @@ func (h *PaymentHandler) UpdatePayment(c *gin.Context) {
 	}
 
 	paymentReponse := response.NewPaymentResponse(payment)
-	c.JSON(http.StatusCreated, paymentReponse)
+	c.JSON(http.StatusOK, paymentReponse)
 }
