@@ -35,3 +35,20 @@ func (r *PaymentRepository) GetPaymentByOrderIDAndStatus(status domain.PaymentSt
 
 	return &payment, nil
 }
+
+func (r *PaymentRepository) UpdateStatus(status domain.PaymentStatus, externalPaymentID string) error {
+	if err := r.db.Model(&domain.Payment{}).Where("external_payment_id = ?", externalPaymentID).Update("status", status).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+func (r *PaymentRepository) GetByExternalPaymentID(externalPaymentID string) (*domain.Payment, error) {
+	var payment domain.Payment
+
+	if err := r.db.Where("external_payment_id = ?", externalPaymentID).First(&payment); errors.Is(err.Error, gorm.ErrRecordNotFound) {
+		return nil, domain.ErrNotFound
+	}
+
+	return &payment, nil
+}

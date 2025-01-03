@@ -7,10 +7,13 @@ import (
 type IPaymentRepository interface {
 	Insert(payment *domain.Payment) (*domain.Payment, error)
 	GetPaymentByOrderIDAndStatus(status domain.PaymentStatus, orderID uint64) (*domain.Payment, error)
+	UpdateStatus(status domain.PaymentStatus, externalPaymentID string) error
+	GetByExternalPaymentID(externalPaymentID string) (*domain.Payment, error)
 }
 
 type IPaymentService interface {
 	CreatePayment(orderID uint64) (*domain.Payment, error)
+	UpdatePayment(payment *domain.UpdatePaymentIN) (*domain.Payment, error)
 }
 
 type IExternalPaymentService interface {
