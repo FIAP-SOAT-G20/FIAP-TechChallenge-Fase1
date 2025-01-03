@@ -114,11 +114,12 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 //	@Success		200			{object}	response.OrderPaginated
 //	@Router			/api/v1/orders [get]
 func (h *OrderHandler) ListOrders(c *gin.Context) {
-	categoryID := c.DefaultQuery("category_id", "0")
+	customerID := c.DefaultQuery("customer_id", "0")
+	status := c.DefaultQuery("status", "")
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "10")
 
-	categoryIDUint64, err := strconv.ParseUint(categoryID, 10, 64)
+	customerIDUint64, err := strconv.ParseUint(customerID, 10, 64)
 	if err != nil {
 		response.HandleError(c, domain.ErrInvalidQueryParams)
 		return
@@ -136,7 +137,8 @@ func (h *OrderHandler) ListOrders(c *gin.Context) {
 		return
 	}
 
-	orders, total, err := h.service.List(categoryIDUint64, pageInt, limitInt)
+	orderStatus := domain.OrderStatus(status)
+	orders, total, err := h.service.List(customerIDUint64, &orderStatus, pageInt, limitInt)
 	if err != nil {
 		response.HandleError(c, err)
 		return

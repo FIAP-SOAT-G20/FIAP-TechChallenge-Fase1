@@ -1,18 +1,47 @@
 package domain
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 type OrderStatus string
 
 const (
-	OPEN      OrderStatus = "OPEN"
-	CANCELLED OrderStatus = "CANCELLED"
-	PENDING   OrderStatus = "PENDING"
-	RECEIVED  OrderStatus = "RECEIVED"
-	PREPARING OrderStatus = "PREPARING"
-	READY     OrderStatus = "READY"
-	COMPLETED OrderStatus = "COMPLETED"
+	UNDEFINDED OrderStatus = "UNDEFINDED"
+	OPEN       OrderStatus = "OPEN"
+	CANCELLED  OrderStatus = "CANCELLED"
+	PENDING    OrderStatus = "PENDING"
+	RECEIVED   OrderStatus = "RECEIVED"
+	PREPARING  OrderStatus = "PREPARING"
+	READY      OrderStatus = "READY"
+	COMPLETED  OrderStatus = "COMPLETED"
 )
+
+func (o OrderStatus) ToString() string {
+	return string(o)
+}
+
+func (o OrderStatus) From(status string) OrderStatus {
+	switch strings.ToUpper(status) {
+	case "OPEN":
+		return OPEN
+	case "CANCELLED":
+		return CANCELLED
+	case "PENDING":
+		return PENDING
+	case "RECEIVED":
+		return RECEIVED
+	case "PREPARING":
+		return PREPARING
+	case "READY":
+		return READY
+	case "COMPLETED":
+		return COMPLETED
+	default:
+		return UNDEFINDED
+	}
+}
 
 type Order struct {
 	ID            uint64

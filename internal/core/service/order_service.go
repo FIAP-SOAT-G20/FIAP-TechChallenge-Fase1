@@ -9,21 +9,22 @@ import (
 
 type OrderService struct {
 	orderRepository        port.IOrderRepository
-	orderHistoryRepository port.IOrderHistoryRepository
+	orderHistoryService    port.IOrderHistoryService
 	orderProductRepository port.IOrderProductRepository
 	customerRepository     port.ICustomerRepository
 }
 
-func NewOrderService(orderRepository port.IOrderRepository, customerRepository port.ICustomerRepository) *OrderService {
+func NewOrderService(orderRepository port.IOrderRepository, customerRepository port.ICustomerRepository, orderHistoryService port.IOrderHistoryService) *OrderService {
 	return &OrderService{
-		orderRepository:    orderRepository,
-		customerRepository: customerRepository,
+		orderRepository:     orderRepository,
+		customerRepository:  customerRepository,
+		orderHistoryService: orderHistoryService,
 	}
 }
 
-func (ps *OrderService) Create(order *domain.Order) error {
+func (os *OrderService) Create(order *domain.Order) error {
 
-	_, err := ps.customerRepository.GetByID(order.CustomerID)
+	_, err := os.customerRepository.GetByID(order.CustomerID)
 	if err != nil {
 		return domain.ErrNotFound
 	}
@@ -36,6 +37,16 @@ func (ps *OrderService) Create(order *domain.Order) error {
 		return err
 	}
 
+	orderHistory := domain.OrderHistory{
+		OrderID:   order.ID,
+		StaffID:   0,
+		Status:    domain.RECEIVED,
+		CreatedAt: time.Now(),
+		Order:     *order,
+	}
+
+	os.orderHistoryService.Create(orderHistory)
+
 	// TODO throw event order created
 	return nil
 }
@@ -44,8 +55,8 @@ func (ps *OrderService) GetByID(id uint64) (*domain.Order, error) {
 	return ps.orderRepository.GetByID(id)
 }
 
-func (ps *OrderService) List(clientId uint64, page, limit int) ([]domain.Order, int64, error) {
-	return ps.orderRepository.GetAll(clientId, page, limit)
+func (ps *OrderService) List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error) {
+	return ps.orderRepository.GetAll(customerID, status, page, limit)
 }
 
 func (ps *OrderService) Update(order *domain.Order) error {
