@@ -49,11 +49,16 @@ stop-compose:
 	docker compose down
 
 test:
-	go test -v ./...
+	go test -v ./internal/core/service -cover -coverprofile=coverage.out
+
+coverage:
+	@echo "🟢 Running coverage..."
+	go tool cover -html=coverage.out
 
 help:
 	@echo "build: Build the application"
 	@echo "compose-build: Build the docker compose"
+	@echo "coverage: Show the coverage"
 	@echo "docs-swag: Generate the swagger documentation"
 	@echo "docs-fmt: Format the swagger documentation"
 	@echo "help: Show this help message"

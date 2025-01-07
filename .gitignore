@@ -30,3 +30,4 @@ go.work.sum
 
 bin/
 
+coverage.out

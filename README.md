@@ -9,7 +9,7 @@
 
 ## 💬 About
 
-Repository for the FIAP Tech Challenge, focused on developing a backend system for managing orders in a fast-food restaurant.
+Repository for the [FIAP](https://postech.fiap.com.br/) Tech Challenge, focused on developing a backend system for managing orders in a fast-food restaurant.
 
 ### :open_file_folder: Project Structure
 
@@ -138,6 +138,7 @@ make run
 
 > [!NOTE]
 > `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose  
+> Alternatively, you can run `make run-air` to run the application using Air (live reload)  
 > You can check the application swagger documentation at `http://localhost:8080/docs/index.html`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -147,7 +148,8 @@ make run
 ```sh
 make test
 ```
-> It will run the unit tests and generate the coverage report as `cp.out` and `coverage.html`
+> It will run the unit tests and generate the coverage report as `coverage.out`  
+> You can check the coverage report by running `make coverage`
 
 ## :clap: Acknowledgments
 
@@ -156,3 +158,18 @@ make test
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## :busts_in_silhouette: Contributors
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/atomaz"><img src="https://github.com/atomaz.png" width="100px;" alt=""/><br /><sub><b>Alice Tomaz</b></sub></a><br />
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/filipe1309"><img src="https://github.com/filipe1309.png" width="100px;" alt=""/><br /><sub><b>Filipe Leuch Bonfim</b></sub></a><br />
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/hugokishi"><img src="https://github.com/hugokishi.png" width="100px;" alt=""/><br /><sub><b>Hugo Kishi</b></sub></a><br />
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/marcos-nsantos"><img src="https://github.com/marcos-nsantos.png" width="100px;" alt=""/><br /><sub><b>Marcos Santos</b></sub></a><br />
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vitorparras"><img src="https://github.com/vitorparras.png" width="100px;" alt=""/><br /><sub><b>Vitor Parras</b></sub></a><br />
+    </tr>
+  </tbody>
+</table>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
