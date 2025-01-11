@@ -43,7 +43,7 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 
 	paymentPayload := ps.createPaymentPayload(order)
 
-	extPayment, err := ps.externalPaymentService.CreatePayment(paymentPayload)
+	extPayment, err := ps.externalPaymentService.CreatePaymentMock(paymentPayload)
 	if err != nil {
 		return nil, err
 	}

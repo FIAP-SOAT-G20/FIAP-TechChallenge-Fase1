@@ -44,7 +44,7 @@ func (h *PaymentHandler) GroupRouterPattern() string {
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/payments/{orderId}/checkout [put]
+//	@Router			/api/v1/payments/{orderId}/checkout [post]
 func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 	var pathParams *PathParam
 
@@ -75,7 +75,7 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/callback [put]
+//	@Router			/api/v1/payments/callback [post]
 func (h *PaymentHandler) UpdatePayment(c *gin.Context) {
 	var req request.UpdatePaymentRequest
 
