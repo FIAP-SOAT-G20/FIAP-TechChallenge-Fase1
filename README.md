@@ -1,6 +1,6 @@
 <a name="readme-top"></a>
 
-# <p align="center">FIAP-TechChallenge-1</p>
+# <p align="center">FIAP Tech Challenge-1 - G20 Fast Food</p>
 
 <p align="center">
     <img src="https://img.shields.io/badge/Code-Go-informational?style=flat-square&logo=go&color=00ADD8" alt="Go" />
@@ -9,7 +9,40 @@
 
 ## 💬 About
 
-Repository for the [FIAP](https://postech.fiap.com.br/) Tech Challenge, focused on developing a backend system for managing orders in a fast-food restaurant.
+Repository for the [FIAP](https://postech.fiap.com.br/) Tech Challenge 1, focused on developing a monolith backend system for managing orders in a fast-food restaurant.
+
+Tech Challenge 1 specifications can be found [here](docs/tc1-spec.pdf).
+
+## 📚 Dictionary - Ubiquitous Language
+
+- Customer (actor): Actor responsible for initiating the purchasing process
+- Cook (actor): Actor responsible for preparing the customer's order
+- Attendant (actor): Actor responsible for interacting with the customer, providing support for the order
+- Identification method: Format in which the customer is identified on the platform: via CPF or anonymous.
+- Identification: Customer identification on the platform
+- Authorization: Grants permission to the customer to perform operations on the platform, such as placing an order, changing registration information
+- Order: Represents all items selected by the customer in the store
+- Order Status: Represents the stage of order preparation after payment is confirmed.
+
+<!-- Diagrams -->
+## 📊 Diagrams
+
+### Event Storming - Order & Payment
+![Event Storming - Order & Payment](docs/images/es-order_payment_flow.png)
+
+### Event Storming - Preparation & Delivery
+![Event Storming - Preparation & Delivery](docs/images/es-preparation_delivery_flow.png)
+
+Full Event Storming Board can be found [here](https://miro.com/app/board/uXjVLJzdySo=/?share_link_id=228486775564).
+
+<!-- Database -->
+## 📦 Database
+
+
+### :card_file_box: Database Schema
+![Database Diagram](docs/images/db-schema-g20-fast-food.png)
+
+DBML file can be found [here](docs/db-schema-g20-fast-food.dbml).
 
 ### :open_file_folder: Project Structure
 
@@ -21,15 +54,11 @@ Repository for the [FIAP](https://postech.fiap.com.br/) Tech Challenge, focused 
 ├── docs
 └── internal
     ├── adapter
-    │   ├── cache
-    │   │   └── redis
     │   ├── handler
     │   │   └── http
     │   ├── repository
-    │   │   └── postgres
-    │   │       └── migrations
-    │   └── token
-    │       └── paseto
+    │       └── postgres
+    │           └── migrations
     └── core
         ├── domain
         ├── port
@@ -50,13 +79,12 @@ Repository for the [FIAP](https://postech.fiap.com.br/) Tech Challenge, focused 
 - `adapters`: directory for containing external services that will interact with the core of application. There are 4 external services used in this application.
 - `handler/http`: directory that contains HTTP request and response handler.
 - `repository/postgres`: directory that contains database adapters for PostgreSQL.
-- `cache/redis`: directory that contains cache adapters for Redis.
-- `token/paseto`: directory that contains token generation and validation adapters using Paseto.
 
 ### :pushpin: Decisions
 
-TBD
-
+- We chose Go as the programming language for its performance, simplicity, and concurrency features.
+- We chose the Gin framework for its simplicity and performance.
+- We chose PostgreSQL as the database for its performance, scalability, and reliability.
 
 ### :pushpin: Features
 - [x] Dockerfile: small image with multi-stage docker build, and independent of the host environment
@@ -69,12 +97,24 @@ TBD
 - [x] Swagger documentation
 - [x] Feature branch workflow
 - [x] Air to run go
+- [x] Pagination
 
 
 ## :computer: Technologies
 
 - [Go](https://golang.org/)
+- [Gin](https://github.com/gin-gonic/gin)
 - [Docker](https://www.docker.com/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Make](https://www.gnu.org/software/make/)
+- [Air](https://github.com/air-verse/air)
+- [Uber FX](https://github.com/uber-go/fx)
+- [GORM](https://gorm.io/)
+- [Testify](https://github.com/stretchr/testify)
+- [Swag](https://github.com/swaggo/swag)
+- [GoDotEnv](https://github.com/joho/godotenv)
+- [Slog](https://go.dev/blog/slog)
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -155,6 +195,8 @@ make test
 
 - [Hexagonal Architecture, Ports and Adapters in Go](https://medium.com/@kyodo-tech/hexagonal-architecture-ports-and-adapters-in-go-f1af950726b)
 - [Building RESTful API with Hexagonal Architecture in Go](https://dev.to/bagashiz/building-restful-api-with-hexagonal-architecture-in-go-1mij)
+- [DBML](https://www.dbml.org/)
+- [Uber FX](https://github.com/uber-go/fx)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
