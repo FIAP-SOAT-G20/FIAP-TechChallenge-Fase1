@@ -37,7 +37,7 @@ type signInRequest struct {
 //
 //	@Summary		Sign in a customer
 //	@Description	Sign in a customer
-//	@Tags			customers
+//	@Tags			customers, sign-in (identification)
 //	@Accept			json
 //	@Produce		json
 //	@Param			request	body		signInRequest			true	"SignInResponse"
