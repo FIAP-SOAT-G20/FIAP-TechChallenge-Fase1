@@ -179,7 +179,51 @@ make run
 > [!NOTE]
 > `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose  
 > Alternatively, you can run `make run-air` to run the application using Air (live reload)  
-> You can check the application swagger documentation at `http://localhost:8080/docs/index.html`
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- routes -->
+## :rocket: Routes
+
+### :white_check_mark: Endpoints
+
+
+- **GET** `/docs/index.html`: Swagger documentation
+- **GET** `/healthCheck`
+---
+- **POST** `api/v1/customers`: Create a new customer
+- **GET** `api/v1/customers`: List all customers
+- **GET** `api/v1/customers/:id`: Get a customer by ID
+- **PUT** `api/v1/customers/:id`: Update a customer by ID
+- **DELETE** `api/v1/customers/:id`: Delete a customer by ID
+---
+- **POST** `api/v1/products`: Create a new product
+- **GET** `api/v1/products`: List all products
+- **GET** `api/v1/products/:id`: Get a product by ID
+- **PUT** `api/v1/products/:id`: Update a product by ID
+- **DELETE** `api/v1/products/:id`: Delete a product by ID
+---
+- **POST** `api/v1/catagories`: Create a new category
+- **GET** `api/v1/catagories`: List all categories
+- **GET** `api/v1/catagories/:id`: Get a category by ID
+- **PUT** `api/v1/catagories/:id`: Update a category by ID
+- **DELETE** `api/v1/catagories/:id`: Delete a category by ID
+---
+- **POST** `api/v1/orders`: Create a new order
+- **GET** `api/v1/orders`: List all orders
+- **GET** `api/v1/orders/:id`: Get an order by ID
+- **PUT** `api/v1/orders/:id`: Update an order by ID
+- **DELETE** `api/v1/orders/:id`: Delete an order by ID
+---
+- **POST** `/api/v1/payments/:orderId/checkout`: Create a new payment
+- **GET** `/api/v1/payments/callback`: Payment callback
+---
+- **POST** `/api/v1/sign-in`: Sign in a customer with CPF
+---
+
+> [!NOTE]
+> You can check the application swagger documentation at `http://localhost:8080/docs/index.html`  
+> A postman collection is available at `docs/10soat-g20-tech-challenge-1.postman_collection.json`  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
