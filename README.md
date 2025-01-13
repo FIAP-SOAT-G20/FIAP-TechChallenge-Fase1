@@ -182,11 +182,7 @@ make run
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- routes -->
 ## :rocket: Routes
-
-### :white_check_mark: Endpoints
-
 
 - **GET** `/docs/index.html`: Swagger documentation
 - **GET** `/healthCheck`
@@ -222,8 +218,8 @@ make run
 ---
 
 > [!NOTE]
-> You can check the application swagger documentation at `http://localhost:8080/docs/index.html`  
-> A postman collection is available at `docs/10soat-g20-tech-challenge-1.postman_collection.json`  
+> You can check the application swagger documentation at http://localhost:8080/docs/index.html  
+> A postman collection is available at [here](docs/10soat-g20-tech-challenge-1.postman_collection.json)  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -232,8 +228,11 @@ make run
 ```sh
 make test
 ```
+> [!NOTE]
 > It will run the unit tests and generate the coverage report as `coverage.out`  
 > You can check the coverage report by running `make coverage`
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## :clap: Acknowledgments
 
