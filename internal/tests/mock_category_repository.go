@@ -27,3 +27,13 @@ func (m *MockCategoryRepository) GetAll(name string, page, limit int) ([]domain.
 	args := m.Called(name, page, limit)
 	return args.Get(0).([]domain.Category), args.Get(1).(int64), args.Error(2)
 }
+
+func (m *MockCategoryRepository) Update(category *domain.Category) error {
+	args := m.Called(category)
+	return args.Error(0)
+}
+
+func (m *MockCategoryRepository) Delete(id uint64) error {
+	args := m.Called(id)
+	return args.Error(0)
+}

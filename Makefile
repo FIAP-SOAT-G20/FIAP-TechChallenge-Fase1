@@ -1,16 +1,20 @@
 include .env
 export
 
-.PHONE: build run run-air stop install migrate-up migrate-down docs-swag docs-fmt compose-build run-compose stop-compose test help
+MIGRATION_PATH = internal/adapter/storage/postgres/migrations
+MAIN_FILE = cmd/http/main.go
+TEST_PATH = internal/core/service
+
+.PHONE: build run run-air stop install migrate-create migrate-up migrate-down docs-swag docs-fmt compose-build run-compose stop-compose test help
 
 build: install
 	@echo "Building the application"
-	go build -o bin/server cmd/http/main.go
+	go build -o bin/server ${MAIN_FILE}
 
 run: build
 	@echo "Running the application"
 	docker-compose up -d db
-	go run cmd/http/main.go
+	go run ${MAIN_FILE}
 
 run-air: build
 	@echo "Running the application"
@@ -27,14 +31,17 @@ install:
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 	go install github.com/swaggo/swag/cmd/swag@latest
 
+migrate-create:
+	migrate create -ext sql -dir ${MIGRATION_PATH} -seq $(name)
+
 migrate-up:
-	migrate -path ./internal/adapter/storage/postgres/migrations -database ${DATABASE_URL} -verbose up
+	migrate -path ./${MIGRATION_PATH} -database ${DATABASE_URL} -verbose up
 
 migrate-down:
-	migrate -path ./internal/adapter/storage/postgres/migrations -database ${DATABASE_URL} -verbose down
+	migrate -path ./${MIGRATION_PATH} -database ${DATABASE_URL} -verbose down
 
 docs-swag:
-	swag init -g cmd/http/main.go --parseInternal true
+	swag init -g ${MAIN_FILE} --parseInternal true
 
 docs-fmt:
 	swag fmt ./...
@@ -49,7 +56,7 @@ stop-compose:
 	docker compose down
 
 test:
-	go test -v ./internal/core/service -cover -coverprofile=coverage.out
+	go test -v ./${TEST_PATH} -cover -coverprofile=coverage.out
 
 coverage:
 	@echo "🟢 Running coverage..."
@@ -63,6 +70,7 @@ help:
 	@echo "docs-fmt: Format the swagger documentation"
 	@echo "help: Show this help message"
 	@echo "install: Install the dependencies"
+	@echo "migrate-create [name]: Create a new migration"
 	@echo "migrate-down: Rollback the migrations"
 	@echo "migrate-up: Run the migrations"
 	@echo "run: Run the application"

@@ -18,4 +18,5 @@ type IPaymentService interface {
 
 type IExternalPaymentService interface {
 	CreatePayment(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error)
+	CreatePaymentMock(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error)
 }

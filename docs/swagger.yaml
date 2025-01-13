@@ -26,6 +26,14 @@ definitions:
         example: 29.9
         type: number
     type: object
+  handler.createCategoryRequest:
+    properties:
+      name:
+        example: Foods
+        type: string
+    required:
+    - name
+    type: object
   handler.createCustomerRequest:
     properties:
       cpf:
@@ -70,6 +78,14 @@ definitions:
     required:
     - cpf
     type: object
+  handler.updateCategoryRequest:
+    properties:
+      name:
+        example: Beverages
+        type: string
+    required:
+    - name
+    type: object
   handler.updateCustomerRequest:
     properties:
       cpf:
@@ -81,6 +97,28 @@ definitions:
       name:
         example: John Doe
         type: string
+    type: object
+  request.UpdatePaymentRequest:
+    properties:
+      resource:
+        example: c16896f0-483b-4573-a493-f4d2eb59ba31
+        type: string
+      topic:
+        example: payment
+        type: string
+    type: object
+  response.CategoriesPaginated:
+    properties:
+      categories:
+        items:
+          $ref: '#/definitions/response.CategoryResponse'
+        type: array
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
     type: object
   response.CategoryResponse:
     properties:
@@ -194,6 +232,199 @@ info:
   title: FIAP Tech Challenge Fase 1 - G20 - 10 SOAT
   version: "1"
 paths:
+  /api/v1/callback:
+    put:
+      consumes:
+      - application/json
+      description: Update a payment on a order
+      parameters:
+      - description: PaymentResponse
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdatePaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaymentResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update a payment on a order
+      tags:
+      - products
+      - payments
+  /api/v1/categories:
+    get:
+      consumes:
+      - application/json
+      description: List categories with pagination
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of categories
+          schema:
+            $ref: '#/definitions/response.CategoriesPaginated'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: List categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: create a new category with name
+      parameters:
+      - description: Create category request
+        in: body
+        name: createCategoryRequest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created
+          schema:
+            $ref: '#/definitions/response.CategoryResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "409":
+          description: Data conflict error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create a new category
+      tags:
+      - categories
+  /api/v1/categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a category by id
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Category deleted
+          schema:
+            type: string
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "401":
+          description: Unauthorized error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "403":
+          description: Forbidden error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete a category
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: update a category's name by id
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update category request
+        in: body
+        name: updateCategoryRequest
+        required: true
+        schema:
+          $ref: '#/definitions/handler.updateCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CategoryResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a category
+      tags:
+      - categories
   /api/v1/customers:
     get:
       consumes:
@@ -255,6 +486,7 @@ paths:
       summary: Create a customer
       tags:
       - customers
+      - sign-up
   /api/v1/customers/{id}:
     delete:
       consumes:
@@ -584,13 +816,44 @@ paths:
       summary: Sign in a customer
       tags:
       - customers
-  /healthCheck:
+      - sign-in (identification)
+  /categories/{id}:
     get:
       consumes:
       - application/json
-      description: Checks application health
+      description: get a category by id
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
+      responses:
+        "200":
+          description: Category retrieved
+          schema:
+            $ref: '#/definitions/response.CategoryResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get a category
+      tags:
+      - categories
+  /healthCheck:
+    get:
+      description: Checks application health
+      produces:
       - application/json
       responses:
         "200":
