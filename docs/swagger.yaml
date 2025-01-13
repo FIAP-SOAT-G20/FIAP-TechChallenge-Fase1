@@ -165,7 +165,30 @@ definitions:
     type: object
   response.HealthCheckResponse:
     properties:
-      message:
+      checks:
+        additionalProperties:
+          $ref: '#/definitions/response.HealthCheckVerifications'
+        type: object
+      status:
+        $ref: '#/definitions/response.HealthCheckStatus'
+    type: object
+  response.HealthCheckStatus:
+    enum:
+    - pass
+    - warn
+    - fail
+    type: string
+    x-enum-varnames:
+    - HealthCheckStatusPass
+    - HealthCheckStatusWarn
+    - HealthCheckStatusFail
+  response.HealthCheckVerifications:
+    properties:
+      componentId:
+        type: string
+      status:
+        $ref: '#/definitions/response.HealthCheckStatus'
+      time:
         type: string
     type: object
   response.PaymentResponse:
@@ -232,41 +255,6 @@ info:
   title: FIAP Tech Challenge Fase 1 - G20 - 10 SOAT
   version: "1"
 paths:
-  /api/v1/callback:
-    put:
-      consumes:
-      - application/json
-      description: Update a payment on a order
-      parameters:
-      - description: PaymentResponse
-        in: body
-        name: product
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpdatePaymentRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.PaymentResponse'
-        "400":
-          description: Validation error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Data not found error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Update a payment on a order
-      tags:
-      - products
-      - payments
   /api/v1/categories:
     get:
       consumes:
@@ -581,7 +569,7 @@ paths:
       tags:
       - customers
   /api/v1/payments/{orderId}/checkout:
-    put:
+    post:
       consumes:
       - application/json
       description: Create a checkout on a order
@@ -611,6 +599,41 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Create a checkout on a order
+      tags:
+      - products
+      - payments
+  /api/v1/payments/callback:
+    post:
+      consumes:
+      - application/json
+      description: Update a payment on a order
+      parameters:
+      - description: PaymentResponse
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdatePaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaymentResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update a payment on a order
       tags:
       - products
       - payments
@@ -850,7 +873,7 @@ paths:
       summary: Get a category
       tags:
       - categories
-  /healthCheck:
+  /health:
     get:
       description: Checks application health
       produces:
@@ -864,6 +887,10 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/response.HealthCheckResponse'
       summary: Application HealthCheck
       tags:
       - healthCheck

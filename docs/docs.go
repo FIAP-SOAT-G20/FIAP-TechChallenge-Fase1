@@ -15,59 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/callback": {
-            "put": {
-                "description": "Update a payment on a order",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "products",
-                    "payments"
-                ],
-                "summary": "Update a payment on a order",
-                "parameters": [
-                    {
-                        "description": "PaymentResponse",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.UpdatePaymentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.PaymentResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Validation error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Data not found error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/categories": {
             "get": {
                 "description": "List categories with pagination",
@@ -543,8 +490,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/payments/callback": {
+            "post": {
+                "description": "Update a payment on a order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products",
+                    "payments"
+                ],
+                "summary": "Update a payment on a order",
+                "parameters": [
+                    {
+                        "description": "PaymentResponse",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdatePaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.PaymentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/payments/{orderId}/checkout": {
-            "put": {
+            "post": {
                 "description": "Create a checkout on a order",
                 "consumes": [
                     "application/json"
@@ -951,7 +951,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/healthCheck": {
+        "/health": {
             "get": {
                 "description": "Checks application health",
                 "produces": [
@@ -972,6 +972,12 @@ const docTemplate = `{
                         "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/response.HealthCheckResponse"
                         }
                     }
                 }
@@ -1219,7 +1225,40 @@ const docTemplate = `{
         "response.HealthCheckResponse": {
             "type": "object",
             "properties": {
-                "message": {
+                "checks": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/response.HealthCheckVerifications"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/response.HealthCheckStatus"
+                }
+            }
+        },
+        "response.HealthCheckStatus": {
+            "type": "string",
+            "enum": [
+                "pass",
+                "warn",
+                "fail"
+            ],
+            "x-enum-varnames": [
+                "HealthCheckStatusPass",
+                "HealthCheckStatusWarn",
+                "HealthCheckStatusFail"
+            ]
+        },
+        "response.HealthCheckVerifications": {
+            "type": "object",
+            "properties": {
+                "componentId": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/response.HealthCheckStatus"
+                },
+                "time": {
                     "type": "string"
                 }
             }
