@@ -4,6 +4,10 @@
 
 <p align="center">
     <img src="https://img.shields.io/badge/Code-Go-informational?style=flat-square&logo=go&color=00ADD8" alt="Go" />
+    <img src="https://img.shields.io/badge/Tools-Gin-informational?style=flat-square&logo=go&color=00ADD8" alt="Gin" />
+    <img src="https://img.shields.io/badge/Tools-PostgreSQL-informational?style=flat-square&logo=postgresql&color=4169E1" alt="PostgreSQL" />
+    <img src="https://img.shields.io/badge/Tools-Swagger-informational?style=flat-square&logo=swagger&color=85EA2D" alt="Swagger" />
+    <img src="https://img.shields.io/badge/Tools-UberFX-informational?style=flat-square&logo=uber&color=000000" alt="Uber FX" />
     <img src="https://img.shields.io/badge/Tools-Docker-informational?style=flat-square&logo=docker&color=2496ED" alt="Docker" />
 </p>
 
@@ -219,7 +223,7 @@ make run
 
 > [!NOTE]
 > You can check the application swagger documentation at http://localhost:8080/docs/index.html  
-> A postman collection is available at [here](docs/10soat-g20-tech-challenge-1.postman_collection.json)  
+> Alternatively, a postman collection is available at [here](docs/10soat-g20-tech-challenge-1.postman_collection.json)  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
