@@ -1,8 +1,8 @@
 <a name="readme-top"></a>
 
-# <p align="center">FIAP Tech Challenge-1 - G20 Fast Food</p>
-
 ![GitHub CI - Tests](https://github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/actions/workflows/test.yml/badge.svg)
+
+# <p align="center">FIAP Tech Challenge-1 - G20 Fast Food</p>
 
 <p align="center">
     <img src="https://img.shields.io/badge/Code-Go-informational?style=flat-square&logo=go&color=00ADD8" alt="Go" />
