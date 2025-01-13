@@ -43,3 +43,10 @@ func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePaymentIN)
 
 	return response, nil
 }
+
+func (ps *ExternalPaymentService) CreatePaymentMock(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error) {
+	return &domain.CreatePaymentOUT{
+		InStoreOrderID: "123456",
+		QrData:         "https://www.fiap-10-soat-g20.com.br/qr/123456",
+	}, nil
+}

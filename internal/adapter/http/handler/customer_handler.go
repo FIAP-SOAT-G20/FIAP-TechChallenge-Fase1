@@ -41,7 +41,7 @@ type createCustomerRequest struct {
 //
 //	@Summary		Create a customer
 //	@Description	Create a customer
-//	@Tags			customers
+//	@Tags			customers, sign-up
 //	@Accept			json
 //	@Produce		json
 //	@Param			customer	body		createCustomerRequest	true	"Customer"

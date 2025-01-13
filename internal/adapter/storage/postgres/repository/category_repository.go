@@ -47,3 +47,11 @@ func (r *CategoryRepository) GetAll(name string, page, limit int) ([]domain.Cate
 
 	return categories, count, err
 }
+
+func (r *CategoryRepository) Update(category *domain.Category) error {
+	return r.db.Save(category).Error
+}
+
+func (r *CategoryRepository) Delete(id uint64) error {
+	return r.db.Delete(&domain.Category{}, id).Error
+}
