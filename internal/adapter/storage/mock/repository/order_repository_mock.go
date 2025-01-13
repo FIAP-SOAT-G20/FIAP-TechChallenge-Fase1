@@ -21,8 +21,8 @@ func (repository *OrderRepositoryMock) GetByID(id uint64) (*domain.Order, error)
 	return args.Get(0).(*domain.Order), args.Error(1)
 }
 
-func (repository *OrderRepositoryMock) GetAll(clientID uint64, page, limit int) ([]domain.Order, int64, error) {
-	args := repository.Called(clientID, page, limit)
+func (repository *OrderRepositoryMock) GetAll(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error) {
+	args := repository.Called(customerID, status, page, limit)
 	return args.Get(0).([]domain.Order), args.Get(1).(int64), args.Error(2)
 }
 

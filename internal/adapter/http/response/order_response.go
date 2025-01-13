@@ -10,6 +10,7 @@ type OrderResponse struct {
 	ID         uint64    `json:"id"`
 	CustomerID uint64    `json:"customerId"`
 	TotalBill  float32   `json:"totalBill,omitempty"`
+	Status     string    `json:"status"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 }
@@ -22,6 +23,7 @@ func NewOrderResponse(order *domain.Order) OrderResponse {
 	return OrderResponse{
 		ID:         order.ID,
 		CustomerID: order.CustomerID,
+		Status:     order.Status.ToString(),
 		TotalBill:  order.TotalBill,
 		CreatedAt:  order.CreatedAt,
 		UpdatedAt:  order.UpdatedAt,

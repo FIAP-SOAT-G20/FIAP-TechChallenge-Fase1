@@ -1,0 +1,2 @@
+
+ALTER TABLE orders add column status     VARCHAR CHECK (status IN ('RECEIVED', 'PREPARING', 'READY', 'COMPLETED')) DEFAULT 'RECEIVED';

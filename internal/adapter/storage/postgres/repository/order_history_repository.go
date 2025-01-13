@@ -32,10 +32,10 @@ func (r *OrderHistoryRepository) GetByID(id uint64) (*domain.OrderHistory, error
 	return &orderHistory, nil
 }
 
-func (r *OrderHistoryRepository) GetAll(orderID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error) {
-	// Add the order get all
-	var orders []domain.Order
-	var tx = r.db.Model(&orders)
+func (r *OrderHistoryRepository) GetAll(orderID uint64, status *domain.OrderStatus, page, limit int) ([]domain.OrderHistory, int64, error) {
+	// Add the orderHistories get all
+	var orderHistories []domain.OrderHistory
+	var tx = r.db.Model(&orderHistories).Preload("Order")
 	var count int64
 	where := map[string]interface{}{}
 	fmt.Printf("Parameters: \n")
@@ -44,7 +44,7 @@ func (r *OrderHistoryRepository) GetAll(orderID uint64, status *domain.OrderStat
 	fmt.Printf("Page: %d\n", page)
 	fmt.Printf("Limit: %d\n", limit)
 	if &status != nil && *status != domain.UNDEFINDED {
-		tx = r.db.Joins("OrderHistory")
+		tx = r.db.Preload("OrderHistory")
 		where["status"] = &status
 	}
 
@@ -54,9 +54,9 @@ func (r *OrderHistoryRepository) GetAll(orderID uint64, status *domain.OrderStat
 
 	tx.Where(where).Count(&count)
 
-	err := tx.Offset((page - 1) * limit).Limit(limit).Find(&orders).Error
+	err := tx.Offset((page - 1) * limit).Limit(limit).Find(&orderHistories).Error
 
-	return orders, count, err
+	return orderHistories, count, err
 }
 
 func (r *OrderHistoryRepository) Delete(id uint64) error {

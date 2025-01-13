@@ -52,7 +52,10 @@ func TestOrderService_List(t *testing.T) {
 		orderRepositoryMock := &repository.OrderRepositoryMock{}
 		orderRepositoryMock.On("GetAll", uint64(1), 0, 10).Return([]domain.Order{{ID: 1, CustomerID: 1}, {ID: 2, CustomerID: 1}}, int64(2), nil)
 
-		orderService := OrderService{orderRepository: orderRepositoryMock}
+		orderHistoryRepositoryMock := &repository.OrderHistoryRepositoryMock{}
+		orderHistoryService := OrderHistoryService{orderHistoryRepository: orderHistoryRepositoryMock}
+
+		orderService := OrderService{orderRepository: orderRepositoryMock, orderHistoryService: &orderHistoryService}
 		orders, size, err := orderService.List(uint64(1), 0, 10)
 		assert.Len(t, orders, 2)
 		assert.Equal(t, int64(2), size)

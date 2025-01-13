@@ -49,6 +49,7 @@ type Order struct {
 	TotalBill     float32
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
+	Status        OrderStatus
 	Payment       Payment
 	Customer      Customer
 	OrderProducts []OrderProduct
@@ -68,9 +69,9 @@ type OrderProduct struct {
 type OrderHistory struct {
 	ID        uint64
 	OrderID   uint64
-	StaffID   uint64
+	StaffID   *uint64
 	Status    OrderStatus
 	CreatedAt time.Time
 	Order     Order
-	Staff     Staff
+	Staff     *Staff
 }

@@ -17,11 +17,11 @@ func NewOrderHistoryService(orderHistoryRepository port.IOrderHistoryRepository)
 	}
 }
 
-func (os *OrderHistoryService) Create(orderID uint64, status domain.OrderStatus) error {
+func (os *OrderHistoryService) Create(orderID uint64, staffID *uint64, status domain.OrderStatus) error {
 
 	orderHistory := domain.OrderHistory{
 		OrderID:   orderID,
-		StaffID:   0,
+		StaffID:   staffID,
 		Status:    status,
 		CreatedAt: time.Now(),
 	}

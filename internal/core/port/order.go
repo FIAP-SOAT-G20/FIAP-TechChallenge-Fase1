@@ -29,14 +29,14 @@ type IOrderHistoryRepository interface {
 type IOrderService interface {
 	Create(order *domain.Order) error
 	GetByID(id uint64) (*domain.Order, error)
-	List(clientID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error)
+	List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error)
 	Update(order *domain.Order) error
 	Delete(id uint64) error
 	//UpdateStatus(id uint64, status domain.OrderStatus) error
 }
 
 type IOrderHistoryService interface {
-	Create(orderID uint64, status domain.OrderStatus) error
+	Create(orderID uint64, staffID *uint64, status domain.OrderStatus) error
 	GetByID(id uint64) (*domain.OrderHistory, error)
 	List(orderID uint64, status *domain.OrderStatus, page, limit int) ([]domain.OrderHistory, int64, error)
 	Delete(id uint64) error

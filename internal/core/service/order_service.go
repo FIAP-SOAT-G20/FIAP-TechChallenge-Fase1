@@ -29,38 +29,28 @@ func (os *OrderService) Create(order *domain.Order) error {
 		return domain.ErrNotFound
 	}
 
+	order.Status = domain.RECEIVED
 	order.CreatedAt = time.Now()
 	order.UpdatedAt = time.Now()
 
-	err = ps.orderRepository.Insert(order)
+	err = os.orderRepository.Insert(order)
 	if err != nil {
 		return err
 	}
 
-	orderHistory := domain.OrderHistory{
-		OrderID:   order.ID,
-		StaffID:   0,
-		Status:    domain.RECEIVED,
-		CreatedAt: time.Now(),
-		Order:     *order,
-	}
-
-	os.orderHistoryService.Create(orderHistory)
-
-	// TODO throw event order created
-	return nil
+	return os.orderHistoryService.Create(order.ID, nil, domain.RECEIVED)
 }
 
-func (ps *OrderService) GetByID(id uint64) (*domain.Order, error) {
-	return ps.orderRepository.GetByID(id)
+func (os *OrderService) GetByID(id uint64) (*domain.Order, error) {
+	return os.orderRepository.GetByID(id)
 }
 
-func (ps *OrderService) List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error) {
-	return ps.orderRepository.GetAll(customerID, status, page, limit)
+func (os *OrderService) List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error) {
+	return os.orderRepository.GetAll(customerID, status, page, limit)
 }
 
-func (ps *OrderService) Update(order *domain.Order) error {
-	existing, err := ps.orderRepository.GetByID(order.ID)
+func (os *OrderService) Update(order *domain.Order) error {
+	existing, err := os.orderRepository.GetByID(order.ID)
 	if err != nil {
 		return domain.ErrNotFound
 	}
@@ -71,14 +61,14 @@ func (ps *OrderService) Update(order *domain.Order) error {
 
 	order.UpdatedAt = time.Now()
 
-	return ps.orderRepository.Update(order)
+	return os.orderRepository.Update(order)
 }
 
-func (ps *OrderService) Delete(id uint64) error {
-	_, err := ps.orderRepository.GetByID(id)
+func (os *OrderService) Delete(id uint64) error {
+	_, err := os.orderRepository.GetByID(id)
 	if err != nil {
 		return domain.ErrNotFound
 	}
 
-	return ps.orderRepository.Delete(id)
+	return os.orderRepository.Delete(id)
 }
