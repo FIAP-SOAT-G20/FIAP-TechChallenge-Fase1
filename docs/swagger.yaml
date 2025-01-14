@@ -1,4 +1,24 @@
 definitions:
+  domain.OrderStatus:
+    enum:
+    - UNDEFINDED
+    - OPEN
+    - CANCELLED
+    - PENDING
+    - RECEIVED
+    - PREPARING
+    - READY
+    - COMPLETED
+    type: string
+    x-enum-varnames:
+    - UNDEFINDED
+    - OPEN
+    - CANCELLED
+    - PENDING
+    - RECEIVED
+    - PREPARING
+    - READY
+    - COMPLETED
   domain.PaymentStatus:
     enum:
     - PROCESSING
@@ -23,9 +43,13 @@ definitions:
     - MANAGER
   handler.UpdateOrder:
     properties:
-      total_bill:
-        example: 29.9
-        type: number
+      staff_id:
+        example: 1
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/domain.OrderStatus'
+        example: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
     type: object
   handler.UpdateProduct:
     properties:
@@ -693,15 +717,15 @@ paths:
     get:
       consumes:
       - application/json
-      description: List orders
+      description: List order histories
       parameters:
-      - description: OrderResponse name
+      - description: Status name
         in: query
-        name: name
+        name: status
         type: string
-      - description: Customer ID
+      - description: Order ID
         in: query
-        name: customer_id
+        name: order_id
         type: integer
       - description: Page
         in: query
@@ -718,16 +742,48 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/response.OrderPaginated'
-      summary: List orders
+      summary: List order histories
+      tags:
+      - orderHistories
+  /api/v1/orders/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an order
+      parameters:
+      - description: OrderResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete an order
       tags:
       - orders
-  /api/v1/orders/{id}:
     get:
       consumes:
       - application/json
-      description: Get an order
+      description: Get an order history
       parameters:
-      - description: OrderResponse ID
+      - description: OrderHistoryResponse ID
         in: path
         name: id
         required: true
@@ -751,7 +807,45 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Get an order
+      summary: Get an order history
+      tags:
+      - orderHistories
+    put:
+      consumes:
+      - application/json
+      description: Update an order
+      parameters:
+      - description: OrderResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: OrderResponse
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateOrder'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update an order
       tags:
       - orders
   /api/v1/payments/{orderId}/checkout:

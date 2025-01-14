@@ -536,7 +536,7 @@
         },
         "/api/v1/orders": {
             "get": {
-                "description": "List orders",
+                "description": "List order histories",
                 "consumes": [
                     "application/json"
                 ],
@@ -544,20 +544,20 @@
                     "application/json"
                 ],
                 "tags": [
-                    "orders"
+                    "orderHistories"
                 ],
-                "summary": "List orders",
+                "summary": "List order histories",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "OrderResponse name",
-                        "name": "name",
+                        "description": "Status name",
+                        "name": "status",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Customer ID",
-                        "name": "customer_id",
+                        "description": "Order ID",
+                        "name": "order_id",
                         "in": "query"
                     },
                     {
@@ -585,7 +585,7 @@
         },
         "/api/v1/orders/{id}": {
             "get": {
-                "description": "Get an order",
+                "description": "Get an order history",
                 "consumes": [
                     "application/json"
                 ],
@@ -593,13 +593,13 @@
                     "application/json"
                 ],
                 "tags": [
-                    "orders"
+                    "orderHistories"
                 ],
-                "summary": "Get an order",
+                "summary": "Get an order history",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "OrderResponse ID",
+                        "description": "OrderHistoryResponse ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -610,6 +610,111 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.OrderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Update an order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "OrderResponse ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "OrderResponse",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateOrder"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.OrderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Delete an order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "OrderResponse ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1362,6 +1467,29 @@
         }
     },
     "definitions": {
+        "domain.OrderStatus": {
+            "type": "string",
+            "enum": [
+                "UNDEFINDED",
+                "OPEN",
+                "CANCELLED",
+                "PENDING",
+                "RECEIVED",
+                "PREPARING",
+                "READY",
+                "COMPLETED"
+            ],
+            "x-enum-varnames": [
+                "UNDEFINDED",
+                "OPEN",
+                "CANCELLED",
+                "PENDING",
+                "RECEIVED",
+                "PREPARING",
+                "READY",
+                "COMPLETED"
+            ]
+        },
         "domain.PaymentStatus": {
             "type": "string",
             "enum": [
@@ -1393,9 +1521,17 @@
         "handler.UpdateOrder": {
             "type": "object",
             "properties": {
-                "total_bill": {
-                    "type": "number",
-                    "example": 29.9
+                "staff_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "status": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.OrderStatus"
+                        }
+                    ],
+                    "example": "OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED"
                 }
             }
         },
