@@ -8,23 +8,26 @@ import (
 )
 
 type OrderService struct {
-	orderRepository        port.IOrderRepository
-	orderHistoryService    port.IOrderHistoryService
-	orderProductRepository port.IOrderProductRepository
-	customerRepository     port.ICustomerRepository
+	orderRepository     port.IOrderRepository
+	orderHistoryService port.IOrderHistoryService
+	orderProductService port.IOrderProductService
+	customerService     port.ICustomerService
+	staffService        port.IStaffService
 }
 
-func NewOrderService(orderRepository port.IOrderRepository, customerRepository port.ICustomerRepository, orderHistoryService port.IOrderHistoryService) *OrderService {
+func NewOrderService(orderRepository port.IOrderRepository, customerService port.ICustomerService, orderHistoryService port.IOrderHistoryService, orderProductService port.IOrderProductService, staffService port.IStaffService) *OrderService {
 	return &OrderService{
 		orderRepository:     orderRepository,
-		customerRepository:  customerRepository,
+		orderProductService: orderProductService,
+		customerService:     customerService,
 		orderHistoryService: orderHistoryService,
+		staffService:        staffService,
 	}
 }
 
 func (os *OrderService) Create(order *domain.Order) error {
 
-	_, err := os.customerRepository.GetByID(order.CustomerID)
+	_, err := os.customerService.GetByID(order.CustomerID)
 	if err != nil {
 		return domain.ErrNotFound
 	}
@@ -59,13 +62,28 @@ func (os *OrderService) Update(order *domain.Order, staffID *uint64) error {
 		return domain.ErrInvalidParam
 	}
 
-	if staffID != nil && *staffID > uint64(0) {
+	if staffID != nil {
+		_, err = os.staffService.GetByID(*staffID)
+		if err != nil {
+			return domain.ErrNotFound
+		}
+	}
 
+	if existing.Status != order.Status && !domain.CanTransitionTo(existing.Status, order.Status) {
+		return domain.ErrInvalidParam
 	}
 
 	order.UpdatedAt = time.Now()
 
-	return os.orderRepository.Update(order)
+	err = os.orderRepository.Update(order)
+	if err != nil {
+		return err
+	}
+
+	if existing.Status != order.Status {
+		return os.orderHistoryService.Create(order.ID, staffID, order.Status)
+	}
+	return nil
 }
 
 func (os *OrderService) Delete(id uint64) error {

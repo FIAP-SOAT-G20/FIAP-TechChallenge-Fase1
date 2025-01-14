@@ -16,7 +16,12 @@ func TestOrderService_Create(t *testing.T) {
 		customerRepositoryMock := &repository.CustomerRepositoryMock{}
 		customerRepositoryMock.On("GetByID", uint64(1)).Return((*domain.Customer)(nil), domain.ErrNotFound)
 
-		orderService := OrderService{orderRepository: orderRepositoryMock, customerRepository: customerRepositoryMock}
+		orderHistoryRepositoryMock := &repository.OrderHistoryRepositoryMock{}
+		orderHistoryRepositoryMock.On("Insert", mock.AnythingOfType("OrderHistory")).Return(nil)
+
+		orderHistoryService := OrderHistoryService{orderHistoryRepository: orderHistoryRepositoryMock}
+		customerService := CustomerService{customerRepository: customerRepositoryMock}
+		orderService := OrderService{orderRepository: orderRepositoryMock, customerService: &customerService, orderHistoryService: &orderHistoryService}
 		err := orderService.Create(&domain.Order{CustomerID: 1})
 		assert.NotNil(t, err)
 	})
@@ -26,10 +31,14 @@ func TestOrderService_Create(t *testing.T) {
 		orderRepositoryMock := &repository.OrderRepositoryMock{}
 		orderRepositoryMock.On("Insert", mock.Anything).Return(nil)
 
+		orderHistoryRepositoryMock := &repository.OrderHistoryRepositoryMock{}
+		orderHistoryRepositoryMock.On("Insert", mock.Anything).Return(nil)
+		orderHistoryService := OrderHistoryService{orderHistoryRepository: orderHistoryRepositoryMock}
+
 		customerRepositoryMock := &repository.CustomerRepositoryMock{}
 		customerRepositoryMock.On("GetByID", uint64(1)).Return(&domain.Customer{ID: 1}, nil)
-
-		orderService := OrderService{orderRepository: orderRepositoryMock, customerRepository: customerRepositoryMock}
+		customerService := CustomerService{customerRepository: customerRepositoryMock}
+		orderService := OrderService{orderRepository: orderRepositoryMock, customerService: &customerService, orderHistoryService: &orderHistoryService}
 		err := orderService.Create(&order)
 		assert.Nil(t, err)
 	})
@@ -42,7 +51,7 @@ func TestOrderService_List(t *testing.T) {
 		orderRepositoryMock.On("GetAll", uint64(1), 0, 10).Return(make([]domain.Order, 0), int64(0), nil)
 
 		orderService := OrderService{orderRepository: orderRepositoryMock}
-		orders, size, err := orderService.List(1, 0, 10)
+		orders, size, err := orderService.List(uint64(1), nil, 0, 10)
 		assert.Len(t, orders, 0)
 		assert.Equal(t, int64(0), size)
 		assert.Nil(t, err)
@@ -56,7 +65,7 @@ func TestOrderService_List(t *testing.T) {
 		orderHistoryService := OrderHistoryService{orderHistoryRepository: orderHistoryRepositoryMock}
 
 		orderService := OrderService{orderRepository: orderRepositoryMock, orderHistoryService: &orderHistoryService}
-		orders, size, err := orderService.List(uint64(1), 0, 10)
+		orders, size, err := orderService.List(uint64(1), nil, 0, 10)
 		assert.Len(t, orders, 2)
 		assert.Equal(t, int64(2), size)
 		assert.Nil(t, err)
@@ -70,7 +79,7 @@ func TestOrderService_Update(t *testing.T) {
 		orderRepositoryMock.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1, CustomerID: 1}, nil)
 
 		orderService := OrderService{orderRepository: orderRepositoryMock}
-		err := orderService.Update(&domain.Order{ID: 1, CustomerID: 2})
+		err := orderService.Update(&domain.Order{ID: 1, CustomerID: 2}, nil)
 		assert.NotNil(t, err)
 	})
 
@@ -82,7 +91,7 @@ func TestOrderService_Update(t *testing.T) {
 		orderRepositoryMock.On("Update", &order).Return(nil)
 
 		orderService := OrderService{orderRepository: orderRepositoryMock}
-		err := orderService.Update(&order)
+		err := orderService.Update(&order, nil)
 		assert.Nil(t, err)
 	})
 }

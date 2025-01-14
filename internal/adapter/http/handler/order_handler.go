@@ -96,8 +96,8 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 		return
 	}
 
-	productResponse := response.NewOrderResponse(order)
-	c.JSON(http.StatusOK, productResponse)
+	orderResponse := response.NewOrderResponse(order)
+	c.JSON(http.StatusOK, orderResponse)
 }
 
 // ListOrders godoc
@@ -149,7 +149,8 @@ func (h *OrderHandler) ListOrders(c *gin.Context) {
 }
 
 type UpdateOrder struct {
-	TotalBill float32 `json:"total_bill" example:"29.90"`
+	StaffID *uint64            `json:"staff_id" example:"1" ommitempty:"true"`
+	Status  domain.OrderStatus `json:"status" example:"OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED" ommitempty:"true"`
 }
 
 // UpdateOrder godoc
@@ -160,12 +161,12 @@ type UpdateOrder struct {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id		path		int				true	"OrderResponse ID"
-//	@Param			order	body		UpdateOrder	true	"OrderResponse"
+//	@Param			order	body		UpdateOrder		true	"OrderResponse"
 //	@Success		200		{object}	response.OrderResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/products/{id} [put]
+//	@Router			/api/v1/orders/{id} [put]
 func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 	id := c.Param("id")
 
@@ -182,11 +183,11 @@ func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 	}
 
 	order := &domain.Order{
-		ID:        idUint64,
-		TotalBill: req.TotalBill,
+		ID:     idUint64,
+		Status: req.Status,
 	}
 
-	if err := h.service.Update(order, nil); err != nil {
+	if err := h.service.Update(order, req.StaffID); err != nil {
 		response.HandleError(c, err)
 		return
 	}
@@ -207,7 +208,7 @@ func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/products/{id} [delete]
+//	@Router			/api/v1/orders/{id} [delete]
 func (h *OrderHandler) DeleteOrder(c *gin.Context) {
 	id := c.Param("id")
 

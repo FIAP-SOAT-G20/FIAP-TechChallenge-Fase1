@@ -43,6 +43,31 @@ func (o OrderStatus) From(status string) OrderStatus {
 	}
 }
 
+var OrderStatusTransitions = map[OrderStatus][]OrderStatus{
+	OPEN:      []OrderStatus{CANCELLED, PENDING},
+	CANCELLED: []OrderStatus{},
+	PENDING:   []OrderStatus{RECEIVED},
+	RECEIVED:  []OrderStatus{PREPARING},
+	PREPARING: []OrderStatus{READY},
+	READY:     []OrderStatus{COMPLETED},
+	COMPLETED: []OrderStatus{},
+}
+
+type OrderStatusTransitionFSM struct {
+	currentStatus OrderStatus
+	transitions   map[OrderStatus][]OrderStatus
+}
+
+func CanTransitionTo(oldStatus, newStatus OrderStatus) bool {
+	allowedStatuses := OrderStatusTransitions[oldStatus]
+	for _, allowedStatus := range allowedStatuses {
+		if newStatus == allowedStatus {
+			return true
+		}
+	}
+	return false
+}
+
 type Order struct {
 	ID            uint64
 	CustomerID    uint64
@@ -56,6 +81,7 @@ type Order struct {
 }
 
 type OrderProduct struct {
+	ID        uint64
 	OrderID   uint64
 	ProductID uint64
 	Price     float32

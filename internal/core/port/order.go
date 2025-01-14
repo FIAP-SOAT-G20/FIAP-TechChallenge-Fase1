@@ -12,9 +12,11 @@ type IOrderRepository interface {
 
 type IOrderProductRepository interface {
 	Insert(orderProduct *domain.OrderProduct) error
-	InsertMany(orderProduct []domain.OrderProduct) error
+	//InsertMany(orderProduct []domain.OrderProduct) error
 	GetByID(id uint64) (*domain.OrderProduct, error)
-	GetAll(orderId, productId uint64, page, limit int) ([]domain.OrderProduct, int64, error)
+	GetAllByOrderID(orderID uint64) ([]domain.OrderProduct, error)
+	GetAll(orderId, productId *uint64, page, limit int) ([]domain.OrderProduct, int64, error)
+	GetTotalBillByOrderId(orderID uint64) (float32, error)
 	Update(order *domain.OrderProduct) error
 	Delete(id uint64) error
 }

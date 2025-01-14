@@ -15,5 +15,6 @@ var Module = fx.Options(
 		fx.Annotate(NewOrderHistoryService, fx.As(new(port.IOrderHistoryService))),
 		fx.Annotate(NewCategoryService, fx.As(new(port.ICategoryService))),
 		fx.Annotate(NewStaffService, fx.As(new(port.IStaffService))),
+		fx.Annotate(NewOrderProductService, fx.As(new(port.IOrderProductService))),
 	),
 )

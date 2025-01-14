@@ -13,4 +13,5 @@ var Module = fx.Options(
 	fx.Provide(fx.Annotate(NewPaymentRepository, fx.As(new(port.IPaymentRepository)))),
 	fx.Provide(fx.Annotate(NewOrderHistoryRepository, fx.As(new(port.IOrderHistoryRepository)))),
 	fx.Provide(fx.Annotate(NewStaffRepository, fx.As(new(port.IStaffRepository)))),
+	fx.Provide(fx.Annotate(NewOrderProductRepository, fx.As(new(port.IOrderProductRepository)))),
 )
