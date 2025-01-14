@@ -90,14 +90,6 @@ definitions:
     - email
     - name
     type: object
-  handler.createOrderRequest:
-    properties:
-      customer_id:
-        example: 1
-        type: integer
-    required:
-    - customer_id
-    type: object
   handler.createProductRequest:
     properties:
       category_id:
@@ -158,6 +150,42 @@ definitions:
       name:
         example: John Doe
         type: string
+    type: object
+  request.CreateOrderProductRequest:
+    properties:
+      order_id:
+        example: 1
+        type: integer
+      product_id:
+        example: 1
+        type: integer
+      quantity:
+        example: 10
+        type: integer
+    required:
+    - order_id
+    - product_id
+    - quantity
+    type: object
+  request.CreateOrderRequest:
+    properties:
+      customer_id:
+        example: 1
+        type: integer
+    required:
+    - customer_id
+    type: object
+  request.UpdateOrderProductRequest:
+    properties:
+      id:
+        example: 1
+        type: integer
+      quantity:
+        example: 10
+        type: integer
+    required:
+    - id
+    - quantity
     type: object
   request.UpdatePaymentRequest:
     properties:
@@ -264,6 +292,36 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  response.OrderProductPaginated:
+    properties:
+      limit:
+        type: integer
+      order_products:
+        items:
+          $ref: '#/definitions/response.OrderProductResponse'
+        type: array
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  response.OrderProductResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      order_id:
+        type: integer
+      price:
+        type: number
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      updated_at:
+        type: string
     type: object
   response.OrderResponse:
     properties:
@@ -679,7 +737,38 @@ paths:
       summary: Update a customer
       tags:
       - customers
-  /api/v1/order:
+  /api/v1/orders:
+    get:
+      consumes:
+      - application/json
+      description: List orders
+      parameters:
+      - description: OrderResponse name
+        in: query
+        name: name
+        type: string
+      - description: Customer ID
+        in: query
+        name: customer_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderPaginated'
+      summary: List orders
+      tags:
+      - orders
     post:
       consumes:
       - application/json
@@ -690,7 +779,7 @@ paths:
         name: order
         required: true
         schema:
-          $ref: '#/definitions/handler.createOrderRequest'
+          $ref: '#/definitions/request.CreateOrderRequest'
       produces:
       - application/json
       responses:
@@ -713,38 +802,6 @@ paths:
       summary: Create an order
       tags:
       - orders
-  /api/v1/orders:
-    get:
-      consumes:
-      - application/json
-      description: List order histories
-      parameters:
-      - description: Status name
-        in: query
-        name: status
-        type: string
-      - description: Order ID
-        in: query
-        name: order_id
-        type: integer
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.OrderPaginated'
-      summary: List order histories
-      tags:
-      - orderHistories
   /api/v1/orders/{id}:
     delete:
       consumes:
@@ -781,9 +838,9 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get an order history
+      description: Get an order
       parameters:
-      - description: OrderHistoryResponse ID
+      - description: OrderResponse ID
         in: path
         name: id
         required: true
@@ -807,9 +864,9 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Get an order history
+      summary: Get an order
       tags:
-      - orderHistories
+      - orders
     put:
       consumes:
       - application/json
@@ -848,6 +905,169 @@ paths:
       summary: Update an order
       tags:
       - orders
+  /api/v1/orders/histories:
+    get:
+      consumes:
+      - application/json
+      description: List order histories
+      parameters:
+      - description: Status name
+        in: query
+        name: status
+        type: string
+      - description: Order ID
+        in: query
+        name: order_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderPaginated'
+      summary: List order histories
+      tags:
+      - orderHistories
+  /api/v1/orders/histories/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an order history
+      parameters:
+      - description: OrderHistoryResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get an order history
+      tags:
+      - orderHistories
+  /api/v1/orders/products:
+    get:
+      consumes:
+      - application/json
+      description: List order products
+      parameters:
+      - description: Order ID
+        in: query
+        name: order_id
+        type: integer
+      - description: Product ID
+        in: query
+        name: product_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderProductPaginated'
+      summary: List order products
+      tags:
+      - orderHistories
+    post:
+      consumes:
+      - application/json
+      description: Update an order product
+      parameters:
+      - description: OrderProductResponse
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateOrderProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.OrderProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update an order product
+      tags:
+      - orders
+  /api/v1/orders/products/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an order history
+      parameters:
+      - description: OrderHistoryResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get an order history
+      tags:
+      - orderHistories
   /api/v1/payments/{orderId}/checkout:
     post:
       consumes:

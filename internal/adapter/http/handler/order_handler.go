@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"net/http"
 	"strconv"
 
@@ -31,10 +32,6 @@ func (h *OrderHandler) GroupRouterPattern() string {
 	return "/api/v1/orders"
 }
 
-type createOrderRequest struct {
-	CustomerID uint64 `json:"customer_id" binding:"required" example:"1"`
-}
-
 // CreateOrder godoc
 //
 //	@Summary		Create an order
@@ -42,14 +39,14 @@ type createOrderRequest struct {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			order	body		createOrderRequest	true	"OrderResponse"
+//	@Param			order	body		request.CreateOrderRequest	true	"OrderResponse"
 //	@Success		201		{object}	response.OrderResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/order [post]
+//	@Router			/api/v1/orders [post]
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
-	var req createOrderRequest
+	var req request.CreateOrderRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return

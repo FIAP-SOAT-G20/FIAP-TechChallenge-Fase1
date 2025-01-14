@@ -15,6 +15,7 @@ var Module = fx.Options(
 		AsRoute(NewPaymentHandler),
 		AsRoute(NewCategoryHandler),
 		AsRoute(NewStaffHandler),
+		AsRoute(NewOrderProductHandler),
 	),
 )
 

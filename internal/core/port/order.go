@@ -15,7 +15,7 @@ type IOrderProductRepository interface {
 	//InsertMany(orderProduct []domain.OrderProduct) error
 	GetByID(id uint64) (*domain.OrderProduct, error)
 	GetAllByOrderID(orderID uint64) ([]domain.OrderProduct, error)
-	GetAll(orderId, productId *uint64, page, limit int) ([]domain.OrderProduct, int64, error)
+	GetAll(orderId, productId uint64, page, limit int) ([]domain.OrderProduct, int64, error)
 	GetTotalBillByOrderId(orderID uint64) (float32, error)
 	Update(order *domain.OrderProduct) error
 	Delete(id uint64) error
@@ -47,7 +47,7 @@ type IOrderHistoryService interface {
 type IOrderProductService interface {
 	Create(orderProduct *domain.OrderProduct) error
 	GetByID(id uint64) (*domain.OrderProduct, error)
-	List(orderID uint64, page, limit int) ([]domain.OrderProduct, int64, error)
+	List(orderID, productID uint64, page, limit int) ([]domain.OrderProduct, int64, error)
 	Update(orderProduct *domain.OrderProduct) error
 	Delete(id uint64) error
 }

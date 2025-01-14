@@ -8,8 +8,8 @@ import (
 
 type OrderResponse struct {
 	ID         uint64    `json:"id"`
-	CustomerID uint64    `json:"customerId"`
-	TotalBill  float32   `json:"totalBill,omitempty"`
+	CustomerID uint64    `json:"customer_id"`
+	TotalBill  float32   `json:"total_bill,omitempty"`
 	Status     string    `json:"status"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`

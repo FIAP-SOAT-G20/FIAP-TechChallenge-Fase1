@@ -25,7 +25,7 @@ func (h *OrderHistoryHandler) Register(router *gin.RouterGroup) {
 }
 
 func (h *OrderHistoryHandler) GroupRouterPattern() string {
-	return "/api/v1/orderHistories"
+	return "/api/v1/orders/histories"
 }
 
 // GetOrderHistory godoc
@@ -40,7 +40,7 @@ func (h *OrderHistoryHandler) GroupRouterPattern() string {
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/orders/{id} [get]
+//	@Router			/api/v1/orders/histories/{id} [get]
 func (h *OrderHistoryHandler) GetOrderHistory(c *gin.Context) {
 	id := c.Param("id")
 
@@ -72,7 +72,7 @@ func (h *OrderHistoryHandler) GetOrderHistory(c *gin.Context) {
 //	@Param			page		query		int		false	"Page"
 //	@Param			limit		query		int		false	"Limit"
 //	@Success		200			{object}	response.OrderPaginated
-//	@Router			/api/v1/orders [get]
+//	@Router			/api/v1/orders/histories [get]
 func (h *OrderHistoryHandler) ListOrderHistories(c *gin.Context) {
 	orderID := c.DefaultQuery("order_id", "0")
 	status := c.DefaultQuery("status", "")

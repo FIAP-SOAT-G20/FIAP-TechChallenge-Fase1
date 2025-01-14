@@ -21,7 +21,7 @@ func NewOrderProductService(orderProductRepository port.IOrderProductRepository,
 	}
 }
 
-func (os *OrderProductService) Create(orderProduct domain.OrderProduct) error {
+func (os *OrderProductService) Create(orderProduct *domain.OrderProduct) error {
 
 	order, err := os.orderService.GetByID(orderProduct.OrderID)
 	if err != nil {
@@ -41,7 +41,7 @@ func (os *OrderProductService) Create(orderProduct domain.OrderProduct) error {
 	orderProduct.CreatedAt = time.Now()
 	orderProduct.UpdatedAt = time.Now()
 
-	err = os.orderProductRepository.Insert(&orderProduct)
+	err = os.orderProductRepository.Insert(orderProduct)
 	if err != nil {
 		return err
 	}
@@ -57,28 +57,14 @@ func (ps *OrderProductService) GetByID(id uint64) (*domain.OrderProduct, error) 
 	return ps.orderProductRepository.GetByID(id)
 }
 
-func (ps *OrderProductService) List(orderID, productID *uint64, page, limit int) ([]domain.OrderProduct, int64, error) {
-
-	if orderID != nil && *orderID <= 0 {
-		return nil, 0, domain.ErrInvalidParam
-	}
-	if productID != nil && *productID <= 0 {
-		return nil, 0, domain.ErrInvalidParam
-	}
-
+func (ps *OrderProductService) List(orderID, productID uint64, page, limit int) ([]domain.OrderProduct, int64, error) {
 	return ps.orderProductRepository.GetAll(orderID, productID, page, limit)
 }
 
 func (os *OrderProductService) Update(orderProduct *domain.OrderProduct) error {
-	existing, err := os.orderProductRepository.GetByID(orderProduct.ID)
+	_, err := os.orderProductRepository.GetByID(orderProduct.ID)
 	if err != nil {
 		return domain.ErrNotFound
-	}
-	if existing.OrderID != orderProduct.OrderID {
-		return domain.ErrInvalidParam
-	}
-	if existing.ProductID != orderProduct.ProductID {
-		return domain.ErrInvalidParam
 	}
 	if orderProduct.Quantity <= 0 {
 		return domain.ErrInvalidParam
