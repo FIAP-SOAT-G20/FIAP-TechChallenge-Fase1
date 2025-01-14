@@ -2196,7 +2196,7 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
-                "customerId": {
+                "customer_id": {
                     "type": "integer"
                 },
                 "id": {
@@ -2205,7 +2205,7 @@ const docTemplate = `{
                 "status": {
                     "type": "string"
                 },
-                "totalBill": {
+                "total_bill": {
                     "type": "number"
                 },
                 "updated_at": {

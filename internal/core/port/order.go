@@ -12,7 +12,6 @@ type IOrderRepository interface {
 
 type IOrderProductRepository interface {
 	Insert(orderProduct *domain.OrderProduct) error
-	//InsertMany(orderProduct []domain.OrderProduct) error
 	GetByID(id uint64) (*domain.OrderProduct, error)
 	GetAllByOrderID(orderID uint64) ([]domain.OrderProduct, error)
 	GetAll(orderId, productId uint64, page, limit int) ([]domain.OrderProduct, int64, error)
