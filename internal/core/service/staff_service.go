@@ -5,46 +5,42 @@ import (
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
 )
 
-type CustomerService struct {
-	customerRepository port.ICustomerRepository
+type StaffService struct {
+	staffRepository port.IStaffRepository
 }
 
-func NewCustomerService(customerRepository port.ICustomerRepository) *CustomerService {
-	return &CustomerService{
-		customerRepository: customerRepository,
+func NewStaffService(staffRepository port.IStaffRepository) *StaffService {
+	return &StaffService{
+		staffRepository: staffRepository,
 	}
 }
 
-func (cs *CustomerService) Create(customer *domain.Customer) error {
-	return cs.customerRepository.Insert(customer)
+func (ss *StaffService) Create(staff *domain.Staff) error {
+	return ss.staffRepository.Insert(staff)
 }
 
-func (cs *CustomerService) GetByID(id uint64) (*domain.Customer, error) {
-	return cs.customerRepository.GetByID(id)
+func (ss *StaffService) GetByID(id uint64) (*domain.Staff, error) {
+	return ss.staffRepository.GetByID(id)
 }
 
-func (cs *CustomerService) GetByCPF(cpf string) (*domain.Customer, error) {
-	return cs.customerRepository.GetByCPF(cpf)
+func (ss *StaffService) List(name string, page, limit int) ([]domain.Staff, int64, error) {
+	return ss.staffRepository.GetAll(name, page, limit)
 }
 
-func (cs *CustomerService) List(name string, page, limit int) ([]domain.Customer, int64, error) {
-	return cs.customerRepository.GetAll(name, page, limit)
-}
-
-func (cs *CustomerService) Update(customer *domain.Customer) error {
-	_, err := cs.customerRepository.GetByID(customer.ID)
+func (ss *StaffService) Update(staff *domain.Staff) error {
+	_, err := ss.staffRepository.GetByID(staff.ID)
 	if err != nil {
 		return domain.ErrNotFound
 	}
 
-	return cs.customerRepository.Update(customer)
+	return ss.staffRepository.Update(staff)
 }
 
-func (cs *CustomerService) Delete(id uint64) error {
-	_, err := cs.customerRepository.GetByID(id)
+func (ss *StaffService) Delete(id uint64) error {
+	_, err := ss.staffRepository.GetByID(id)
 	if err != nil {
 		return domain.ErrNotFound
 	}
 
-	return cs.customerRepository.Delete(id)
+	return ss.staffRepository.Delete(id)
 }

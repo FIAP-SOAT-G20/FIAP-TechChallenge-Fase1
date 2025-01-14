@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -11,81 +12,79 @@ import (
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
 )
 
-type CustomerHandler struct {
-	customerService port.ICustomerService
+type StaffHandler struct {
+	staffService port.IStaffService
 }
 
-func NewCustomerHandler(customerService port.ICustomerService) *CustomerHandler {
-	return &CustomerHandler{customerService: customerService}
+func NewStaffHandler(staffService port.IStaffService) *StaffHandler {
+	return &StaffHandler{staffService: staffService}
 }
 
-func (h *CustomerHandler) Register(router *gin.RouterGroup) {
-	router.POST("/", h.CreateCustomer)
-	router.GET("/", h.ListCustomers)
-	router.GET("/:id", h.GetCustomer)
-	router.PUT("/:id", h.UpdateCustomer)
-	router.DELETE("/:id", h.DeleteCustomer)
+func (h *StaffHandler) Register(router *gin.RouterGroup) {
+	router.POST("/", h.CreateStaff)
+	router.GET("/", h.ListStaffs)
+	router.GET("/:id", h.GetStaff)
+	router.PUT("/:id", h.UpdateStaff)
+	router.DELETE("/:id", h.DeleteStaff)
 }
 
-func (h *CustomerHandler) GroupRouterPattern() string {
-	return "/api/v1/customers"
+func (h *StaffHandler) GroupRouterPattern() string {
+	return "/api/v1/staff"
 }
 
-type createCustomerRequest struct {
-	Name  string `json:"name" binding:"required" example:"John Doe"`
-	Email string `json:"email" binding:"required" example:"johndoe@contact.com"`
-	CPF   string `json:"cpf" binding:"required" example:"123.456.789-00"`
+type createStaffRequest struct {
+	Name string      `json:"name" binding:"required" example:"John Doe"`
+	Role domain.Role `json:"role" binding:"required" example:"COOK, ATTENDANT or MANAGER"`
 }
 
-// CreateCustomer godoc
+// CreateStaff godoc
 //
-//	@Summary		Create a customer
-//	@Description	Create a customer
-//	@Tags			customers, sign-up
+//	@Summary		Create a staff
+//	@Description	Create a staff
+//	@Tags			staffs, sign-up
 //	@Accept			json
 //	@Produce		json
-//	@Param			customer	body		createCustomerRequest	true	"Customer"
-//	@Success		201			{object}	response.CustomerResponse
+//	@Param			staff	body		createStaffRequest	true	"Staff"
+//	@Success		201			{object}	response.StaffResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/customers [post]
-func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
-	var req createCustomerRequest
+//	@Router			/api/v1/staffs [post]
+func (h *StaffHandler) CreateStaff(c *gin.Context) {
+	var req createStaffRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
 	}
 
-	customer := &domain.Customer{
-		Name:  req.Name,
-		Email: req.Email,
-		CPF:   req.CPF,
+	staff := &domain.Staff{
+		Name: req.Name,
+		Role: req.Role,
 	}
 
-	err := h.customerService.Create(customer)
+	err := h.staffService.Create(staff)
 	if err != nil {
 		response.HandleError(c, err)
 		return
 	}
 
-	customerResponse := response.NewCustomerResponse(customer)
-	c.JSON(http.StatusCreated, customerResponse)
+	staffResponse := response.NewStaffResponse(staff)
+	c.JSON(http.StatusCreated, staffResponse)
 }
 
-// ListCustomers godoc
+// ListStaffs godoc
 //
-//	@Summary		List customers
-//	@Description	List customers
-//	@Tags			customers
+//	@Summary		List staffs
+//	@Description	List staffs
+//	@Tags			staffs
 //	@Accept			json
 //	@Produce		json
 //	@Param			name	query		string	false	"Name"
 //	@Param			page	query		int		false	"Page"
 //	@Param			limit	query		int		false	"Limit"
-//	@Success		200		{object}	response.CustomersPaginated
+//	@Success		200		{object}	response.StaffsPaginated
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/customers [get]
-func (h *CustomerHandler) ListCustomers(c *gin.Context) {
+//	@Router			/api/v1/staffs [get]
+func (h *StaffHandler) ListStaffs(c *gin.Context) {
 	name := c.Query("name")
 	page := c.DefaultQuery("page", "1")
 	limit := c.DefaultQuery("limit", "10")
@@ -102,29 +101,29 @@ func (h *CustomerHandler) ListCustomers(c *gin.Context) {
 		return
 	}
 
-	customers, total, err := h.customerService.List(name, pageInt, limitInt)
+	staffs, total, err := h.staffService.List(name, pageInt, limitInt)
 	if err != nil {
 		response.HandleError(c, err)
 		return
 	}
 
-	customersResponse := response.NewCustomersPaginated(customers, total, pageInt, limitInt)
-	c.JSON(http.StatusOK, customersResponse)
+	staffsResponse := response.NewStaffsPaginated(staffs, total, pageInt, limitInt)
+	c.JSON(http.StatusOK, staffsResponse)
 }
 
-// GetCustomer godoc
+// GetStaff godoc
 //
-//	@Summary		Get a customer
-//	@Description	Get a customer
-//	@Tags			customers
+//	@Summary		Get a staff
+//	@Description	Get a staff
+//	@Tags			staffs
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		uint64	true	"Customer ID"
-//	@Success		200	{object}	response.CustomerResponse
+//	@Param			id	path		uint64	true	"Staff ID"
+//	@Success		200	{object}	response.StaffResponse
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/customers/{id} [get]
-func (h *CustomerHandler) GetCustomer(c *gin.Context) {
+//	@Router			/api/v1/staffs/{id} [get]
+func (h *StaffHandler) GetStaff(c *gin.Context) {
 	id := c.Param("id")
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
@@ -133,81 +132,81 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 		return
 	}
 
-	customer, err := h.customerService.GetByID(idUint64)
+	staff, err := h.staffService.GetByID(idUint64)
 	if err != nil {
 		response.HandleError(c, err)
 		return
 	}
 
-	customerResponse := response.NewCustomerResponse(customer)
-	c.JSON(http.StatusOK, customerResponse)
+	staffResponse := response.NewStaffResponse(staff)
+	c.JSON(http.StatusOK, staffResponse)
 }
 
-type updateCustomerRequest struct {
-	Name  string `json:"name" example:"John Doe"`
-	Email string `json:"email" example:"johndoe@email.com"`
-	CPF   string `json:"cpf" example:"123.456.789-00"`
+type updateStaffRequest struct {
+	Name string      `json:"name" example:"John Doe"`
+	Role domain.Role `json:"role" example:"COOK, ATTENDANT or MANAGER"`
 }
 
-// UpdateCustomer godoc
+// UpdateStaff godoc
 //
-//	@Summary		Update a customer
-//	@Description	Update a customer
+//	@Summary		Update a staff
+//	@Description	Update a staff
 //	@Tags			customers
 //	@Accept			json
 //	@Produce		json
-//	@Param			id			path		uint64					true	"Customer ID"
-//	@Param			customer	body		updateCustomerRequest	true	"Customer"
+//	@Param			id			path		uint64					true	"Staff ID"
+//	@Param			customer	body		updateCustomerRequest	true	"Staff"
 //	@Success		200			{object}	response.CustomerResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404			{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/customers/{id} [put]
-func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
+//	@Router			/api/v1/staffs/{id} [put]
+func (h *StaffHandler) UpdateStaff(c *gin.Context) {
 	id := c.Param("id")
 
-	idUint64, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		response.HandleError(c, domain.ErrInvalidParam)
-		return
-	}
-
-	var req updateCustomerRequest
+	var req updateStaffRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
 	}
 
-	customer := &domain.Customer{
-		ID:    idUint64,
-		Name:  req.Name,
-		Email: req.Email,
-		CPF:   req.CPF,
+	idUint64, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidParam)
+		return
 	}
 
-	err = h.customerService.Update(customer)
+	staff := &domain.Staff{
+		ID:        idUint64,
+		Name:      req.Name,
+		Role:      req.Role,
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+	}
+
+	err = h.staffService.Update(staff)
 	if err != nil {
 		response.HandleError(c, err)
 		return
 	}
 
-	customerResponse := response.NewCustomerResponse(customer)
-	c.JSON(http.StatusOK, customerResponse)
+	staffResponse := response.NewStaffResponse(staff)
+	c.JSON(http.StatusOK, staffResponse)
 }
 
-// DeleteCustomer godoc
+// DeleteStaff godoc
 //
-//	@Summary		Delete a customer
-//	@Description	Delete a customer
-//	@Tags			customers
+//	@Summary		Delete a staff
+//	@Description	Delete a staff
+//	@Tags			staffs
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path	uint64	true	"Customer ID"
+//	@Param			id	path	uint64	true	"Staff ID"
 //	@Success		204
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/customers/{id} [delete]
-func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
+//	@Router			/api/v1/staffs/{id} [delete]
+func (h *StaffHandler) DeleteStaff(c *gin.Context) {
 	id := c.Param("id")
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
@@ -216,7 +215,7 @@ func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
 		return
 	}
 
-	err = h.customerService.Delete(idUint64)
+	err = h.staffService.Delete(idUint64)
 	if err != nil {
 		response.HandleError(c, err)
 		return

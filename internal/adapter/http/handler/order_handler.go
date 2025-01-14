@@ -186,7 +186,7 @@ func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 		TotalBill: req.TotalBill,
 	}
 
-	if err := h.service.Update(order); err != nil {
+	if err := h.service.Update(order, nil); err != nil {
 		response.HandleError(c, err)
 		return
 	}

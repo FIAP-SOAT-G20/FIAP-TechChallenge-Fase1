@@ -30,7 +30,7 @@ type IOrderService interface {
 	Create(order *domain.Order) error
 	GetByID(id uint64) (*domain.Order, error)
 	List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error)
-	Update(order *domain.Order) error
+	Update(order *domain.Order, staffID *uint64) error
 	Delete(id uint64) error
 	//UpdateStatus(id uint64, status domain.OrderStatus) error
 }
