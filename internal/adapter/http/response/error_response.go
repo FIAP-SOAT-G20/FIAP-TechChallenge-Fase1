@@ -22,7 +22,7 @@ var errorStatusMap = map[error]int{
 
 // ValidationError sends an error response for specific request validation errors
 func ValidationError(ctx *gin.Context, err error) {
-	handleErrorWithStatus(ctx, http.StatusBadRequest, err)
+	HandleErrorWithStatus(ctx, http.StatusBadRequest, err)
 }
 
 // HandleError determines the status code of an error and returns a JSON response
@@ -32,10 +32,10 @@ func HandleError(ctx *gin.Context, err error) {
 		statusCode = http.StatusInternalServerError
 		slog.Error("unhandled error", "error", err)
 	}
-	handleErrorWithStatus(ctx, statusCode, err)
+	HandleErrorWithStatus(ctx, statusCode, err)
 }
 
-func handleErrorWithStatus(ctx *gin.Context, statusCode int, err error) {
+func HandleErrorWithStatus(ctx *gin.Context, statusCode int, err error) {
 	errMsgs := parseError(err)
 	errRsp := newErrorResponse(errMsgs)
 	ctx.JSON(statusCode, errRsp)

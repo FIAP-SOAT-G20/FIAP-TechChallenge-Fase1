@@ -6,11 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/tests"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/mocks"
 )
 
 func TestSignInService_GetByCPF(t *testing.T) {
-	mockCustomerRepository := new(tests.MockCustomerRepository)
+	mockCustomerRepository := new(mocks.MockCustomerRepository)
 	signInService := NewSignInService(mockCustomerRepository)
 
 	scenarios := []struct {
@@ -23,7 +23,7 @@ func TestSignInService_GetByCPF(t *testing.T) {
 			name: "Given valid CPF When GetByCPF is called Then should succeed",
 			cpf:  "12345678900",
 			setupMocks: func() {
-				mockCustomerRepository.On("GetByCPF", "12345678900").Return(tests.MockCustomer(), nil)
+				mockCustomerRepository.On("GetByCPF", "12345678900").Return(mocks.MockCustomer(), nil)
 			},
 			expectedError: nil,
 		},
