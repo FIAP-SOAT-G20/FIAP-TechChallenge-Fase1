@@ -15,59 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/callback": {
-            "put": {
-                "description": "Update a payment on a order",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "products",
-                    "payments"
-                ],
-                "summary": "Update a payment on a order",
-                "parameters": [
-                    {
-                        "description": "PaymentResponse",
-                        "name": "product",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.UpdatePaymentRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.PaymentResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Validation error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Data not found error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/categories": {
             "get": {
                 "description": "List categories with pagination",
@@ -366,7 +313,8 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "customers"
+                    "customers",
+                    "sign-up"
                 ],
                 "summary": "Create a customer",
                 "parameters": [
@@ -693,8 +641,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/payments/callback": {
+            "post": {
+                "description": "Update a payment on a order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products",
+                    "payments"
+                ],
+                "summary": "Update a payment on a order",
+                "parameters": [
+                    {
+                        "description": "PaymentResponse",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdatePaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.PaymentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/payments/{orderId}/checkout": {
-            "put": {
+            "post": {
                 "description": "Create a checkout on a order",
                 "consumes": [
                     "application/json"
@@ -1051,6 +1052,240 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/staffs": {
+            "get": {
+                "description": "List staffs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staffs"
+                ],
+                "summary": "List staffs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.StaffsPaginated"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a staff",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staffs",
+                    "sign-up"
+                ],
+                "summary": "Create a staff",
+                "parameters": [
+                    {
+                        "description": "Staff",
+                        "name": "staff",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.createStaffRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.StaffResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/staffs/{id}": {
+            "get": {
+                "description": "Get a staff",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staffs"
+                ],
+                "summary": "Get a staff",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Staff ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.StaffResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a staff",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Update a staff",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Staff ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Staff",
+                        "name": "customer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.updateCustomerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.CustomerResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a staff",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staffs"
+                ],
+                "summary": "Delete a staff",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Staff ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/categories/{id}": {
             "get": {
                 "description": "get a category by id",
@@ -1101,14 +1336,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/healthCheck": {
+        "/health": {
             "get": {
                 "description": "Checks application health",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "healthCheck"
+                    "healthcheck"
                 ],
                 "summary": "Application HealthCheck",
                 "responses": {
@@ -1122,6 +1357,12 @@ const docTemplate = `{
                         "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/response.HealthCheckResponse"
                         }
                     }
                 }
@@ -1142,6 +1383,19 @@ const docTemplate = `{
                 "CONFIRMED",
                 "FAILED",
                 "CANCELED"
+            ]
+        },
+        "domain.Role": {
+            "type": "string",
+            "enum": [
+                "COOK",
+                "ATTENDANT",
+                "MANAGER"
+            ],
+            "x-enum-varnames": [
+                "COOK",
+                "ATTENDANT",
+                "MANAGER"
             ]
         },
         "handler.UpdateOrder": {
@@ -1244,6 +1498,27 @@ const docTemplate = `{
                 "price": {
                     "type": "number",
                     "example": 29.9
+                }
+            }
+        },
+        "handler.createStaffRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "role"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Role"
+                        }
+                    ],
+                    "example": "COOK, ATTENDANT or MANAGER"
                 }
             }
         },
@@ -1390,7 +1665,40 @@ const docTemplate = `{
         "response.HealthCheckResponse": {
             "type": "object",
             "properties": {
-                "message": {
+                "checks": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/response.HealthCheckVerifications"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/response.HealthCheckStatus"
+                }
+            }
+        },
+        "response.HealthCheckStatus": {
+            "type": "string",
+            "enum": [
+                "pass",
+                "warn",
+                "fail"
+            ],
+            "x-enum-varnames": [
+                "HealthCheckStatusPass",
+                "HealthCheckStatusWarn",
+                "HealthCheckStatusFail"
+            ]
+        },
+        "response.HealthCheckVerifications": {
+            "type": "object",
+            "properties": {
+                "componentId": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/response.HealthCheckStatus"
+                },
+                "time": {
                     "type": "string"
                 }
             }
@@ -1426,6 +1734,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "status": {
+                    "type": "string"
                 },
                 "totalBill": {
                     "type": "number"
@@ -1521,6 +1832,40 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "response.StaffResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/domain.Role"
+                }
+            }
+        },
+        "response.StaffsPaginated": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "staffs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.StaffResponse"
+                    }
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         }

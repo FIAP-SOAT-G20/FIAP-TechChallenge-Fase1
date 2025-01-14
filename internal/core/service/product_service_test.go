@@ -7,12 +7,12 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/tests"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/mocks"
 )
 
 func TestProductService_Create(t *testing.T) {
-	mockProductRepo := new(tests.MockProductRepository)
-	mockCategoryRepo := new(tests.MockCategoryRepository)
+	mockProductRepo := new(mocks.MockProductRepository)
+	mockCategoryRepo := new(mocks.MockCategoryRepository)
 	productService := NewProductService(mockProductRepo, mockCategoryRepo)
 
 	scenarios := []struct {
@@ -66,8 +66,8 @@ func TestProductService_Create(t *testing.T) {
 }
 
 func TestProductService_GetByID(t *testing.T) {
-	mockProductRepo := new(tests.MockProductRepository)
-	mockCategoryRepo := new(tests.MockCategoryRepository)
+	mockProductRepo := new(mocks.MockProductRepository)
+	mockCategoryRepo := new(mocks.MockCategoryRepository)
 	productService := NewProductService(mockProductRepo, mockCategoryRepo)
 
 	scenarios := []struct {
@@ -115,8 +115,8 @@ func TestProductService_GetByID(t *testing.T) {
 }
 
 func TestProductService_List(t *testing.T) {
-	mockProductRepo := new(tests.MockProductRepository)
-	mockCategoryRepo := new(tests.MockCategoryRepository)
+	mockProductRepo := new(mocks.MockProductRepository)
+	mockCategoryRepo := new(mocks.MockCategoryRepository)
 	productService := NewProductService(mockProductRepo, mockCategoryRepo)
 
 	scenarios := []struct {
@@ -164,8 +164,8 @@ func TestProductService_List(t *testing.T) {
 }
 
 func TestProductService_Update(t *testing.T) {
-	mockProductRepo := new(tests.MockProductRepository)
-	mockCategoryRepo := new(tests.MockCategoryRepository)
+	mockProductRepo := new(mocks.MockProductRepository)
+	mockCategoryRepo := new(mocks.MockCategoryRepository)
 	productService := NewProductService(mockProductRepo, mockCategoryRepo)
 
 	scenarios := []struct {
@@ -215,8 +215,8 @@ func TestProductService_Update(t *testing.T) {
 }
 
 func TestProductService_Delete(t *testing.T) {
-	mockProductRepo := new(tests.MockProductRepository)
-	mockCategoryRepo := new(tests.MockCategoryRepository)
+	mockProductRepo := new(mocks.MockProductRepository)
+	mockCategoryRepo := new(mocks.MockCategoryRepository)
 	productService := NewProductService(mockProductRepo, mockCategoryRepo)
 
 	scenarios := []struct {

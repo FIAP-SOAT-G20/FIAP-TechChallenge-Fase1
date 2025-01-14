@@ -7,11 +7,11 @@ import (
 	"github.com/stretchr/testify/mock"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/tests"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/mocks"
 )
 
 func TestCustomerService_Create(t *testing.T) {
-	mockCustomerRepository := new(tests.MockCustomerRepository)
+	mockCustomerRepository := new(mocks.MockCustomerRepository)
 	customerService := NewCustomerService(mockCustomerRepository)
 
 	scenarios := []struct {
@@ -22,7 +22,7 @@ func TestCustomerService_Create(t *testing.T) {
 	}{
 		{
 			name:     "Given valid customer When Create is called Then should succeed",
-			customer: tests.MockCustomer(),
+			customer: mocks.MockCustomer(),
 			setupMocks: func() {
 				mockCustomerRepository.On("Insert", mock.AnythingOfType("*domain.Customer")).Return(nil)
 			},
@@ -44,7 +44,7 @@ func TestCustomerService_Create(t *testing.T) {
 }
 
 func TestCustomerService_GetByID(t *testing.T) {
-	mockCustomerRepository := new(tests.MockCustomerRepository)
+	mockCustomerRepository := new(mocks.MockCustomerRepository)
 	customerService := NewCustomerService(mockCustomerRepository)
 
 	scenarios := []struct {
@@ -57,7 +57,7 @@ func TestCustomerService_GetByID(t *testing.T) {
 			name: "Given valid ID When GetByID is called Then should succeed",
 			id:   1,
 			setupMocks: func() {
-				mockCustomerRepository.On("GetByID", uint64(1)).Return(tests.MockCustomer(), nil)
+				mockCustomerRepository.On("GetByID", uint64(1)).Return(mocks.MockCustomer(), nil)
 			},
 			expectedError: nil,
 		},
@@ -85,7 +85,7 @@ func TestCustomerService_GetByID(t *testing.T) {
 }
 
 func TestCustomerService_GetByCPF(t *testing.T) {
-	mockCustomerRepository := new(tests.MockCustomerRepository)
+	mockCustomerRepository := new(mocks.MockCustomerRepository)
 	customerService := NewCustomerService(mockCustomerRepository)
 
 	scenarios := []struct {
@@ -98,7 +98,7 @@ func TestCustomerService_GetByCPF(t *testing.T) {
 			name: "Given valid CPF When GetByCPF is called Then should succeed",
 			cpf:  "12345678900",
 			setupMocks: func() {
-				mockCustomerRepository.On("GetByCPF", "12345678900").Return(tests.MockCustomer(), nil)
+				mockCustomerRepository.On("GetByCPF", "12345678900").Return(mocks.MockCustomer(), nil)
 			},
 			expectedError: nil,
 		},
@@ -126,7 +126,7 @@ func TestCustomerService_GetByCPF(t *testing.T) {
 }
 
 func TestCustomerService_List(t *testing.T) {
-	mockCustomerRepository := new(tests.MockCustomerRepository)
+	mockCustomerRepository := new(mocks.MockCustomerRepository)
 	customerService := NewCustomerService(mockCustomerRepository)
 
 	scenarios := []struct {
@@ -142,7 +142,7 @@ func TestCustomerService_List(t *testing.T) {
 			page:       1,
 			limit:      10,
 			setupMocks: func() {
-				mockCustomerRepository.On("GetAll", "John", 1, 10).Return([]domain.Customer{*tests.MockCustomer()}, int64(1), nil)
+				mockCustomerRepository.On("GetAll", "John", 1, 10).Return([]domain.Customer{*mocks.MockCustomer()}, int64(1), nil)
 			},
 			expectedError: nil,
 		},
@@ -172,7 +172,7 @@ func TestCustomerService_List(t *testing.T) {
 }
 
 func TestCustomerService_Update(t *testing.T) {
-	mockCustomerRepository := new(tests.MockCustomerRepository)
+	mockCustomerRepository := new(mocks.MockCustomerRepository)
 	customerService := NewCustomerService(mockCustomerRepository)
 
 	scenarios := []struct {
@@ -183,18 +183,18 @@ func TestCustomerService_Update(t *testing.T) {
 	}{
 		{
 			name:     "Given existing customer When Update is called Then should succeed",
-			customer: tests.MockCustomer(),
+			customer: mocks.MockCustomer(),
 			setupMocks: func() {
-				mockCustomerRepository.On("GetByID", tests.MockCustomer().ID).Return(tests.MockCustomer(), nil)
+				mockCustomerRepository.On("GetByID", mocks.MockCustomer().ID).Return(mocks.MockCustomer(), nil)
 				mockCustomerRepository.On("Update", mock.AnythingOfType("*domain.Customer")).Return(nil)
 			},
 			expectedError: nil,
 		},
 		{
 			name:     "Given non-existent customer When Update is called Then should return error",
-			customer: tests.MockCustomer(),
+			customer: mocks.MockCustomer(),
 			setupMocks: func() {
-				mockCustomerRepository.On("GetByID", tests.MockCustomer().ID).Return(nil, domain.ErrNotFound)
+				mockCustomerRepository.On("GetByID", mocks.MockCustomer().ID).Return(nil, domain.ErrNotFound)
 			},
 			expectedError: domain.ErrNotFound,
 		},
@@ -214,7 +214,7 @@ func TestCustomerService_Update(t *testing.T) {
 }
 
 func TestCustomerService_Delete(t *testing.T) {
-	mockCustomerRepository := new(tests.MockCustomerRepository)
+	mockCustomerRepository := new(mocks.MockCustomerRepository)
 	customerService := NewCustomerService(mockCustomerRepository)
 
 	scenarios := []struct {
@@ -227,7 +227,7 @@ func TestCustomerService_Delete(t *testing.T) {
 			name: "Given existing customer ID When Delete is called Then should succeed",
 			id:   1,
 			setupMocks: func() {
-				mockCustomerRepository.On("GetByID", uint64(1)).Return(tests.MockCustomer(), nil)
+				mockCustomerRepository.On("GetByID", uint64(1)).Return(mocks.MockCustomer(), nil)
 				mockCustomerRepository.On("Delete", uint64(1)).Return(nil)
 			},
 			expectedError: nil,

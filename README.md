@@ -176,6 +176,9 @@ make build
 make run-compose
 ```
 
+> [!NOTE]
+> To stop the application, run `stop-compose`
+
 ### :hammer: Build (run locally)
 
 ```sh
@@ -191,7 +194,25 @@ make run
 ## :rocket: Routes
 
 - **GET** `/docs/index.html`: Swagger documentation
-- **GET** `/healthCheck`
+---
+- **GET** `/health`
+> Returns http status `200` if the application is running  
+> Returns http status `503` if the application or any of its dependencies are not running appropriately  
+> Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
+
+Example response:
+```json
+{
+    "status": "pass",
+    "checks": {
+        "database": {
+            "componentId": "database",
+            "status": "pass",
+            "time": "2025-01-13T19:43:33.701318-03:00"
+        }
+    }
+}
+```
 ---
 - **POST** `api/v1/customers`: Create a new customer
 - **GET** `api/v1/customers`: List all customers
@@ -246,6 +267,7 @@ make test
 - [Building RESTful API with Hexagonal Architecture in Go](https://dev.to/bagashiz/building-restful-api-with-hexagonal-architecture-in-go-1mij)
 - [DBML](https://www.dbml.org/)
 - [Uber FX](https://github.com/uber-go/fx)
+- [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

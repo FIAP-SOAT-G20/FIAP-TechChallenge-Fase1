@@ -11,6 +11,16 @@ definitions:
     - CONFIRMED
     - FAILED
     - CANCELED
+  domain.Role:
+    enum:
+    - COOK
+    - ATTENDANT
+    - MANAGER
+    type: string
+    x-enum-varnames:
+    - COOK
+    - ATTENDANT
+    - MANAGER
   handler.UpdateOrder:
     properties:
       total_bill:
@@ -83,6 +93,19 @@ definitions:
     - description
     - name
     - price
+    type: object
+  handler.createStaffRequest:
+    properties:
+      name:
+        example: John Doe
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/domain.Role'
+        example: COOK, ATTENDANT or MANAGER
+    required:
+    - name
+    - role
     type: object
   handler.signInRequest:
     properties:
@@ -179,7 +202,58 @@ definitions:
     type: object
   response.HealthCheckResponse:
     properties:
-      message:
+      checks:
+        additionalProperties:
+          $ref: '#/definitions/response.HealthCheckVerifications'
+        type: object
+      status:
+        $ref: '#/definitions/response.HealthCheckStatus'
+    type: object
+  response.HealthCheckStatus:
+    enum:
+    - pass
+    - warn
+    - fail
+    type: string
+    x-enum-varnames:
+    - HealthCheckStatusPass
+    - HealthCheckStatusWarn
+    - HealthCheckStatusFail
+  response.HealthCheckVerifications:
+    properties:
+      componentId:
+        type: string
+      status:
+        $ref: '#/definitions/response.HealthCheckStatus'
+      time:
+        type: string
+    type: object
+  response.OrderPaginated:
+    properties:
+      limit:
+        type: integer
+      orders:
+        items:
+          $ref: '#/definitions/response.OrderResponse'
+        type: array
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  response.OrderResponse:
+    properties:
+      created_at:
+        type: string
+      customerId:
+        type: integer
+      id:
+        type: integer
+      status:
+        type: string
+      totalBill:
+        type: number
+      updated_at:
         type: string
     type: object
   response.PaymentResponse:
@@ -240,47 +314,34 @@ definitions:
       name:
         type: string
     type: object
+  response.StaffResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        $ref: '#/definitions/domain.Role'
+    type: object
+  response.StaffsPaginated:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      staffs:
+        items:
+          $ref: '#/definitions/response.StaffResponse'
+        type: array
+      total:
+        type: integer
+    type: object
 info:
   contact: {}
   description: API para o Tech Challenge da FIAP - Fase 1 - G20 - 10 SOAT
   title: FIAP Tech Challenge Fase 1 - G20 - 10 SOAT
   version: "1"
 paths:
-  /api/v1/callback:
-    put:
-      consumes:
-      - application/json
-      description: Update a payment on a order
-      parameters:
-      - description: PaymentResponse
-        in: body
-        name: product
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpdatePaymentRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.PaymentResponse'
-        "400":
-          description: Validation error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Data not found error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Update a payment on a order
-      tags:
-      - products
-      - payments
   /api/v1/categories:
     get:
       consumes:
@@ -500,6 +561,7 @@ paths:
       summary: Create a customer
       tags:
       - customers
+      - sign-up
   /api/v1/customers/{id}:
     delete:
       consumes:
@@ -693,7 +755,7 @@ paths:
       tags:
       - orders
   /api/v1/payments/{orderId}/checkout:
-    put:
+    post:
       consumes:
       - application/json
       description: Create a checkout on a order
@@ -723,6 +785,41 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Create a checkout on a order
+      tags:
+      - products
+      - payments
+  /api/v1/payments/callback:
+    post:
+      consumes:
+      - application/json
+      description: Update a payment on a order
+      parameters:
+      - description: PaymentResponse
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdatePaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaymentResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update a payment on a order
       tags:
       - products
       - payments
@@ -929,6 +1026,161 @@ paths:
       tags:
       - customers
       - sign-in (identification)
+  /api/v1/staffs:
+    get:
+      consumes:
+      - application/json
+      description: List staffs
+      parameters:
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.StaffsPaginated'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: List staffs
+      tags:
+      - staffs
+    post:
+      consumes:
+      - application/json
+      description: Create a staff
+      parameters:
+      - description: Staff
+        in: body
+        name: staff
+        required: true
+        schema:
+          $ref: '#/definitions/handler.createStaffRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.StaffResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create a staff
+      tags:
+      - staffs
+      - sign-up
+  /api/v1/staffs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a staff
+      parameters:
+      - description: Staff ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete a staff
+      tags:
+      - staffs
+    get:
+      consumes:
+      - application/json
+      description: Get a staff
+      parameters:
+      - description: Staff ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.StaffResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get a staff
+      tags:
+      - staffs
+    put:
+      consumes:
+      - application/json
+      description: Update a staff
+      parameters:
+      - description: Staff ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Staff
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/handler.updateCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CustomerResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update a staff
+      tags:
+      - customers
   /categories/{id}:
     get:
       consumes:
@@ -962,7 +1214,7 @@ paths:
       summary: Get a category
       tags:
       - categories
-  /healthCheck:
+  /health:
     get:
       description: Checks application health
       produces:
@@ -976,9 +1228,13 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/response.HealthCheckResponse'
       summary: Application HealthCheck
       tags:
-      - healthCheck
+      - healthcheck
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and the access token.
