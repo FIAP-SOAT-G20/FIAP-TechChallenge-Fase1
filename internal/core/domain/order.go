@@ -68,6 +68,23 @@ func CanTransitionTo(oldStatus, newStatus OrderStatus) bool {
 	return false
 }
 
+func StatusTransitionNeedsStaffID(newStatus OrderStatus) bool {
+	switch newStatus {
+	case OPEN:
+	case CANCELLED:
+	case PENDING:
+	case RECEIVED:
+		return false
+	case PREPARING:
+	case READY:
+	case COMPLETED:
+		return true
+	default:
+		return false
+	}
+	return false
+}
+
 type Order struct {
 	ID            uint64
 	CustomerID    uint64

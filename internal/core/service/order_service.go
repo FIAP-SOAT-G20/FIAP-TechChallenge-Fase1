@@ -60,15 +60,19 @@ func (os *OrderService) Update(order *domain.Order, staffID *uint64) error {
 		return domain.ErrInvalidParam
 	}
 
+	if existing.Status != order.Status && !domain.CanTransitionTo(existing.Status, order.Status) {
+		return domain.ErrInvalidParam
+	}
+
+	if existing.Status != order.Status && domain.StatusTransitionNeedsStaffID(order.Status) && staffID == nil {
+		return domain.ErrInvalidParam
+	}
+
 	if staffID != nil {
 		_, err = os.staffService.GetByID(*staffID)
 		if err != nil {
 			return domain.ErrNotFound
 		}
-	}
-
-	if existing.Status != order.Status && !domain.CanTransitionTo(existing.Status, order.Status) {
-		return domain.ErrInvalidParam
 	}
 
 	order.UpdatedAt = time.Now()
