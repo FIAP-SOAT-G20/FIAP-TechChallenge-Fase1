@@ -175,16 +175,32 @@ definitions:
     required:
     - customer_id
     type: object
+  request.DeleteOrderProductRequest:
+    properties:
+      order_id:
+        example: 1
+        type: integer
+      product_id:
+        example: 1
+        type: integer
+    required:
+    - order_id
+    - product_id
+    type: object
   request.UpdateOrderProductRequest:
     properties:
-      id:
+      order_id:
+        example: 1
+        type: integer
+      product_id:
         example: 1
         type: integer
       quantity:
         example: 10
         type: integer
     required:
-    - id
+    - order_id
+    - product_id
     - quantity
     type: object
   request.UpdatePaymentRequest:
@@ -310,8 +326,6 @@ definitions:
     properties:
       created_at:
         type: string
-      id:
-        type: integer
       order_id:
         type: integer
       price:
@@ -1005,6 +1019,39 @@ paths:
     post:
       consumes:
       - application/json
+      description: Create an order product
+      parameters:
+      - description: CreateOrderProductRequest
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateOrderProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.OrderProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create an order product
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
       description: Update an order product
       parameters:
       - description: OrderProductResponse
@@ -1033,6 +1080,45 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Update an order product
+      tags:
+      - orders
+  /api/v1/orders/products/:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an order product
+      parameters:
+      - description: OrderResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: DeleteOrderProductRequest
+        in: body
+        name: orderProduct
+        required: true
+        schema:
+          $ref: '#/definitions/request.DeleteOrderProductRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete an order product
       tags:
       - orders
   /api/v1/orders/products/{id}:

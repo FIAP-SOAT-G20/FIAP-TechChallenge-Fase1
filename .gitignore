@@ -31,3 +31,5 @@ go.work.sum
 bin/
 
 coverage.out
+
+go_build_github_com_FIAP_SOAT_G20_FIAP_TechChallenge_Fase1_cmd_http

@@ -81,7 +81,6 @@ type Order struct {
 }
 
 type OrderProduct struct {
-	ID        uint64
 	OrderID   uint64
 	ProductID uint64
 	Price     float32

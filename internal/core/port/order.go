@@ -17,7 +17,7 @@ type IOrderProductRepository interface {
 	GetAll(orderId, productId uint64, page, limit int) ([]domain.OrderProduct, int64, error)
 	GetTotalBillByOrderId(orderID uint64) (float32, error)
 	Update(order *domain.OrderProduct) error
-	Delete(id uint64) error
+	Delete(orderProduct *domain.OrderProduct) error
 }
 
 type IOrderHistoryRepository interface {
@@ -48,5 +48,5 @@ type IOrderProductService interface {
 	GetByID(id uint64) (*domain.OrderProduct, error)
 	List(orderID, productID uint64, page, limit int) ([]domain.OrderProduct, int64, error)
 	Update(orderProduct *domain.OrderProduct) error
-	Delete(id uint64) error
+	Delete(orderProduct *domain.OrderProduct) error
 }

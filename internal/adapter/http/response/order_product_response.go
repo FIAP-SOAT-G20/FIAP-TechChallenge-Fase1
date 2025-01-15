@@ -7,7 +7,6 @@ import (
 )
 
 type OrderProductResponse struct {
-	ID        uint64    `json:"id"`
 	OrderID   uint64    `json:"order_id"`
 	ProductID uint64    `json:"product_id"`
 	Price     float32   `json:"price"`
@@ -22,7 +21,6 @@ func NewOrderProductResponse(order *domain.OrderProduct) OrderProductResponse {
 	}
 
 	return OrderProductResponse{
-		ID:        order.ID,
 		OrderID:   order.OrderID,
 		ProductID: order.ProductID,
 		Price:     order.Price,

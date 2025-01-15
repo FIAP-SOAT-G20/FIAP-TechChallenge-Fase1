@@ -7,6 +7,12 @@ type CreateOrderProductRequest struct {
 }
 
 type UpdateOrderProductRequest struct {
-	ID       uint64 `json:"id" binding:"required" example:"1"`
-	Quantity uint32 `json:"quantity" binding:"required" example:"10"`
+	OrderID   uint64 `json:"order_id" binding:"required" example:"1"`
+	ProductID uint64 `json:"product_id" binding:"required" example:"1"`
+	Quantity  uint32 `json:"quantity" binding:"required" example:"10"`
+}
+
+type DeleteOrderProductRequest struct {
+	OrderID   uint64 `json:"order_id" binding:"required" example:"1"`
+	ProductID uint64 `json:"product_id" binding:"required" example:"1"`
 }

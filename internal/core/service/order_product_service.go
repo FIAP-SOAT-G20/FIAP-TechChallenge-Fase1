@@ -62,13 +62,15 @@ func (ps *OrderProductService) List(orderID, productID uint64, page, limit int) 
 }
 
 func (os *OrderProductService) Update(orderProduct *domain.OrderProduct) error {
-	_, err := os.orderProductRepository.GetByID(orderProduct.ID)
-	if err != nil {
+	orderProducts, _, err := os.orderProductRepository.GetAll(orderProduct.OrderID, orderProduct.ProductID, 0, 1)
+	if err != nil || len(orderProducts) == 0 {
 		return domain.ErrNotFound
 	}
 	if orderProduct.Quantity <= 0 {
 		return domain.ErrInvalidParam
 	}
+	orderProduct.Price = orderProducts[0].Price
+	orderProduct.UpdatedAt = time.Now()
 	err = os.orderProductRepository.Update(orderProduct)
 	if err != nil {
 		return err
@@ -85,11 +87,11 @@ func (os *OrderProductService) Update(orderProduct *domain.OrderProduct) error {
 	return os.orderService.Update(order, nil)
 }
 
-func (os *OrderProductService) Delete(id uint64) error {
-	_, err := os.orderProductRepository.GetByID(id)
-	if err != nil {
+func (os *OrderProductService) Delete(orderProduct *domain.OrderProduct) error {
+	orderProducts, _, err := os.orderProductRepository.GetAll(orderProduct.OrderID, orderProduct.ProductID, 0, 1)
+	if err != nil || len(orderProducts) == 0 {
 		return domain.ErrNotFound
 	}
 
-	return os.orderProductRepository.Delete(id)
+	return os.orderProductRepository.Delete(&orderProducts[0])
 }

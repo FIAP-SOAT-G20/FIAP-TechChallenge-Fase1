@@ -62,9 +62,10 @@ func (r *OrderProductRepository) GetAll(orderID, productID uint64, page, limit i
 func (r *OrderProductRepository) GetTotalBillByOrderId(orderID uint64) (float32, error) {
 	var total float32
 	err := r.db.Model(&domain.OrderProduct{}).
-		Select("sum(total_bill * quantity)").
+		Select("sum(price * quantity)").
 		Where("order_id = ?", orderID).
 		Scan(&total).Error
+
 	if err != nil {
 		return 0, err
 	}
@@ -72,9 +73,16 @@ func (r *OrderProductRepository) GetTotalBillByOrderId(orderID uint64) (float32,
 }
 
 func (r *OrderProductRepository) Update(orderProduct *domain.OrderProduct) error {
-	return r.db.Save(orderProduct).Error
+	return r.db.
+		Where("order_id = ? and product_id = ?", orderProduct.OrderID, orderProduct.ProductID).
+		Updates(&domain.OrderProduct{
+			Quantity:  orderProduct.Quantity,
+			UpdatedAt: orderProduct.UpdatedAt,
+		}).Error
 }
 
-func (r *OrderProductRepository) Delete(id uint64) error {
-	return r.db.Delete(&domain.OrderProduct{}, id).Error
+func (r *OrderProductRepository) Delete(orderProduct *domain.OrderProduct) error {
+	return r.db.Model(orderProduct).
+		Where("order_id = ? and product_id = ? ", orderProduct.OrderID, orderProduct.ProductID).
+		Delete(orderProduct).Error
 }

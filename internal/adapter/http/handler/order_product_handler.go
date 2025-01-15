@@ -21,7 +21,9 @@ func NewOrderProductHandler(service port.IOrderProductService) *OrderProductHand
 
 func (h *OrderProductHandler) Register(router *gin.RouterGroup) {
 	router.GET("/", h.ListOrderProducts)
-	router.GET("/:id", h.GetOrderProduct)
+	router.POST("/", h.CreateOrderProduct)
+	router.PUT("/", h.UpdateOrderProduct)
+	router.DELETE("/", h.DeleteOrderProduct)
 }
 
 func (h *OrderProductHandler) GroupRouterPattern() string {
@@ -35,7 +37,7 @@ func (h *OrderProductHandler) GroupRouterPattern() string {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			order	body		request.CreateOrderProductRequest	true	"OrderProductResponse"
+//	@Param			order	body		request.CreateOrderProductRequest	true	"CreateOrderProductRequest"
 //	@Success		201		{object}	response.OrderProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
@@ -75,7 +77,7 @@ func (h *OrderProductHandler) CreateOrderProduct(c *gin.Context) {
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/orders/products [post]
+//	@Router			/api/v1/orders/products [put]
 func (h *OrderProductHandler) UpdateOrderProduct(c *gin.Context) {
 	var req request.UpdateOrderProductRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -84,43 +86,12 @@ func (h *OrderProductHandler) UpdateOrderProduct(c *gin.Context) {
 	}
 
 	orderProduct := &domain.OrderProduct{
-		ID:       req.ID,
-		Quantity: req.Quantity,
+		OrderID:   req.OrderID,
+		ProductID: req.ProductID,
+		Quantity:  req.Quantity,
 	}
 
-	if err := h.service.Create(orderProduct); err != nil {
-		response.HandleError(c, err)
-		return
-	}
-
-	orderProductResponse := response.NewOrderProductResponse(orderProduct)
-	c.JSON(http.StatusOK, orderProductResponse)
-}
-
-// GetOrderProduct godoc
-//
-//	@Summary		Get an order history
-//	@Description	Get an order history
-//	@Tags			orderHistories
-//	@Accept			json
-//	@Produce		json
-//	@Param			id	path		int	true	"OrderHistoryResponse ID"
-//	@Success		200	{object}	response.OrderResponse
-//	@Failure		400	{object}	response.ErrorResponse	"Validation error"
-//	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
-//	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/orders/products/{id} [get]
-func (h *OrderProductHandler) GetOrderProduct(c *gin.Context) {
-	id := c.Param("id")
-
-	idUint64, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		response.HandleError(c, domain.ErrInvalidParam)
-		return
-	}
-
-	orderProduct, err := h.service.GetByID(idUint64)
-	if err != nil {
+	if err := h.service.Update(orderProduct); err != nil {
 		response.HandleError(c, err)
 		return
 	}
@@ -180,4 +151,38 @@ func (h *OrderProductHandler) ListOrderProducts(c *gin.Context) {
 
 	responses := response.NewOrderProductPaginated(orders, total, pageInt, limitInt)
 	c.JSON(http.StatusOK, responses)
+}
+
+// DeleteOrderProduct godoc
+//
+//	@Summary		Delete an order product
+//	@Description	Delete an order product
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"OrderResponse ID"
+//	@Param			orderProduct	body		request.DeleteOrderProductRequest	true	"DeleteOrderProductRequest"
+//	@Success		204	{object}	string
+//	@Failure		400	{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
+//	@Router			/api/v1/orders/products/ [delete]
+func (h *OrderProductHandler) DeleteOrderProduct(c *gin.Context) {
+	var req request.DeleteOrderProductRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.ValidationError(c, err)
+		return
+	}
+
+	orderProduct := &domain.OrderProduct{
+		OrderID:   req.OrderID,
+		ProductID: req.ProductID,
+	}
+
+	if err := h.service.Delete(orderProduct); err != nil {
+		response.HandleError(c, err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
 }
