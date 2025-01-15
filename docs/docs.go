@@ -1578,7 +1578,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.createStaffRequest"
+                            "$ref": "#/definitions/request.CreateStaffRequest"
                         }
                     }
                 ],
@@ -1673,7 +1673,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.updateCustomerRequest"
+                            "$ref": "#/definitions/request.UpdateStaffRequest"
                         }
                     }
                 ],
@@ -1928,27 +1928,6 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.createStaffRequest": {
-            "type": "object",
-            "required": [
-                "name",
-                "role"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "John Doe"
-                },
-                "role": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/domain.Role"
-                        }
-                    ],
-                    "example": "COOK, ATTENDANT or MANAGER"
-                }
-            }
-        },
         "handler.signInRequest": {
             "type": "object",
             "required": [
@@ -2024,6 +2003,27 @@ const docTemplate = `{
                 }
             }
         },
+        "request.CreateStaffRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "role"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Role"
+                        }
+                    ],
+                    "example": "COOK, ATTENDANT or MANAGER"
+                }
+            }
+        },
         "request.DeleteOrderProductRequest": {
             "type": "object",
             "required": [
@@ -2073,6 +2073,27 @@ const docTemplate = `{
                 "topic": {
                     "type": "string",
                     "example": "payment"
+                }
+            }
+        },
+        "request.UpdateStaffRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "role"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Role"
+                        }
+                    ],
+                    "example": "COOK, ATTENDANT or MANAGER"
                 }
             }
         },

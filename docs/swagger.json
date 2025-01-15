@@ -1570,7 +1570,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.createStaffRequest"
+                            "$ref": "#/definitions/request.CreateStaffRequest"
                         }
                     }
                 ],
@@ -1665,7 +1665,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.updateCustomerRequest"
+                            "$ref": "#/definitions/request.UpdateStaffRequest"
                         }
                     }
                 ],
@@ -1920,27 +1920,6 @@
                 }
             }
         },
-        "handler.createStaffRequest": {
-            "type": "object",
-            "required": [
-                "name",
-                "role"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "John Doe"
-                },
-                "role": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/domain.Role"
-                        }
-                    ],
-                    "example": "COOK, ATTENDANT or MANAGER"
-                }
-            }
-        },
         "handler.signInRequest": {
             "type": "object",
             "required": [
@@ -2016,6 +1995,27 @@
                 }
             }
         },
+        "request.CreateStaffRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "role"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Role"
+                        }
+                    ],
+                    "example": "COOK, ATTENDANT or MANAGER"
+                }
+            }
+        },
         "request.DeleteOrderProductRequest": {
             "type": "object",
             "required": [
@@ -2065,6 +2065,27 @@
                 "topic": {
                     "type": "string",
                     "example": "payment"
+                }
+            }
+        },
+        "request.UpdateStaffRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "role"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Role"
+                        }
+                    ],
+                    "example": "COOK, ATTENDANT or MANAGER"
                 }
             }
         },

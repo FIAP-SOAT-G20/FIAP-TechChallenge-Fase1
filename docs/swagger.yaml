@@ -110,19 +110,6 @@ definitions:
     - name
     - price
     type: object
-  handler.createStaffRequest:
-    properties:
-      name:
-        example: John Doe
-        type: string
-      role:
-        allOf:
-        - $ref: '#/definitions/domain.Role'
-        example: COOK, ATTENDANT or MANAGER
-    required:
-    - name
-    - role
-    type: object
   handler.signInRequest:
     properties:
       cpf:
@@ -175,6 +162,19 @@ definitions:
     required:
     - customer_id
     type: object
+  request.CreateStaffRequest:
+    properties:
+      name:
+        example: John Doe
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/domain.Role'
+        example: COOK, ATTENDANT or MANAGER
+    required:
+    - name
+    - role
+    type: object
   request.DeleteOrderProductRequest:
     properties:
       order_id:
@@ -211,6 +211,19 @@ definitions:
       topic:
         example: payment
         type: string
+    type: object
+  request.UpdateStaffRequest:
+    properties:
+      name:
+        example: John Doe
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/domain.Role'
+        example: COOK, ATTENDANT or MANAGER
+    required:
+    - name
+    - role
     type: object
   response.CategoriesPaginated:
     properties:
@@ -1467,7 +1480,7 @@ paths:
         name: staff
         required: true
         schema:
-          $ref: '#/definitions/handler.createStaffRequest'
+          $ref: '#/definitions/request.CreateStaffRequest'
       produces:
       - application/json
       responses:
@@ -1557,7 +1570,7 @@ paths:
         name: customer
         required: true
         schema:
-          $ref: '#/definitions/handler.updateCustomerRequest'
+          $ref: '#/definitions/request.UpdateStaffRequest'
       produces:
       - application/json
       responses:

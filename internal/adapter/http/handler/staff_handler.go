@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"net/http"
 	"strconv"
 	"time"
@@ -29,12 +30,7 @@ func (h *StaffHandler) Register(router *gin.RouterGroup) {
 }
 
 func (h *StaffHandler) GroupRouterPattern() string {
-	return "/api/v1/staff"
-}
-
-type createStaffRequest struct {
-	Name string      `json:"name" binding:"required" example:"John Doe"`
-	Role domain.Role `json:"role" binding:"required" example:"COOK, ATTENDANT or MANAGER"`
+	return "/api/v1/staffs"
 }
 
 // CreateStaff godoc
@@ -44,13 +40,13 @@ type createStaffRequest struct {
 //	@Tags			staffs, sign-up
 //	@Accept			json
 //	@Produce		json
-//	@Param			staff	body		createStaffRequest	true	"Staff"
+//	@Param			staff	body		request.CreateStaffRequest	true	"Staff"
 //	@Success		201			{object}	response.StaffResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/staffs [post]
 func (h *StaffHandler) CreateStaff(c *gin.Context) {
-	var req createStaffRequest
+	var req request.CreateStaffRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
@@ -142,11 +138,6 @@ func (h *StaffHandler) GetStaff(c *gin.Context) {
 	c.JSON(http.StatusOK, staffResponse)
 }
 
-type updateStaffRequest struct {
-	Name string      `json:"name" example:"John Doe"`
-	Role domain.Role `json:"role" example:"COOK, ATTENDANT or MANAGER"`
-}
-
 // UpdateStaff godoc
 //
 //	@Summary		Update a staff
@@ -154,8 +145,8 @@ type updateStaffRequest struct {
 //	@Tags			customers
 //	@Accept			json
 //	@Produce		json
-//	@Param			id			path		uint64					true	"Staff ID"
-//	@Param			customer	body		updateCustomerRequest	true	"Staff"
+//	@Param			id			path		uint64						true	"Staff ID"
+//	@Param			customer	body		request.UpdateStaffRequest	true	"Staff"
 //	@Success		200			{object}	response.CustomerResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404			{object}	response.ErrorResponse	"Data not found error"
@@ -164,7 +155,7 @@ type updateStaffRequest struct {
 func (h *StaffHandler) UpdateStaff(c *gin.Context) {
 	id := c.Param("id")
 
-	var req updateStaffRequest
+	var req request.UpdateStaffRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
