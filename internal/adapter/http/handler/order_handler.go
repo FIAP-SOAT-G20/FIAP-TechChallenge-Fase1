@@ -179,10 +179,12 @@ func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 		return
 	}
 
-	order := &domain.Order{
-		ID:     idUint64,
-		Status: req.Status,
+	order, err := h.service.GetByID(idUint64)
+	if err != nil {
+		response.HandleError(c, err)
+		return
 	}
+	order.Status = req.Status
 
 	if err := h.service.Update(order, req.StaffID); err != nil {
 		response.HandleError(c, err)

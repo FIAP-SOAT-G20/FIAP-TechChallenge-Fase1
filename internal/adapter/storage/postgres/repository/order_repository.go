@@ -50,7 +50,10 @@ func (r *OrderRepository) GetAll(customerID uint64, status *domain.OrderStatus, 
 }
 
 func (r *OrderRepository) Update(order *domain.Order) error {
-	return r.db.Model(domain.Order{ID: order.ID}).Save(order).Error
+	return r.db.
+		Model(domain.Order{ID: order.ID}).
+		Save(order).
+		Error
 }
 
 func (r *OrderRepository) Delete(id uint64) error {

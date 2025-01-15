@@ -56,16 +56,16 @@ func (os *OrderService) Update(order *domain.Order, staffID *uint64) error {
 		return domain.ErrNotFound
 	}
 
-	if existing.CustomerID != order.CustomerID {
-		return domain.ErrInvalidParam
-	}
-
 	if existing.Status != order.Status && !domain.CanTransitionTo(existing.Status, order.Status) {
 		return domain.ErrInvalidParam
 	}
 
 	if existing.Status != order.Status && domain.StatusTransitionNeedsStaffID(order.Status) && staffID == nil {
-		return domain.ErrInvalidParam
+		return domain.ErrOrderInvalidStatusTransition
+	}
+
+	if existing.Status != order.Status && order.Status == domain.PENDING && len(order.OrderProducts) == 0 {
+		return domain.ErrOrderWithoutProducts
 	}
 
 	if staffID != nil {

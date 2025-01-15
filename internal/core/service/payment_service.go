@@ -41,6 +41,10 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 		return nil, domain.ErrNotFound
 	}
 
+	if len(order.OrderProducts) == 0 {
+		return nil, domain.ErrOrderWithoutProducts
+	}
+
 	paymentPayload := ps.createPaymentPayload(order)
 
 	extPayment, err := ps.externalPaymentService.CreatePaymentMock(paymentPayload)
@@ -116,6 +120,6 @@ func (ps *PaymentService) UpdatePayment(payment *domain.UpdatePaymentIN) (*domai
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return paymentOUT, nil
 }
