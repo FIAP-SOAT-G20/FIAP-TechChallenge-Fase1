@@ -556,6 +556,38 @@ paths:
       summary: Delete a category
       tags:
       - categories
+    get:
+      consumes:
+      - application/json
+      description: get a category by id
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category retrieved
+          schema:
+            $ref: '#/definitions/response.CategoryResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get a category
+      tags:
+      - categories
     put:
       consumes:
       - application/json
@@ -1121,39 +1153,6 @@ paths:
       summary: Delete an order product
       tags:
       - orders
-  /api/v1/orders/products/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Get an order history
-      parameters:
-      - description: OrderHistoryResponse ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.OrderResponse'
-        "400":
-          description: Validation error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Data not found error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Get an order history
-      tags:
-      - orderHistories
   /api/v1/payments/{orderId}/checkout:
     post:
       consumes:
@@ -1581,39 +1580,6 @@ paths:
       summary: Update a staff
       tags:
       - customers
-  /categories/{id}:
-    get:
-      consumes:
-      - application/json
-      description: get a category by id
-      parameters:
-      - description: Category ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Category retrieved
-          schema:
-            $ref: '#/definitions/response.CategoryResponse'
-        "400":
-          description: Validation error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Data not found error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Get a category
-      tags:
-      - categories
   /health:
     get:
       description: Checks application health
