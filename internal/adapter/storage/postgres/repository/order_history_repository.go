@@ -2,7 +2,7 @@ package repository
 
 import (
 	"errors"
-	"fmt"
+	"strings"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"gorm.io/gorm"
@@ -38,13 +38,7 @@ func (r *OrderHistoryRepository) GetAll(orderID uint64, status *domain.OrderStat
 	var tx = r.db.Model(&orderHistories).Preload("Order")
 	var count int64
 	where := map[string]interface{}{}
-	fmt.Printf("Parameters: \n")
-	fmt.Printf("OrderHistoryID: %d\n", orderID)
-	fmt.Printf("Status: %v\n", status.ToString())
-	fmt.Printf("Page: %d\n", page)
-	fmt.Printf("Limit: %d\n", limit)
-	if &status != nil && *status != domain.UNDEFINDED {
-		tx = r.db.Preload("OrderHistory")
+	if &status != nil && *status != domain.UNDEFINDED && strings.ToUpper(status.ToString()) != "" {
 		where["status"] = &status
 	}
 
@@ -54,7 +48,7 @@ func (r *OrderHistoryRepository) GetAll(orderID uint64, status *domain.OrderStat
 
 	tx.Where(where).Count(&count)
 
-	err := tx.Offset((page - 1) * limit).Limit(limit).Find(&orderHistories).Error
+	err := tx.Offset((page - 1) * limit).Order("created_at ASC").Limit(limit).Find(&orderHistories).Error
 
 	return orderHistories, count, err
 }

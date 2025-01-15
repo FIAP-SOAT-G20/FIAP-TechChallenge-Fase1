@@ -36,6 +36,7 @@ func HandleError(ctx *gin.Context, err error) {
 }
 
 func HandleErrorWithStatus(ctx *gin.Context, statusCode int, err error) {
+	slog.Error("HandleErrorWithStatus", "error", err)
 	errMsgs := parseError(err)
 	errRsp := newErrorResponse(errMsgs)
 	ctx.JSON(statusCode, errRsp)
@@ -45,10 +46,13 @@ func parseError(err error) []string {
 	var errMsgs []string
 
 	var validationErrs validator.ValidationErrors
-	if errors.As(err, &validationErrs) {
+	var errorsAs = errors.As(err, &validationErrs)
+	if errorsAs {
 		for _, vErr := range validationErrs {
 			errMsgs = append(errMsgs, vErr.Error())
 		}
+	} else {
+		errMsgs = append(errMsgs, err.Error())
 	}
 
 	return errMsgs

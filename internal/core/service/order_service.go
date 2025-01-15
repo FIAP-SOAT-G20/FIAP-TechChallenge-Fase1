@@ -30,7 +30,7 @@ func (os *OrderService) Create(order *domain.Order) error {
 		return domain.ErrNotFound
 	}
 
-	order.Status = domain.RECEIVED
+	order.Status = domain.OPEN
 	order.CreatedAt = time.Now()
 	order.UpdatedAt = time.Now()
 
@@ -39,7 +39,7 @@ func (os *OrderService) Create(order *domain.Order) error {
 		return err
 	}
 
-	return os.orderHistoryService.Create(order.ID, nil, domain.RECEIVED)
+	return os.orderHistoryService.Create(order.ID, nil, order.Status)
 }
 
 func (os *OrderService) GetByID(id uint64) (*domain.Order, error) {
