@@ -93,7 +93,7 @@ type getCategoryRequest struct {
 //	@Failure		400	{object}	response.ErrorResponse		"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse		"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse		"Internal server error"
-//	@Router			/categories/{id} [get]
+//	@Router			/api/v1/categories/{id} [get]
 func (ch *CategoryHandler) GetCategory(ctx *gin.Context) {
 	var req getCategoryRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
