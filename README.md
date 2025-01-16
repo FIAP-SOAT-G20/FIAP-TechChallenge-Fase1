@@ -152,6 +152,9 @@ cd FIAP-TechChallenge-Fase1
 ```sh
 cp .env.example .env
 ```
+> [!NOTE]
+> If you want to run the application locally, you need to set the environment variables in the `.env` file  
+> If you want to run the application using Docker, you don't need to set the environment variables because they are already set in the `.env.local` file used by Docker Compose  
 
 ### :whale: Docker
 
@@ -193,27 +196,6 @@ make run
 
 ## :rocket: Routes
 
-- **GET** `/docs/index.html`: Swagger documentation
----
-- **GET** `/health`
-> Returns http status `200` if the application is running  
-> Returns http status `503` if the application or any of its dependencies are not running appropriately  
-> Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
-
-Example response:
-```json
-{
-    "status": "pass",
-    "checks": {
-        "database": {
-            "componentId": "database",
-            "status": "pass",
-            "time": "2025-01-13T19:43:33.701318-03:00"
-        }
-    }
-}
-```
----
 - **POST** `api/v1/customers`: Create a new customer
 - **GET** `api/v1/customers`: List all customers
 - **GET** `api/v1/customers/:id`: Get a customer by ID
@@ -242,6 +224,27 @@ Example response:
 - **GET** `/api/v1/payments/callback`: Payment callback
 ---
 - **POST** `/api/v1/sign-in`: Sign in a customer with CPF
+---
+- **GET** `/docs/index.html`: Swagger documentation
+---
+- **GET** `/health`
+> Returns http status `200` if the application is running  
+> Returns http status `503` if the application or any of its dependencies are not running appropriately  
+> Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
+
+Example response:
+```json
+{
+    "status": "pass",
+    "checks": {
+        "database": {
+            "componentId": "database",
+            "status": "pass",
+            "time": "2025-01-13T19:43:33.701318-03:00"
+        }
+    }
+}
+```
 ---
 
 > [!NOTE]
