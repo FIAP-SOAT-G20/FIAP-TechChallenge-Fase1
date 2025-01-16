@@ -109,7 +109,7 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 // ListProducts godoc
 //
 //	@Summary		List products
-//	@Description	List products
+//	@Description	List products or filter by category (2.b: iv. Buscar produtos por categoria;)
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json

@@ -35,7 +35,7 @@ func (h *PaymentHandler) GroupRouterPattern() string {
 // CreatePayment godoc
 //
 //	@Summary		Create a checkout on a order
-//	@Description	Create a checkout on a order
+//	@Description	Create a checkout on a order (2.b: > 2.b.: v. Fake checkout)
 //	@Tags			products, payments
 //	@Accept			json
 //	@Produce		json
@@ -66,7 +66,7 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 // Update Payment godoc
 //
 //	@Summary		Update a payment on a order
-//	@Description	Update a payment on a order
+//	@Description	Update a payment on a order (2.b: > 2.b.: v. Fake checkout)
 //	@Tags			products, payments
 //	@Accept			json
 //	@Produce		json

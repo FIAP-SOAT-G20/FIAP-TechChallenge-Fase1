@@ -36,8 +36,8 @@ type signInRequest struct {
 // SignIn godoc
 //
 //	@Summary		Sign in a customer
-//	@Description	Sign in a customer
-//	@Tags			customers, sign-in (identification)
+//	@Description	Sign in a customer (2.b: ii. Identificação do Cliente via CPF)
+//	@Tags			customers, sign-in
 //	@Accept			json
 //	@Produce		json
 //	@Param			request	body		signInRequest			true	"SignInResponse"
