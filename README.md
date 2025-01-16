@@ -260,7 +260,7 @@ make test
 ```
 > [!NOTE]
 > It will run the unit tests and generate the coverage report as `coverage.out`  
-> You can check the coverage report by running `make coverage`
+> You can check the coverage report by running `make coverage`  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -269,8 +269,10 @@ make test
 - [Hexagonal Architecture, Ports and Adapters in Go](https://medium.com/@kyodo-tech/hexagonal-architecture-ports-and-adapters-in-go-f1af950726b)
 - [Building RESTful API with Hexagonal Architecture in Go](https://dev.to/bagashiz/building-restful-api-with-hexagonal-architecture-in-go-1mij)
 - [DBML](https://www.dbml.org/)
-- [Uber FX](https://github.com/uber-go/fx)
 - [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
+- [Event Storming](https://www.eventstorming.com/)
+- [Swagger](https://swagger.io/)
+- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
