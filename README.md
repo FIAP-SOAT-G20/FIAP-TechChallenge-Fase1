@@ -201,12 +201,18 @@ make run
 - **GET** `api/v1/customers/:id`: Get a customer by ID
 - **PUT** `api/v1/customers/:id`: Update a customer by ID
 - **DELETE** `api/v1/customers/:id`: Delete a customer by ID
+
+> 2.b. Apis: i. Cadastro do Cliente;
 ---
 - **POST** `api/v1/products`: Create a new product
 - **GET** `api/v1/products`: List all products
+- **GET** `api/v1/products?category_id=:id`: List all products by category ID
+> 2.b: iv. Buscar produtos por categoria;
 - **GET** `api/v1/products/:id`: Get a product by ID
 - **PUT** `api/v1/products/:id`: Update a product by ID
 - **DELETE** `api/v1/products/:id`: Delete a product by ID
+
+> 2.b: iii. Criar, editar e remover produtos;
 ---
 - **POST** `api/v1/catagories`: Create a new category
 - **GET** `api/v1/catagories`: List all categories
@@ -222,8 +228,12 @@ make run
 ---
 - **POST** `/api/v1/payments/:orderId/checkout`: Create a new payment
 - **GET** `/api/v1/payments/callback`: Payment callback
+
+> 2.b.: v. Fake checkout
 ---
 - **POST** `/api/v1/sign-in`: Sign in a customer with CPF
+
+> 2.b.: ii. Identificação do Cliente via CPF;
 ---
 - **GET** `/docs/index.html`: Swagger documentation
 ---
