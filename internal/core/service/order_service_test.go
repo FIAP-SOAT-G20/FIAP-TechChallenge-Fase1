@@ -94,6 +94,7 @@ func TestOrderService_Update(t *testing.T) {
 		err := orderService.Update(&order, nil)
 		assert.Nil(t, err)
 	})
+
 }
 
 func TestOrderService_Delete(t *testing.T) {
