@@ -18,6 +18,9 @@ func (repository *OrderRepositoryMock) Insert(order *domain.Order) error {
 
 func (repository *OrderRepositoryMock) GetByID(id uint64) (*domain.Order, error) {
 	args := repository.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*domain.Order), args.Error(1)
 }
 
