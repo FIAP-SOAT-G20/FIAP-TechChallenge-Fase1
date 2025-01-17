@@ -152,6 +152,9 @@ cd FIAP-TechChallenge-Fase1
 ```sh
 cp .env.example .env
 ```
+> [!NOTE]
+> If you want to run the application locally, you need to set the environment variables in the `.env` file  
+> If you want to run the application using Docker, you don't need to set the environment variables because they are already set in the `.env.local` file used by Docker Compose  
 
 ### :whale: Docker
 
@@ -193,6 +196,45 @@ make run
 
 ## :rocket: Routes
 
+- **POST** `api/v1/customers`: Create a new customer
+- **GET** `api/v1/customers`: List all customers
+- **GET** `api/v1/customers/:id`: Get a customer by ID
+- **PUT** `api/v1/customers/:id`: Update a customer by ID
+- **DELETE** `api/v1/customers/:id`: Delete a customer by ID
+
+> 2.b. Apis: i. Cadastro do Cliente;
+---
+- **POST** `api/v1/products`: Create a new product
+- **GET** `api/v1/products`: List all products
+- **GET** `api/v1/products?category_id=:id`: List all products by category ID
+> 2.b: iv. Buscar produtos por categoria;
+- **GET** `api/v1/products/:id`: Get a product by ID
+- **PUT** `api/v1/products/:id`: Update a product by ID
+- **DELETE** `api/v1/products/:id`: Delete a product by ID
+
+> 2.b: iii. Criar, editar e remover produtos;
+---
+- **POST** `api/v1/catagories`: Create a new category
+- **GET** `api/v1/catagories`: List all categories
+- **GET** `api/v1/catagories/:id`: Get a category by ID
+- **PUT** `api/v1/catagories/:id`: Update a category by ID
+- **DELETE** `api/v1/catagories/:id`: Delete a category by ID
+---
+- **POST** `api/v1/orders`: Create a new order
+- **GET** `api/v1/orders`: List all orders
+- **GET** `api/v1/orders/:id`: Get an order by ID
+- **PUT** `api/v1/orders/:id`: Update an order by ID
+- **DELETE** `api/v1/orders/:id`: Delete an order by ID
+---
+- **POST** `/api/v1/payments/:orderId/checkout`: Create a new payment
+- **GET** `/api/v1/payments/callback`: Payment callback
+
+> 2.b.: v. Fake checkout
+---
+- **POST** `/api/v1/sign-in`: Sign in a customer with CPF
+
+> 2.b.: ii. Identificação do Cliente via CPF;
+---
 - **GET** `/docs/index.html`: Swagger documentation
 ---
 - **GET** `/health`
@@ -214,35 +256,6 @@ Example response:
 }
 ```
 ---
-- **POST** `api/v1/customers`: Create a new customer
-- **GET** `api/v1/customers`: List all customers
-- **GET** `api/v1/customers/:id`: Get a customer by ID
-- **PUT** `api/v1/customers/:id`: Update a customer by ID
-- **DELETE** `api/v1/customers/:id`: Delete a customer by ID
----
-- **POST** `api/v1/products`: Create a new product
-- **GET** `api/v1/products`: List all products
-- **GET** `api/v1/products/:id`: Get a product by ID
-- **PUT** `api/v1/products/:id`: Update a product by ID
-- **DELETE** `api/v1/products/:id`: Delete a product by ID
----
-- **POST** `api/v1/catagories`: Create a new category
-- **GET** `api/v1/catagories`: List all categories
-- **GET** `api/v1/catagories/:id`: Get a category by ID
-- **PUT** `api/v1/catagories/:id`: Update a category by ID
-- **DELETE** `api/v1/catagories/:id`: Delete a category by ID
----
-- **POST** `api/v1/orders`: Create a new order
-- **GET** `api/v1/orders`: List all orders
-- **GET** `api/v1/orders/:id`: Get an order by ID
-- **PUT** `api/v1/orders/:id`: Update an order by ID
-- **DELETE** `api/v1/orders/:id`: Delete an order by ID
----
-- **POST** `/api/v1/payments/:orderId/checkout`: Create a new payment
-- **GET** `/api/v1/payments/callback`: Payment callback
----
-- **POST** `/api/v1/sign-in`: Sign in a customer with CPF
----
 
 > [!NOTE]
 > You can check the application swagger documentation at http://localhost:8080/docs/index.html  
@@ -257,7 +270,7 @@ make test
 ```
 > [!NOTE]
 > It will run the unit tests and generate the coverage report as `coverage.out`  
-> You can check the coverage report by running `make coverage`
+> You can check the coverage report by running `make coverage`  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -266,8 +279,10 @@ make test
 - [Hexagonal Architecture, Ports and Adapters in Go](https://medium.com/@kyodo-tech/hexagonal-architecture-ports-and-adapters-in-go-f1af950726b)
 - [Building RESTful API with Hexagonal Architecture in Go](https://dev.to/bagashiz/building-restful-api-with-hexagonal-architecture-in-go-1mij)
 - [DBML](https://www.dbml.org/)
-- [Uber FX](https://github.com/uber-go/fx)
 - [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
+- [Event Storming](https://www.eventstorming.com/)
+- [Swagger](https://swagger.io/)
+- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

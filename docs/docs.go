@@ -1101,7 +1101,7 @@ const docTemplate = `{
         },
         "/api/v1/payments/callback": {
             "post": {
-                "description": "Update a payment on a order",
+                "description": "Update a payment on a order (2.b: \u003e 2.b.: v. Fake checkout)",
                 "consumes": [
                     "application/json"
                 ],
@@ -1154,7 +1154,7 @@ const docTemplate = `{
         },
         "/api/v1/payments/{orderId}/checkout": {
             "post": {
-                "description": "Create a checkout on a order",
+                "description": "Create a checkout on a order (2.b: \u003e 2.b.: v. Fake checkout)",
                 "consumes": [
                     "application/json"
                 ],
@@ -1205,7 +1205,7 @@ const docTemplate = `{
         },
         "/api/v1/products": {
             "get": {
-                "description": "List products",
+                "description": "List products or filter by category (2.b: iv. Buscar produtos por categoria;)",
                 "consumes": [
                     "application/json"
                 ],
@@ -1459,7 +1459,7 @@ const docTemplate = `{
         },
         "/api/v1/sign-in": {
             "post": {
-                "description": "Sign in a customer",
+                "description": "Sign in a customer (2.b: ii. Identificação do Cliente via CPF)",
                 "consumes": [
                     "application/json"
                 ],
@@ -1468,7 +1468,7 @@ const docTemplate = `{
                 ],
                 "tags": [
                     "customers",
-                    "sign-in (identification)"
+                    "sign-in"
                 ],
                 "summary": "Sign in a customer",
                 "parameters": [
@@ -2441,17 +2441,39 @@ const docTemplate = `{
             "name": "Authorization",
             "in": "header"
         }
+    },
+    "tags": [
+        {
+            "description": "2.b: i.Cadastro do Cliente",
+            "name": "sign-up"
+        },
+        {
+            "description": "2.b: iii. Criar, editar e remover produtos;",
+            "name": "products"
+        },
+        {
+            "description": "2.b: v. Fake checkout",
+            "name": "payments"
+        },
+        {
+            "description": "2.b: ii. Identificação do Cliente via CPF",
+            "name": "sign-in"
+        }
+    ],
+    "externalDocs": {
+        "description": "GitHub Repository",
+        "url": "https://github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1"
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1",
-	Host:             "",
-	BasePath:         "",
+	Host:             "localhost:8080",
+	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "FIAP Tech Challenge Fase 1 - G20 - 10 SOAT",
-	Description:      "API para o Tech Challenge da FIAP - Fase 1 - G20 - 10 SOAT",
+	Title:            "FIAP Tech Challenge Fase 1 - 10SOAT - G20",
+	Description:      "API de um Fast Food para o Tech Challenge da FIAP - Fase 1 - 10SOAT - G20",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
