@@ -48,7 +48,7 @@ func TestOrderService_List(t *testing.T) {
 	t.Run("Should return an empty list if there is no order from client", func(t *testing.T) {
 
 		orderRepositoryMock := &repository.OrderRepositoryMock{}
-		orderRepositoryMock.On("GetAll", uint64(1), 0, 10).Return(make([]domain.Order, 0), int64(0), nil)
+		orderRepositoryMock.On("GetAll", uint64(1), mock.Anything, 0, 10).Return(make([]domain.Order, 0), int64(0), nil)
 
 		orderService := OrderService{orderRepository: orderRepositoryMock}
 		orders, size, err := orderService.List(uint64(1), nil, 0, 10)
@@ -59,7 +59,7 @@ func TestOrderService_List(t *testing.T) {
 
 	t.Run("Should return all orders from client", func(t *testing.T) {
 		orderRepositoryMock := &repository.OrderRepositoryMock{}
-		orderRepositoryMock.On("GetAll", uint64(1), 0, 10).Return([]domain.Order{{ID: 1, CustomerID: 1}, {ID: 2, CustomerID: 1}}, int64(2), nil)
+		orderRepositoryMock.On("GetAll", uint64(1), mock.Anything, 0, 10).Return([]domain.Order{{ID: 1, CustomerID: 1}, {ID: 2, CustomerID: 1}}, int64(2), nil)
 
 		orderHistoryRepositoryMock := &repository.OrderHistoryRepositoryMock{}
 		orderHistoryService := OrderHistoryService{orderHistoryRepository: orderHistoryRepositoryMock}
@@ -76,15 +76,15 @@ func TestOrderService_Update(t *testing.T) {
 
 	t.Run("Should fail if customer has changed", func(t *testing.T) {
 		orderRepositoryMock := &repository.OrderRepositoryMock{}
-		orderRepositoryMock.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1, CustomerID: 1}, nil)
+		orderRepositoryMock.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}, nil)
 
 		orderService := OrderService{orderRepository: orderRepositoryMock}
-		err := orderService.Update(&domain.Order{ID: 1, CustomerID: 2}, nil)
+		err := orderService.Update(&domain.Order{ID: 1, CustomerID: 2, Status: domain.OPEN}, nil)
 		assert.NotNil(t, err)
 	})
 
 	t.Run("Should update a order", func(t *testing.T) {
-		order := domain.Order{ID: 1, CustomerID: 1}
+		order := domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}
 
 		orderRepositoryMock := &repository.OrderRepositoryMock{}
 		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
