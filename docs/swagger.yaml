@@ -139,22 +139,6 @@ definitions:
         example: John Doe
         type: string
     type: object
-  request.CreateOrderProductRequest:
-    properties:
-      order_id:
-        example: 1
-        type: integer
-      product_id:
-        example: 1
-        type: integer
-      quantity:
-        example: 10
-        type: integer
-    required:
-    - order_id
-    - product_id
-    - quantity
-    type: object
   request.CreateOrderRequest:
     properties:
       customer_id:
@@ -176,20 +160,12 @@ definitions:
     - name
     - role
     type: object
-  request.UpdateOrderProductRequest:
+  request.OrderProductRequest:
     properties:
-      order_id:
-        example: 1
-        type: integer
-      product_id:
-        example: 1
-        type: integer
       quantity:
         example: 10
         type: integer
     required:
-    - order_id
-    - product_id
     - quantity
     type: object
   request.UpdatePaymentRequest:
@@ -1055,72 +1031,6 @@ paths:
       summary: List order products
       tags:
       - orderHistories
-    post:
-      consumes:
-      - application/json
-      description: Create an order product
-      parameters:
-      - description: CreateOrderProductRequest
-        in: body
-        name: order
-        required: true
-        schema:
-          $ref: '#/definitions/request.CreateOrderProductRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.OrderProductResponse'
-        "400":
-          description: Validation error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Data not found error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Create an order product
-      tags:
-      - orders
-    put:
-      consumes:
-      - application/json
-      description: Update an order product
-      parameters:
-      - description: OrderProductResponse
-        in: body
-        name: order
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpdateOrderProductRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/response.OrderProductResponse'
-        "400":
-          description: Validation error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Data not found error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Update an order product
-      tags:
-      - orders
   /api/v1/orders/products/:orderId/:productId:
     delete:
       consumes:
@@ -1199,6 +1109,82 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Get an order product
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create an order product
+      parameters:
+      - description: Order ID
+        in: path
+        name: orderId
+        required: true
+        type: integer
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: integer
+      - description: OrderProductRequest
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/request.OrderProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.OrderProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create an order product
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      description: Update an order product
+      parameters:
+      - description: OrderProductResponse
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/request.OrderProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.OrderProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update an order product
       tags:
       - orders
   /api/v1/payments/{orderId}/checkout:

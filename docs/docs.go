@@ -783,6 +783,63 @@ const docTemplate = `{
                         }
                     }
                 }
+            }
+        },
+        "/api/v1/orders/products/:orderId/:productId": {
+            "get": {
+                "description": "Get an order product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get an order product",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "orderId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "productId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.OrderProductResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
             },
             "put": {
                 "description": "Update an order product",
@@ -803,7 +860,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.UpdateOrderProductRequest"
+                            "$ref": "#/definitions/request.OrderProductRequest"
                         }
                     }
                 ],
@@ -848,58 +905,6 @@ const docTemplate = `{
                 "summary": "Create an order product",
                 "parameters": [
                     {
-                        "description": "CreateOrderProductRequest",
-                        "name": "order",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.CreateOrderProductRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.OrderProductResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Validation error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Data not found error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/orders/products/:orderId/:productId": {
-            "get": {
-                "description": "Get an order product",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "orders"
-                ],
-                "summary": "Get an order product",
-                "parameters": [
-                    {
                         "type": "integer",
                         "description": "Order ID",
                         "name": "orderId",
@@ -912,11 +917,20 @@ const docTemplate = `{
                         "name": "productId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "OrderProductRequest",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.OrderProductRequest"
+                        }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/response.OrderProductResponse"
                         }
@@ -2029,28 +2043,6 @@ const docTemplate = `{
                 }
             }
         },
-        "request.CreateOrderProductRequest": {
-            "type": "object",
-            "required": [
-                "order_id",
-                "product_id",
-                "quantity"
-            ],
-            "properties": {
-                "order_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "product_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "quantity": {
-                    "type": "integer",
-                    "example": 10
-                }
-            }
-        },
         "request.CreateOrderRequest": {
             "type": "object",
             "required": [
@@ -2084,22 +2076,12 @@ const docTemplate = `{
                 }
             }
         },
-        "request.UpdateOrderProductRequest": {
+        "request.OrderProductRequest": {
             "type": "object",
             "required": [
-                "order_id",
-                "product_id",
                 "quantity"
             ],
             "properties": {
-                "order_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "product_id": {
-                    "type": "integer",
-                    "example": 1
-                },
                 "quantity": {
                     "type": "integer",
                     "example": 10

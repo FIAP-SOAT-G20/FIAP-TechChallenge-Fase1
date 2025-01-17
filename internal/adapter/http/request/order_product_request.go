@@ -1,13 +1,10 @@
 package request
 
-type CreateOrderProductRequest struct {
-	OrderID   uint64 `json:"order_id" binding:"required" example:"1"`
-	ProductID uint64 `json:"product_id" binding:"required" example:"1"`
-	Quantity  uint32 `json:"quantity" binding:"required" example:"10"`
+type OrderProductRequest struct {
+	Quantity uint32 `json:"quantity" binding:"required" example:"10"`
 }
 
-type UpdateOrderProductRequest struct {
-	OrderID   uint64 `json:"order_id" binding:"required" example:"1"`
-	ProductID uint64 `json:"product_id" binding:"required" example:"1"`
-	Quantity  uint32 `json:"quantity" binding:"required" example:"10"`
+type OrderProductPathParam struct {
+	OrderID   uint64 `uri:"orderID" binding:"required"`
+	ProductID uint64 `uri:"productID" binding:"required"`
 }

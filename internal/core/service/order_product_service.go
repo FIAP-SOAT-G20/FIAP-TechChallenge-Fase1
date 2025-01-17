@@ -21,14 +21,22 @@ func NewOrderProductService(orderProductRepository port.IOrderProductRepository,
 	}
 }
 
-func (os *OrderProductService) Create(orderProduct *domain.OrderProduct) error {
+func (ops *OrderProductService) Create(orderProduct *domain.OrderProduct) error {
 
-	order, err := os.orderService.GetByID(orderProduct.OrderID)
+	existingOrderProduct, err := ops.orderProductRepository.GetByID(orderProduct.OrderID, orderProduct.ProductID)
+	if existingOrderProduct != nil {
+		return domain.ErrConflict
+	}
+
+	order, err := ops.orderService.GetByID(orderProduct.OrderID)
 	if err != nil {
 		return domain.ErrOrderIdMandatory
 	}
+	if order.Status != domain.OPEN {
+		return domain.ErrOrderIsNotOnStatusOpen
+	}
 
-	product, err := os.productService.GetByID(orderProduct.ProductID)
+	product, err := ops.productService.GetByID(orderProduct.ProductID)
 	if err != nil {
 		return domain.ErrProductIdMandatory
 	}
@@ -41,73 +49,76 @@ func (os *OrderProductService) Create(orderProduct *domain.OrderProduct) error {
 	orderProduct.CreatedAt = time.Now()
 	orderProduct.UpdatedAt = time.Now()
 
-	err = os.orderProductRepository.Insert(orderProduct)
+	err = ops.orderProductRepository.Insert(orderProduct)
 	if err != nil {
 		return err
 	}
-	totalBill, err := os.orderProductRepository.GetTotalBillByOrderId(orderProduct.OrderID)
+	totalBill, err := ops.orderProductRepository.GetTotalBillByOrderId(orderProduct.OrderID)
 	if err != nil {
 		return err
 	}
 	order.TotalBill = totalBill
-	return os.orderService.Update(order, nil)
+	return ops.orderService.Update(order, nil)
 }
 
-func (ps *OrderProductService) GetByID(orderID, productID uint64) (*domain.OrderProduct, error) {
-	orderProduct, err := ps.orderProductRepository.GetByID(orderID, productID)
+func (ops *OrderProductService) GetByID(orderID, productID uint64) (*domain.OrderProduct, error) {
+	orderProduct, err := ops.orderProductRepository.GetByID(orderID, productID)
 	if err != nil {
 		return nil, domain.ErrNotFound
 	}
 	return orderProduct, nil
 }
 
-func (ps *OrderProductService) List(orderID, productID uint64, page, limit int) ([]domain.OrderProduct, int64, error) {
-	return ps.orderProductRepository.GetAll(orderID, productID, page, limit)
+func (ops *OrderProductService) List(orderID, productID uint64, page, limit int) ([]domain.OrderProduct, int64, error) {
+	return ops.orderProductRepository.GetAll(orderID, productID, page, limit)
 }
 
-func (os *OrderProductService) Update(orderProduct *domain.OrderProduct) error {
-	existingOrderProduct, err := os.orderProductRepository.GetByID(orderProduct.OrderID, orderProduct.ProductID)
+func (ops *OrderProductService) Update(orderProduct *domain.OrderProduct) error {
+	existingOrderProduct, err := ops.orderProductRepository.GetByID(orderProduct.OrderID, orderProduct.ProductID)
 	if err != nil {
 		return domain.ErrNotFound
 	}
 	if orderProduct.Quantity <= 0 {
 		return domain.ErrInvalidParam
 	}
-	orderProduct.Price = existingOrderProduct.Price
-	orderProduct.UpdatedAt = time.Now()
-	err = os.orderProductRepository.Update(orderProduct)
-	if err != nil {
-		return err
-	}
-	totalBill, err := os.orderProductRepository.GetTotalBillByOrderId(orderProduct.OrderID)
-	if err != nil {
-		return err
-	}
-	order, err := os.orderService.GetByID(orderProduct.OrderID)
-	if err != nil {
-		return domain.ErrNotFound
-	}
-	order.TotalBill = totalBill
-	return os.orderService.Update(order, nil)
-}
-
-func (os *OrderProductService) Delete(orderID, productID uint64) error {
-	_, err := os.orderProductRepository.GetByID(orderID, productID)
-	if err != nil {
-		return domain.ErrNotFound
-	}
-	order, err := os.orderService.GetByID(orderID)
+	order, err := ops.orderService.GetByID(orderProduct.OrderID)
 	if err != nil {
 		return domain.ErrNotFound
 	}
 	if order.Status != domain.OPEN {
 		return domain.ErrOrderIsNotOnStatusOpen
 	}
-	err = os.orderProductRepository.Delete(orderID, productID)
-	totalBill, err := os.orderProductRepository.GetTotalBillByOrderId(orderID)
+	orderProduct.Price = existingOrderProduct.Price
+	orderProduct.UpdatedAt = time.Now()
+	err = ops.orderProductRepository.Update(orderProduct)
+	if err != nil {
+		return err
+	}
+	totalBill, err := ops.orderProductRepository.GetTotalBillByOrderId(orderProduct.OrderID)
 	if err != nil {
 		return err
 	}
 	order.TotalBill = totalBill
-	return os.orderService.Update(order, nil)
+	return ops.orderService.Update(order, nil)
+}
+
+func (ops *OrderProductService) Delete(orderID, productID uint64) error {
+	_, err := ops.orderProductRepository.GetByID(orderID, productID)
+	if err != nil {
+		return domain.ErrNotFound
+	}
+	order, err := ops.orderService.GetByID(orderID)
+	if err != nil {
+		return domain.ErrNotFound
+	}
+	if order.Status != domain.OPEN {
+		return domain.ErrOrderIsNotOnStatusOpen
+	}
+	err = ops.orderProductRepository.Delete(orderID, productID)
+	totalBill, err := ops.orderProductRepository.GetTotalBillByOrderId(orderID)
+	if err != nil {
+		return err
+	}
+	order.TotalBill = totalBill
+	return ops.orderService.Update(order, nil)
 }
