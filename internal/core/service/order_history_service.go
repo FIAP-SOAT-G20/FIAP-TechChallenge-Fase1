@@ -19,6 +19,10 @@ func NewOrderHistoryService(orderHistoryRepository port.IOrderHistoryRepository)
 
 func (ohs *OrderHistoryService) Create(orderID uint64, staffID *uint64, status domain.OrderStatus) error {
 
+	if orderID == 0 {
+		return domain.ErrOrderIdMandatory
+	}
+
 	orderHistory := domain.OrderHistory{
 		OrderID:   orderID,
 		StaffID:   staffID,

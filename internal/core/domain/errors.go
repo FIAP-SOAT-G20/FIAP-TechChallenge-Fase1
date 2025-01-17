@@ -19,4 +19,6 @@ var (
 var (
 	ErrOrderInvalidStatusTransition = errors.New("invalid status transition")
 	ErrOrderWithoutProducts         = errors.New("order without products")
+	ErrOrderMandatoryStaffId        = errors.New("order mandatory staff id")
+	ErrOrderIdMandatory             = errors.New("order id mandatory")
 )
