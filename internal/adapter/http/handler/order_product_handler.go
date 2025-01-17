@@ -20,14 +20,55 @@ func NewOrderProductHandler(service port.IOrderProductService) *OrderProductHand
 }
 
 func (h *OrderProductHandler) Register(router *gin.RouterGroup) {
+	router.GET("/:orderID/:productID", h.GetOrderProduct)
 	router.GET("/", h.ListOrderProducts)
 	router.POST("/", h.CreateOrderProduct)
 	router.PUT("/", h.UpdateOrderProduct)
-	router.DELETE("/", h.DeleteOrderProduct)
+	router.DELETE("/:orderID/:productID", h.DeleteOrderProduct)
 }
 
 func (h *OrderProductHandler) GroupRouterPattern() string {
 	return "/api/v1/orders/products"
+}
+
+// GetOrderProduct godoc
+//
+//	@Summary		Get an order product
+//	@Description	Get an order product
+//	@Tags			orders
+//	@Accept			json
+//	@Produce		json
+//	@Param			orderId		path		int				true	"Order ID"
+//	@Param			productId		path		int				true	"Product ID"
+//	@Success		200		{object}	response.OrderProductResponse
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Router			/api/v1/orders/products/:orderId/:productId [get]
+func (h *OrderProductHandler) GetOrderProduct(c *gin.Context) {
+	orderID := c.Param("orderID")
+	productID := c.Param("productID")
+
+	orderIDUint64, err := strconv.ParseUint(orderID, 10, 64)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidQueryParams)
+		return
+	}
+
+	productIDUint64, err := strconv.ParseUint(productID, 10, 64)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidQueryParams)
+		return
+	}
+
+	orderProduct, err := h.service.GetByID(orderIDUint64, productIDUint64)
+	if err != nil {
+		response.HandleError(c, err)
+		return
+	}
+
+	orderProductResponse := response.NewOrderProductResponse(orderProduct)
+	c.JSON(http.StatusOK, orderProductResponse)
 }
 
 // CreateOrderProduct godoc
@@ -161,25 +202,29 @@ func (h *OrderProductHandler) ListOrderProducts(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		int	true	"OrderResponse ID"
-//	@Param			orderProduct	body		request.DeleteOrderProductRequest	true	"DeleteOrderProductRequest"
+//	@Param			orderId		path		int				true	"Order ID"
+//	@Param			productId		path		int				true	"Product ID"
 //	@Success		204	{object}	string
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/orders/products/ [delete]
+//	@Router			/api/v1/orders/products/:orderId/:productId [delete]
 func (h *OrderProductHandler) DeleteOrderProduct(c *gin.Context) {
-	var req request.DeleteOrderProductRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		response.ValidationError(c, err)
+	orderID := c.Param("orderID")
+	productID := c.Param("productID")
+
+	orderIDUint64, err := strconv.ParseUint(orderID, 10, 64)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidQueryParams)
 		return
 	}
 
-	orderProduct := &domain.OrderProduct{
-		OrderID:   req.OrderID,
-		ProductID: req.ProductID,
+	productIDUint64, err := strconv.ParseUint(productID, 10, 64)
+	if err != nil {
+		response.HandleError(c, domain.ErrInvalidQueryParams)
+		return
 	}
-
-	if err := h.service.Delete(orderProduct); err != nil {
+	if err := h.service.Delete(orderIDUint64, productIDUint64); err != nil {
 		response.HandleError(c, err)
 		return
 	}

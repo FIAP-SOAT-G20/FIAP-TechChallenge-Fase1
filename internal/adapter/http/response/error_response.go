@@ -12,12 +12,18 @@ import (
 )
 
 var errorStatusMap = map[error]int{
-	domain.ErrNotFound:           http.StatusNotFound,
-	domain.ErrConflict:           http.StatusConflict,
-	domain.ErrInvalidParam:       http.StatusBadRequest,
-	domain.ErrInvalidQueryParams: http.StatusBadRequest,
-	domain.ErrInvalidToken:       http.StatusUnauthorized,
-	domain.ErrExpiredToken:       http.StatusUnauthorized,
+	domain.ErrNotFound:                     http.StatusNotFound,
+	domain.ErrConflict:                     http.StatusConflict,
+	domain.ErrInvalidParam:                 http.StatusBadRequest,
+	domain.ErrInvalidQueryParams:           http.StatusBadRequest,
+	domain.ErrInvalidToken:                 http.StatusUnauthorized,
+	domain.ErrExpiredToken:                 http.StatusUnauthorized,
+	domain.ErrOrderInvalidStatusTransition: http.StatusBadRequest,
+	domain.ErrOrderWithoutProducts:         http.StatusPreconditionFailed,
+	domain.ErrOrderMandatoryStaffId:        http.StatusBadRequest,
+	domain.ErrOrderIdMandatory:             http.StatusBadRequest,
+	domain.ErrOrderIsNotOnStatusOpen:       http.StatusPreconditionFailed,
+	domain.ErrProductIdMandatory:           http.StatusBadRequest,
 }
 
 // ValidationError sends an error response for specific request validation errors

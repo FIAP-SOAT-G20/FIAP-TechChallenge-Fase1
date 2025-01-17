@@ -25,12 +25,12 @@ func (os *OrderProductService) Create(orderProduct *domain.OrderProduct) error {
 
 	order, err := os.orderService.GetByID(orderProduct.OrderID)
 	if err != nil {
-		return domain.ErrNotFound
+		return domain.ErrOrderIdMandatory
 	}
 
 	product, err := os.productService.GetByID(orderProduct.ProductID)
 	if err != nil {
-		return domain.ErrNotFound
+		return domain.ErrProductIdMandatory
 	}
 
 	if orderProduct.Quantity <= 0 {
@@ -53,8 +53,12 @@ func (os *OrderProductService) Create(orderProduct *domain.OrderProduct) error {
 	return os.orderService.Update(order, nil)
 }
 
-func (ps *OrderProductService) GetByID(id uint64) (*domain.OrderProduct, error) {
-	return ps.orderProductRepository.GetByID(id)
+func (ps *OrderProductService) GetByID(orderID, productID uint64) (*domain.OrderProduct, error) {
+	orderProduct, err := ps.orderProductRepository.GetByID(orderID, productID)
+	if err != nil {
+		return nil, domain.ErrNotFound
+	}
+	return orderProduct, nil
 }
 
 func (ps *OrderProductService) List(orderID, productID uint64, page, limit int) ([]domain.OrderProduct, int64, error) {
@@ -62,14 +66,14 @@ func (ps *OrderProductService) List(orderID, productID uint64, page, limit int) 
 }
 
 func (os *OrderProductService) Update(orderProduct *domain.OrderProduct) error {
-	orderProducts, _, err := os.orderProductRepository.GetAll(orderProduct.OrderID, orderProduct.ProductID, 0, 1)
-	if err != nil || len(orderProducts) == 0 {
+	existingOrderProduct, err := os.orderProductRepository.GetByID(orderProduct.OrderID, orderProduct.ProductID)
+	if err != nil {
 		return domain.ErrNotFound
 	}
 	if orderProduct.Quantity <= 0 {
 		return domain.ErrInvalidParam
 	}
-	orderProduct.Price = orderProducts[0].Price
+	orderProduct.Price = existingOrderProduct.Price
 	orderProduct.UpdatedAt = time.Now()
 	err = os.orderProductRepository.Update(orderProduct)
 	if err != nil {
@@ -87,11 +91,23 @@ func (os *OrderProductService) Update(orderProduct *domain.OrderProduct) error {
 	return os.orderService.Update(order, nil)
 }
 
-func (os *OrderProductService) Delete(orderProduct *domain.OrderProduct) error {
-	orderProducts, _, err := os.orderProductRepository.GetAll(orderProduct.OrderID, orderProduct.ProductID, 0, 1)
-	if err != nil || len(orderProducts) == 0 {
+func (os *OrderProductService) Delete(orderID, productID uint64) error {
+	_, err := os.orderProductRepository.GetByID(orderID, productID)
+	if err != nil {
 		return domain.ErrNotFound
 	}
-
-	return os.orderProductRepository.Delete(&orderProducts[0])
+	order, err := os.orderService.GetByID(orderID)
+	if err != nil {
+		return domain.ErrNotFound
+	}
+	if order.Status != domain.OPEN {
+		return domain.ErrOrderIsNotOnStatusOpen
+	}
+	err = os.orderProductRepository.Delete(orderID, productID)
+	totalBill, err := os.orderProductRepository.GetTotalBillByOrderId(orderID)
+	if err != nil {
+		return err
+	}
+	order.TotalBill = totalBill
+	return os.orderService.Update(order, nil)
 }

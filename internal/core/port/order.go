@@ -10,14 +10,12 @@ type IOrderRepository interface {
 	Delete(id uint64) error
 }
 
-type IOrderProductRepository interface {
-	Insert(orderProduct *domain.OrderProduct) error
-	GetByID(id uint64) (*domain.OrderProduct, error)
-	GetAllByOrderID(orderID uint64) ([]domain.OrderProduct, error)
-	GetAll(orderId, productId uint64, page, limit int) ([]domain.OrderProduct, int64, error)
-	GetTotalBillByOrderId(orderID uint64) (float32, error)
-	Update(order *domain.OrderProduct) error
-	Delete(orderProduct *domain.OrderProduct) error
+type IOrderService interface {
+	Create(order *domain.Order) error
+	GetByID(id uint64) (*domain.Order, error)
+	List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error)
+	Update(order *domain.Order, staffID *uint64) error
+	Delete(id uint64) error
 }
 
 type IOrderHistoryRepository interface {
@@ -27,15 +25,6 @@ type IOrderHistoryRepository interface {
 	Delete(id uint64) error
 }
 
-type IOrderService interface {
-	Create(order *domain.Order) error
-	GetByID(id uint64) (*domain.Order, error)
-	List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error)
-	Update(order *domain.Order, staffID *uint64) error
-	Delete(id uint64) error
-	//UpdateStatus(id uint64, status domain.OrderStatus) error
-}
-
 type IOrderHistoryService interface {
 	Create(orderID uint64, staffID *uint64, status domain.OrderStatus) error
 	GetByID(id uint64) (*domain.OrderHistory, error)
@@ -43,10 +32,20 @@ type IOrderHistoryService interface {
 	Delete(id uint64) error
 }
 
+type IOrderProductRepository interface {
+	Insert(orderProduct *domain.OrderProduct) error
+	GetByID(orderID, productID uint64) (*domain.OrderProduct, error)
+	GetAllByOrderID(orderID uint64) ([]domain.OrderProduct, error)
+	GetAll(orderId, productId uint64, page, limit int) ([]domain.OrderProduct, int64, error)
+	GetTotalBillByOrderId(orderID uint64) (float32, error)
+	Update(order *domain.OrderProduct) error
+	Delete(orderID, productID uint64) error
+}
+
 type IOrderProductService interface {
 	Create(orderProduct *domain.OrderProduct) error
-	GetByID(id uint64) (*domain.OrderProduct, error)
+	GetByID(orderID, productID uint64) (*domain.OrderProduct, error)
 	List(orderID, productID uint64, page, limit int) ([]domain.OrderProduct, int64, error)
 	Update(orderProduct *domain.OrderProduct) error
-	Delete(orderProduct *domain.OrderProduct) error
+	Delete(orderID, productID uint64) error
 }

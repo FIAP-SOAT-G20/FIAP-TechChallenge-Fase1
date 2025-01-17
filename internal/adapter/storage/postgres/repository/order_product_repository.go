@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"errors"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"gorm.io/gorm"
 )
@@ -18,16 +17,13 @@ func (r *OrderProductRepository) Insert(orderProduct *domain.OrderProduct) error
 	return r.db.Create(orderProduct).Error
 }
 
-func (r *OrderProductRepository) GetByID(id uint64) (*domain.OrderProduct, error) {
-	var orderProduct domain.OrderProduct
-
-	if err := r.db.
-		Preload("Order").
-		First(&orderProduct, id); errors.Is(err.Error, gorm.ErrRecordNotFound) {
-		return nil, domain.ErrNotFound
+func (r *OrderProductRepository) GetByID(orderID, productID uint64) (*domain.OrderProduct, error) {
+	var item domain.OrderProduct
+	err := r.db.Where(&domain.OrderProduct{OrderID: orderID, ProductID: productID}).First(&item).Error
+	if err != nil {
+		return nil, err
 	}
-
-	return &orderProduct, nil
+	return &item, nil
 }
 
 func (r *OrderProductRepository) GetAllByOrderID(orderID uint64) ([]domain.OrderProduct, error) {
@@ -81,8 +77,11 @@ func (r *OrderProductRepository) Update(orderProduct *domain.OrderProduct) error
 		}).Error
 }
 
-func (r *OrderProductRepository) Delete(orderProduct *domain.OrderProduct) error {
-	return r.db.Model(orderProduct).
-		Where("order_id = ? and product_id = ? ", orderProduct.OrderID, orderProduct.ProductID).
-		Delete(orderProduct).Error
+func (r *OrderProductRepository) Delete(orderID, productID uint64) error {
+	return r.db.Model(&domain.OrderProduct{}).
+		Where("order_id = ? and product_id = ? ", orderID, productID).
+		Delete(&domain.OrderProduct{
+			OrderID:   orderID,
+			ProductID: productID,
+		}).Error
 }

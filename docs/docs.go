@@ -885,7 +885,62 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/orders/products/": {
+        "/api/v1/orders/products/:orderId/:productId": {
+            "get": {
+                "description": "Get an order product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "Get an order product",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "orderId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "productId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.OrderProductResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Data not found error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "Delete an order product",
                 "consumes": [
@@ -907,13 +962,18 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "DeleteOrderProductRequest",
-                        "name": "orderProduct",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.DeleteOrderProductRequest"
-                        }
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "orderId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "productId",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2021,23 +2081,6 @@ const docTemplate = `{
                         }
                     ],
                     "example": "COOK, ATTENDANT or MANAGER"
-                }
-            }
-        },
-        "request.DeleteOrderProductRequest": {
-            "type": "object",
-            "required": [
-                "order_id",
-                "product_id"
-            ],
-            "properties": {
-                "order_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "product_id": {
-                    "type": "integer",
-                    "example": 1
                 }
             }
         },

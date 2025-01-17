@@ -21,4 +21,9 @@ var (
 	ErrOrderWithoutProducts         = errors.New("order without products")
 	ErrOrderMandatoryStaffId        = errors.New("order mandatory staff id")
 	ErrOrderIdMandatory             = errors.New("order id mandatory")
+	ErrOrderIsNotOnStatusOpen       = errors.New("order is not on status open")
+)
+
+var (
+	ErrProductIdMandatory = errors.New("product id mandatory")
 )

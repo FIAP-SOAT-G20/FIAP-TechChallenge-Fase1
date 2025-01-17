@@ -176,18 +176,6 @@ definitions:
     - name
     - role
     type: object
-  request.DeleteOrderProductRequest:
-    properties:
-      order_id:
-        example: 1
-        type: integer
-      product_id:
-        example: 1
-        type: integer
-    required:
-    - order_id
-    - product_id
-    type: object
   request.UpdateOrderProductRequest:
     properties:
       order_id:
@@ -1133,7 +1121,7 @@ paths:
       summary: Update an order product
       tags:
       - orders
-  /api/v1/orders/products/:
+  /api/v1/orders/products/:orderId/:productId:
     delete:
       consumes:
       - application/json
@@ -1144,12 +1132,16 @@ paths:
         name: id
         required: true
         type: integer
-      - description: DeleteOrderProductRequest
-        in: body
-        name: orderProduct
+      - description: Order ID
+        in: path
+        name: orderId
         required: true
-        schema:
-          $ref: '#/definitions/request.DeleteOrderProductRequest'
+        type: integer
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -1170,6 +1162,43 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Delete an order product
+      tags:
+      - orders
+    get:
+      consumes:
+      - application/json
+      description: Get an order product
+      parameters:
+      - description: Order ID
+        in: path
+        name: orderId
+        required: true
+        type: integer
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get an order product
       tags:
       - orders
   /api/v1/payments/{orderId}/checkout:
