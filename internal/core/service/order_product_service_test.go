@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/storage/mock/repository"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/stretchr/testify/assert"
@@ -24,6 +23,7 @@ func TestOrderProductService_Create(t *testing.T) {
 
 	t.Run("Should fail if order not found", func(t *testing.T) {
 		resetMocks()
+		orderProductRepositoryMock.On("GetByID", mock.AnythingOfType("uint64"), mock.AnythingOfType("uint64")).Return((*domain.OrderProduct)(nil), domain.ErrNotFound)
 		orderProduct := domain.OrderProduct{OrderID: 0, ProductID: 0, Quantity: 1}
 		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(nil, domain.ErrOrderIdMandatory)
 		err := orderProductService.Create(&orderProduct)
@@ -32,6 +32,7 @@ func TestOrderProductService_Create(t *testing.T) {
 
 	t.Run("Should fail if order is not on status OPEN", func(t *testing.T) {
 		resetMocks()
+		orderProductRepositoryMock.On("GetByID", mock.AnythingOfType("uint64"), mock.AnythingOfType("uint64")).Return((*domain.OrderProduct)(nil), domain.ErrNotFound)
 		orderProduct := domain.OrderProduct{OrderID: 1, ProductID: 0, Quantity: 1}
 		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Order{ID: 1, Status: domain.PENDING}, nil)
 		err := orderProductService.Create(&orderProduct)
@@ -40,6 +41,7 @@ func TestOrderProductService_Create(t *testing.T) {
 
 	t.Run("Should fail if product not found", func(t *testing.T) {
 		resetMocks()
+		orderProductRepositoryMock.On("GetByID", mock.AnythingOfType("uint64"), mock.AnythingOfType("uint64")).Return((*domain.OrderProduct)(nil), domain.ErrNotFound)
 		orderProduct := domain.OrderProduct{OrderID: 1, ProductID: 0, Quantity: 1}
 		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Order{ID: 1, Status: domain.OPEN}, nil)
 		productServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return((*domain.Product)(nil), domain.ErrProductIdMandatory)
@@ -49,6 +51,7 @@ func TestOrderProductService_Create(t *testing.T) {
 
 	t.Run("Should fail if quantity is lower or equal than zero", func(t *testing.T) {
 		resetMocks()
+		orderProductRepositoryMock.On("GetByID", mock.AnythingOfType("uint64"), mock.AnythingOfType("uint64")).Return((*domain.OrderProduct)(nil), domain.ErrNotFound)
 		orderProduct := domain.OrderProduct{OrderID: 1, ProductID: 1, Quantity: 0}
 		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Order{ID: 1, Status: domain.OPEN}, nil)
 		productServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Product{ID: 1}, nil)
@@ -59,6 +62,7 @@ func TestOrderProductService_Create(t *testing.T) {
 
 	t.Run("Should create a new order product", func(t *testing.T) {
 		resetMocks()
+		orderProductRepositoryMock.On("GetByID", mock.AnythingOfType("uint64"), mock.AnythingOfType("uint64")).Return((*domain.OrderProduct)(nil), domain.ErrNotFound)
 		orderProduct := domain.OrderProduct{OrderID: 1, ProductID: 0, Quantity: 1}
 		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}, nil)
 		productServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Product{ID: 1, Price: 1}, nil)
@@ -87,10 +91,11 @@ func TestOrderProductService_Update(t *testing.T) {
 
 	t.Run("Should fail if order not found", func(t *testing.T) {
 		resetMocks()
-		orderProduct := domain.OrderProduct{OrderID: 0, ProductID: 0, Quantity: 1}
+		orderProductRepositoryMock.On("GetByID", mock.AnythingOfType("uint64"), mock.AnythingOfType("uint64")).Return(&domain.OrderProduct{OrderID: 1, ProductID: 1}, nil)
+		orderProduct := domain.OrderProduct{OrderID: 1, ProductID: 0, Quantity: 1}
 		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(nil, domain.ErrOrderIdMandatory)
-		err := orderProductService.Create(&orderProduct)
-		assert.EqualError(t, err, domain.ErrOrderIdMandatory.Error())
+		err := orderProductService.Update(&orderProduct)
+		assert.EqualError(t, err, domain.ErrNotFound.Error())
 	})
 
 	t.Run("Should fail if order is not on status OPEN", func(t *testing.T) {
@@ -102,22 +107,14 @@ func TestOrderProductService_Update(t *testing.T) {
 		assert.EqualError(t, err, domain.ErrOrderIsNotOnStatusOpen.Error())
 	})
 
-	t.Run("Should fail if product not found", func(t *testing.T) {
-		resetMocks()
-		orderProduct := domain.OrderProduct{OrderID: 1, ProductID: 0, Quantity: 1}
-		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Order{ID: 1, Status: domain.OPEN}, nil)
-		productServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return((*domain.Product)(nil), errors.New("product not found"))
-		err := orderProductService.Create(&orderProduct)
-		assert.EqualError(t, err, domain.ErrProductIdMandatory.Error())
-	})
-
 	t.Run("Should fail if quantity is lower or equal than zero", func(t *testing.T) {
 		resetMocks()
+		orderProductRepositoryMock.On("GetByID", mock.AnythingOfType("uint64"), mock.AnythingOfType("uint64")).Return(&domain.OrderProduct{OrderID: 1, ProductID: 1}, nil)
 		orderProduct := domain.OrderProduct{OrderID: 1, ProductID: 1, Quantity: 0}
 		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Order{ID: 1, Status: domain.OPEN}, nil)
 		productServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Product{ID: 1}, nil)
 
-		err := orderProductService.Create(&orderProduct)
+		err := orderProductService.Update(&orderProduct)
 		assert.EqualError(t, err, domain.ErrInvalidParam.Error())
 	})
 
