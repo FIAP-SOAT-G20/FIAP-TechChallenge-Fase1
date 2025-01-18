@@ -5,27 +5,47 @@ import "github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 type IOrderRepository interface {
 	Insert(order *domain.Order) error
 	GetByID(id uint64) (*domain.Order, error)
-	GetAll(clientID uint64, page, limit int) ([]domain.Order, int64, error)
+	GetAll(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error)
 	Update(order *domain.Order) error
 	Delete(id uint64) error
-}
-
-type IOrderProductRepository interface {
-	Insert(orderProduct *domain.OrderProduct) error
-	InsertMany(orderProduct []domain.OrderProduct) error
-}
-
-type IOrderHistoryRepository interface {
-	Insert(orderHistory *domain.OrderHistory) error
 }
 
 type IOrderService interface {
 	Create(order *domain.Order) error
 	GetByID(id uint64) (*domain.Order, error)
-	List(clientID uint64, page, limit int) ([]domain.Order, int64, error)
-	Update(order *domain.Order) error
+	List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error)
+	Update(order *domain.Order, staffID *uint64) error
 	Delete(id uint64) error
-	UpdateStatus(id uint64, status domain.OrderStatus) error
-	AddProduct(id uint64, product *domain.Product) error
-	AddProducts(id uint64, product []domain.Product) error
+}
+
+type IOrderHistoryRepository interface {
+	Insert(orderHistory *domain.OrderHistory) error
+	GetByID(id uint64) (*domain.OrderHistory, error)
+	GetAll(orderID uint64, status *domain.OrderStatus, page, limit int) ([]domain.OrderHistory, int64, error)
+	Delete(id uint64) error
+}
+
+type IOrderHistoryService interface {
+	Create(orderID uint64, staffID *uint64, status domain.OrderStatus) error
+	GetByID(id uint64) (*domain.OrderHistory, error)
+	List(orderID uint64, status *domain.OrderStatus, page, limit int) ([]domain.OrderHistory, int64, error)
+	Delete(id uint64) error
+}
+
+type IOrderProductRepository interface {
+	Insert(orderProduct *domain.OrderProduct) error
+	GetByID(orderID, productID uint64) (*domain.OrderProduct, error)
+	GetAllByOrderID(orderID uint64) ([]domain.OrderProduct, error)
+	GetAll(orderId, productId uint64, page, limit int) ([]domain.OrderProduct, int64, error)
+	GetTotalBillByOrderId(orderID uint64) (float32, error)
+	Update(order *domain.OrderProduct) error
+	Delete(orderID, productID uint64) error
+}
+
+type IOrderProductService interface {
+	Create(orderProduct *domain.OrderProduct) error
+	GetByID(orderID, productID uint64) (*domain.OrderProduct, error)
+	List(orderID, productID uint64, page, limit int) ([]domain.OrderProduct, int64, error)
+	Update(orderProduct *domain.OrderProduct) error
+	Delete(orderID, productID uint64) error
 }

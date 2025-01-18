@@ -8,68 +8,97 @@ import (
 )
 
 type OrderService struct {
-	orderRepository        port.IOrderRepository
-	orderHistoryRepository port.IOrderHistoryRepository
-	orderProductRepository port.IOrderProductRepository
-	customerRepository     port.ICustomerRepository
+	orderRepository     port.IOrderRepository
+	orderHistoryService port.IOrderHistoryService
+	customerService     port.ICustomerService
+	staffService        port.IStaffService
 }
 
-func NewOrderService(orderRepository port.IOrderRepository, orderHistoryRepo port.IOrderHistoryRepository, orderProductRepo port.IOrderProductRepository, customerRepository port.ICustomerRepository) *OrderService {
+func NewOrderService(orderRepository port.IOrderRepository, customerService port.ICustomerService, orderHistoryService port.IOrderHistoryService, staffService port.IStaffService) *OrderService {
 	return &OrderService{
-		orderRepository:        orderRepository,
-		orderHistoryRepository: orderHistoryRepo,
-		orderProductRepository: orderProductRepo,
-		customerRepository:     customerRepository,
+		orderRepository:     orderRepository,
+		customerService:     customerService,
+		orderHistoryService: orderHistoryService,
+		staffService:        staffService,
 	}
 }
 
-func (ps *OrderService) Create(order *domain.Order) error {
+func (os *OrderService) Create(order *domain.Order) error {
 
-	_, err := ps.customerRepository.GetByID(order.CustomerID)
+	_, err := os.customerService.GetByID(order.CustomerID)
 	if err != nil {
 		return domain.ErrNotFound
 	}
 
-	if order.TotalBill <= 0 {
-		return domain.ErrInvalidParam
-	}
-
+	order.Status = domain.OPEN
 	order.CreatedAt = time.Now()
 	order.UpdatedAt = time.Now()
 
-	err = ps.orderRepository.Insert(order)
+	err = os.orderRepository.Insert(order)
 	if err != nil {
 		return err
 	}
 
-	// TODO throw event order created
-	return nil
+	return os.orderHistoryService.Create(order.ID, nil, order.Status)
 }
 
-func (ps *OrderService) GetByID(id uint64) (*domain.Order, error) {
-	return ps.orderRepository.GetByID(id)
+func (os *OrderService) GetByID(id uint64) (*domain.Order, error) {
+	return os.orderRepository.GetByID(id)
 }
 
-func (ps *OrderService) List(clientId uint64, page, limit int) ([]domain.Order, int64, error) {
-	return ps.orderRepository.GetAll(clientId, page, limit)
+func (os *OrderService) List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error) {
+	return os.orderRepository.GetAll(customerID, status, page, limit)
 }
 
-func (ps *OrderService) Update(order *domain.Order) error {
-	_, err := ps.orderRepository.GetByID(order.ID)
+func (os *OrderService) Update(order *domain.Order, staffID *uint64) error {
+	existing, err := os.orderRepository.GetByID(order.ID)
 	if err != nil {
 		return domain.ErrNotFound
+	}
+
+	if existing.CustomerID != order.CustomerID {
+		return domain.ErrInvalidParam
+	}
+
+	if existing.Status != order.Status {
+		if !domain.CanTransitionTo(existing.Status, order.Status) {
+			return domain.ErrOrderInvalidStatusTransition
+		}
+
+		if domain.StatusTransitionNeedsStaffID(order.Status) && staffID == nil {
+			return domain.ErrOrderMandatoryStaffId
+		}
+
+		if order.Status == domain.PENDING && len(order.OrderProducts) == 0 {
+			return domain.ErrOrderWithoutProducts
+		}
+	}
+
+	if staffID != nil {
+		_, err = os.staffService.GetByID(*staffID)
+		if err != nil {
+			return domain.ErrNotFound
+		}
 	}
 
 	order.UpdatedAt = time.Now()
 
-	return ps.orderRepository.Update(order)
+	err = os.orderRepository.Update(order)
+	if err != nil {
+		return err
+	}
+
+	if existing.Status != order.Status {
+		return os.orderHistoryService.Create(order.ID, staffID, order.Status)
+	}
+	return nil
 }
 
-func (ps *OrderService) Delete(id uint64) error {
-	_, err := ps.orderRepository.GetByID(id)
+func (os *OrderService) Delete(id uint64) error {
+	_, err := os.orderRepository.GetByID(id)
 	if err != nil {
 		return domain.ErrNotFound
 	}
 
-	return ps.orderRepository.Delete(id)
+	return os.orderRepository.Delete(id)
 }

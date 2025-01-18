@@ -10,7 +10,7 @@ type ProductResponse struct {
 	ID          uint64            `json:"id"`
 	Name        string            `json:"name"`
 	Description string            `json:"description"`
-	Price       float64           `json:"price"`
+	Price       float32           `json:"price"`
 	Active      bool              `json:"active"`
 	CategoryID  uint64            `json:"category_id"`
 	Category    *CategoryResponse `json:"category,omitempty"`

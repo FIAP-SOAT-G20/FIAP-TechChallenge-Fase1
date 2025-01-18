@@ -34,7 +34,7 @@ func (h *ProductHandler) GroupRouterPattern() string {
 type createProductRequest struct {
 	Name        string  `json:"name" binding:"required" example:"BK Mega Stacker 2.0"`
 	Description string  `json:"description" binding:"required" example:"The best burger in the world"`
-	Price       float64 `json:"price" binding:"required" example:"29.90"`
+	Price       float32 `json:"price" binding:"required" example:"29.90"`
 	CategoryID  uint64  `json:"category_id" binding:"required" example:"1"`
 }
 
@@ -156,7 +156,7 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 type UpdateProduct struct {
 	Name        string  `json:"name" example:"McDonald's Big Mac"`
 	Description string  `json:"description" example:"The best burger in the world"`
-	Price       float64 `json:"price" example:"29.90"`
+	Price       float32 `json:"price" example:"29.90"`
 	CategoryID  uint64  `json:"category_id" example:"1"`
 }
 

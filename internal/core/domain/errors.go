@@ -15,3 +15,15 @@ var (
 	ErrExpiredToken  = errors.New("access token has expired")
 	ErrInvalidToken  = errors.New("access token is invalid")
 )
+
+var (
+	ErrOrderInvalidStatusTransition = errors.New("invalid status transition")
+	ErrOrderWithoutProducts         = errors.New("order without products")
+	ErrOrderMandatoryStaffId        = errors.New("order mandatory staff id")
+	ErrOrderIdMandatory             = errors.New("order id mandatory")
+	ErrOrderIsNotOnStatusOpen       = errors.New("order is not on status open")
+)
+
+var (
+	ErrProductIdMandatory = errors.New("product id mandatory")
+)

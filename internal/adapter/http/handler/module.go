@@ -8,11 +8,15 @@ import (
 var Module = fx.Options(
 	fx.Provide(
 		AsRoute(NewCustomerHandler),
+		AsRoute(NewOrderProductHandler),
+		AsRoute(NewOrderHistoryHandler),
 		AsRoute(NewProductHandler),
 		AsRoute(NewHealthCheckHandler),
 		AsRoute(NewSignInHandler),
+		AsRoute(NewOrderHandler),
 		AsRoute(NewPaymentHandler),
 		AsRoute(NewCategoryHandler),
+		AsRoute(NewStaffHandler),
 	),
 )
 

@@ -23,6 +23,8 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    env_file:
+      - .env.local
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s

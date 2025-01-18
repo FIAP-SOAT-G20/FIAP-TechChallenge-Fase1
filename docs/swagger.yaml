@@ -1,5 +1,25 @@
 basePath: /api/v1
 definitions:
+  domain.OrderStatus:
+    enum:
+    - UNDEFINDED
+    - OPEN
+    - CANCELLED
+    - PENDING
+    - RECEIVED
+    - PREPARING
+    - READY
+    - COMPLETED
+    type: string
+    x-enum-varnames:
+    - UNDEFINDED
+    - OPEN
+    - CANCELLED
+    - PENDING
+    - RECEIVED
+    - PREPARING
+    - READY
+    - COMPLETED
   domain.PaymentStatus:
     enum:
     - PROCESSING
@@ -12,6 +32,26 @@ definitions:
     - CONFIRMED
     - FAILED
     - CANCELED
+  domain.Role:
+    enum:
+    - COOK
+    - ATTENDANT
+    - MANAGER
+    type: string
+    x-enum-varnames:
+    - COOK
+    - ATTENDANT
+    - MANAGER
+  handler.UpdateOrder:
+    properties:
+      staff_id:
+        example: 1
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/domain.OrderStatus'
+        example: PENDING
+    type: object
   handler.UpdateProduct:
     properties:
       category_id:
@@ -99,6 +139,35 @@ definitions:
         example: John Doe
         type: string
     type: object
+  request.CreateOrderRequest:
+    properties:
+      customer_id:
+        example: 1
+        type: integer
+    required:
+    - customer_id
+    type: object
+  request.CreateStaffRequest:
+    properties:
+      name:
+        example: John Doe
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/domain.Role'
+        example: COOK
+    required:
+    - name
+    - role
+    type: object
+  request.OrderProductRequest:
+    properties:
+      quantity:
+        example: 10
+        type: integer
+    required:
+    - quantity
+    type: object
   request.UpdatePaymentRequest:
     properties:
       resource:
@@ -107,6 +176,19 @@ definitions:
       topic:
         example: payment
         type: string
+    type: object
+  request.UpdateStaffRequest:
+    properties:
+      name:
+        example: John Doe
+        type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/domain.Role'
+        example: ATTENDANT
+    required:
+    - name
+    - role
     type: object
   response.CategoriesPaginated:
     properties:
@@ -192,6 +274,66 @@ definitions:
       time:
         type: string
     type: object
+  response.OrderPaginated:
+    properties:
+      limit:
+        type: integer
+      orders:
+        items:
+          $ref: '#/definitions/response.OrderResponse'
+        type: array
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  response.OrderProductPaginated:
+    properties:
+      limit:
+        type: integer
+      order_products:
+        items:
+          $ref: '#/definitions/response.OrderProductResponse'
+        type: array
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
+  response.OrderProductResponse:
+    properties:
+      created_at:
+        type: string
+      order_id:
+        type: integer
+      price:
+        type: number
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  response.OrderResponse:
+    properties:
+      created_at:
+        type: string
+      customer_id:
+        type: integer
+      id:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/response.OrderProductResponse'
+        type: array
+      status:
+        type: string
+      total_bill:
+        type: number
+      updated_at:
+        type: string
+    type: object
   response.PaymentResponse:
     properties:
       external_payment_id:
@@ -249,6 +391,28 @@ definitions:
         type: integer
       name:
         type: string
+    type: object
+  response.StaffResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        $ref: '#/definitions/domain.Role'
+    type: object
+  response.StaffsPaginated:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      staffs:
+        items:
+          $ref: '#/definitions/response.StaffResponse'
+        type: array
+      total:
+        type: integer
     type: object
 externalDocs:
   description: GitHub Repository
@@ -377,6 +541,38 @@ paths:
           schema:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Delete a category
+      tags:
+      - categories
+    get:
+      consumes:
+      - application/json
+      description: get a category by id
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category retrieved
+          schema:
+            $ref: '#/definitions/response.CategoryResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get a category
       tags:
       - categories
     put:
@@ -574,7 +770,440 @@ paths:
       summary: Update a customer
       tags:
       - customers
-  /api/v1/payments/{orderId}/checkout:
+  /api/v1/orders:
+    get:
+      consumes:
+      - application/json
+      description: List orders
+      parameters:
+      - description: Customer ID
+        in: query
+        name: customer_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderPaginated'
+      summary: List orders
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create an order
+      parameters:
+      - description: Consumer ID
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create an order
+      tags:
+      - orders
+  /api/v1/orders/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an order
+      parameters:
+      - description: OrderResponse ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete an order
+      tags:
+      - orders
+    get:
+      consumes:
+      - application/json
+      description: Get an order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get an order
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Update an order
+        Only staff can update the order status
+        The status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
+        Transition of status:
+        - OPEN      -> CANCELLED || PENDING
+        - CANCELLED -> {},
+        - PENDING   -> OPEN || RECEIVED
+        - RECEIVED  -> PREPARING
+        - PREPARING -> READY
+        - READY     ->COMPLETED
+        - COMPLETED -> {}
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: UpdateOrder
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateOrder'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update an order
+      tags:
+      - orders
+  /api/v1/orders/histories:
+    get:
+      consumes:
+      - application/json
+      description: List order histories
+      parameters:
+      - description: Status name
+        in: query
+        name: status
+        type: string
+      - description: Order ID
+        in: query
+        name: order_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderPaginated'
+      summary: List order histories
+      tags:
+      - orderHistories
+  /api/v1/orders/histories/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get an order history
+      parameters:
+      - description: Order History ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get an order history
+      tags:
+      - orderHistories
+  /api/v1/orders/products:
+    get:
+      consumes:
+      - application/json
+      description: List order products
+      parameters:
+      - description: Order ID
+        in: query
+        name: order_id
+        type: integer
+      - description: Product ID
+        in: query
+        name: product_id
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderProductPaginated'
+      summary: List order products
+      tags:
+      - orderHistories
+  /api/v1/orders/products/{order_id}/{product_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an order product
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: Product ID
+        in: path
+        name: product_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete an order product
+      tags:
+      - orders
+    get:
+      consumes:
+      - application/json
+      description: Get an order product
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: Product ID
+        in: path
+        name: product_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get an order product
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create an order product
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: Product ID
+        in: path
+        name: product_id
+        required: true
+        type: integer
+      - description: OrderProductRequest
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/request.OrderProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.OrderProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create an order product
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      description: Update an order product
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: Product ID
+        in: path
+        name: product_id
+        required: true
+        type: integer
+      - description: OrderProductResponse
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/request.OrderProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.OrderProductResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update an order product
+      tags:
+      - orders
+  /api/v1/payments/{order_id}/checkout:
     post:
       consumes:
       - application/json
@@ -582,7 +1211,7 @@ paths:
       parameters:
       - description: Order ID
         in: path
-        name: orderId
+        name: order_id
         required: true
         type: integer
       produces:
@@ -847,13 +1476,106 @@ paths:
       tags:
       - customers
       - sign-in
-  /categories/{id}:
+  /api/v1/staffs:
     get:
       consumes:
       - application/json
-      description: get a category by id
+      description: List staffs
       parameters:
-      - description: Category ID
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.StaffsPaginated'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: List staffs
+      tags:
+      - staffs
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Create a staff
+        Roles:
+        - COOK
+        - ATTENDANT
+        - MANAGER
+      parameters:
+      - description: Staff
+        in: body
+        name: staff
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateStaffRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.StaffResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Create a staff
+      tags:
+      - staffs
+      - sign-up
+  /api/v1/staffs/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a staff
+      parameters:
+      - description: Staff ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Delete a staff
+      tags:
+      - staffs
+    get:
+      consumes:
+      - application/json
+      description: Get a staff
+      parameters:
+      - description: Staff ID
         in: path
         name: id
         required: true
@@ -862,9 +1584,43 @@ paths:
       - application/json
       responses:
         "200":
-          description: Category retrieved
+          description: OK
           schema:
-            $ref: '#/definitions/response.CategoryResponse'
+            $ref: '#/definitions/response.StaffResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Get a staff
+      tags:
+      - staffs
+    put:
+      consumes:
+      - application/json
+      description: Update a staff
+      parameters:
+      - description: Staff ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Staff
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateStaffRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.CustomerResponse'
         "400":
           description: Validation error
           schema:
@@ -877,9 +1633,9 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Get a category
+      summary: Update a staff
       tags:
-      - categories
+      - customers
   /health:
     get:
       description: Checks application health

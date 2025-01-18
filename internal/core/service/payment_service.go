@@ -10,18 +10,18 @@ import (
 
 type PaymentService struct {
 	paymentRepository      port.IPaymentRepository
-	orderRepository        port.IOrderRepository
+	orderService           port.IOrderService
 	externalPaymentService port.IExternalPaymentService
 }
 
 func NewPaymentService(
 	paymentRepository port.IPaymentRepository,
-	orderRepository port.IOrderRepository,
+	orderService port.IOrderService,
 	externalPaymentService port.IExternalPaymentService,
 ) *PaymentService {
 	return &PaymentService{
 		paymentRepository:      paymentRepository,
-		orderRepository:        orderRepository,
+		orderService:           orderService,
 		externalPaymentService: externalPaymentService,
 	}
 }
@@ -36,9 +36,13 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 		return existentPedingPayment, nil
 	}
 
-	order, err := ps.orderRepository.GetByID(orderID)
+	order, err := ps.orderService.GetByID(orderID)
 	if err != nil {
 		return nil, domain.ErrNotFound
+	}
+
+	if len(order.OrderProducts) == 0 {
+		return nil, domain.ErrOrderWithoutProducts
 	}
 
 	paymentPayload := ps.createPaymentPayload(order)
@@ -56,6 +60,12 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 	}
 
 	payment, err := ps.paymentRepository.Insert(iPayment)
+	if err != nil {
+		return nil, err
+	}
+
+	order.Status = domain.PENDING
+	err = ps.orderService.Update(order, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -96,6 +106,17 @@ func (ps *PaymentService) UpdatePayment(payment *domain.UpdatePaymentIN) (*domai
 	}
 
 	paymentOUT, err := ps.paymentRepository.GetByExternalPaymentID(payment.Resource)
+	if err != nil {
+		return nil, err
+	}
+
+	order, err := ps.orderService.GetByID(paymentOUT.OrderID)
+	if err != nil {
+		return nil, err
+	}
+
+	order.Status = domain.RECEIVED
+	err = ps.orderService.Update(order, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -1,287 +1,149 @@
 package service
 
 import (
-	"testing"
-	"time"
-
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/storage/mock/repository"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/mocks"
+	"testing"
 )
 
 func TestOrderService_Create(t *testing.T) {
-	mockOrderRepo := new(mocks.MockOrderRepository)
-	mockOrderHistoryRepo := new(mocks.MockOrderHistoryRepository)
-	mockOrderProductRepo := new(mocks.MockOrderProductRepository)
-	mockCustomerRepo := new(mocks.MockCustomerRepository)
-	orderService := NewOrderService(mockOrderRepo, mockOrderHistoryRepo, mockOrderProductRepo, mockCustomerRepo)
+	t.Run("Should fail if customer does not exist", func(t *testing.T) {
+		orderRepositoryMock := &repository.OrderRepositoryMock{}
+		orderRepositoryMock.On("Create", mock.AnythingOfType("Order")).Return(nil)
 
-	scenarios := []struct {
-		name          string
-		order         *domain.Order
-		setupMocks    func()
-		expectedError error
-	}{
-		{
-			name: "Given valid order When Create is called Then should succeed",
-			order: &domain.Order{
-				CustomerID: 1,
-				TotalBill:  100.0,
-				OrderProducts: []domain.OrderProduct{
-					{
-						ProductID: 1,
-						Quantity:  2,
-						Price:     50.0,
-					},
-				},
-			},
-			setupMocks: func() {
-				mockCustomerRepo.On("GetByID", uint64(1)).Return(&domain.Customer{ID: 1}, nil)
-				mockOrderRepo.On("Insert", mock.AnythingOfType("*domain.Order")).Return(nil)
-			},
-			expectedError: nil,
-		},
-		{
-			name: "Given non-existent customer When Create is called Then should return error",
-			order: &domain.Order{
-				CustomerID: 1,
-				TotalBill:  100.0,
-			},
-			setupMocks: func() {
-				mockCustomerRepo.On("GetByID", uint64(1)).Return(nil, domain.ErrNotFound)
-			},
-			expectedError: domain.ErrNotFound,
-		},
-		{
-			name: "Given invalid total bill When Create is called Then should return error",
-			order: &domain.Order{
-				CustomerID: 1,
-				TotalBill:  0,
-			},
-			setupMocks: func() {
-				mockCustomerRepo.On("GetByID", uint64(1)).Return(&domain.Customer{ID: 1}, nil)
-			},
-			expectedError: domain.ErrInvalidParam,
-		},
-	}
+		customerRepositoryMock := &repository.CustomerRepositoryMock{}
+		customerRepositoryMock.On("GetByID", uint64(1)).Return((*domain.Customer)(nil), domain.ErrNotFound)
 
-	for _, tt := range scenarios {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Cleanup(func() {
-				mockOrderRepo.ExpectedCalls = nil
-				mockOrderHistoryRepo.ExpectedCalls = nil
-				mockOrderProductRepo.ExpectedCalls = nil
-				mockCustomerRepo.ExpectedCalls = nil
-			})
+		orderHistoryRepositoryMock := &repository.OrderHistoryRepositoryMock{}
+		orderHistoryRepositoryMock.On("Insert", mock.AnythingOfType("OrderHistory")).Return(nil)
 
-			tt.setupMocks()
-			err := orderService.Create(tt.order)
-			assert.Equal(t, tt.expectedError, err)
-		})
-	}
-}
+		orderHistoryService := OrderHistoryService{orderHistoryRepository: orderHistoryRepositoryMock}
+		customerService := CustomerService{customerRepository: customerRepositoryMock}
+		orderService := OrderService{orderRepository: orderRepositoryMock, customerService: &customerService, orderHistoryService: &orderHistoryService}
+		err := orderService.Create(&domain.Order{CustomerID: 1})
+		assert.NotNil(t, err)
+	})
 
-func TestOrderService_GetByID(t *testing.T) {
-	mockOrderRepo := new(mocks.MockOrderRepository)
-	mockOrderHistoryRepo := new(mocks.MockOrderHistoryRepository)
-	mockOrderProductRepo := new(mocks.MockOrderProductRepository)
-	mockCustomerRepo := new(mocks.MockCustomerRepository)
-	orderService := NewOrderService(mockOrderRepo, mockOrderHistoryRepo, mockOrderProductRepo, mockCustomerRepo)
+	t.Run("Should create a new order", func(t *testing.T) {
+		order := domain.Order{ID: 1, CustomerID: 1}
+		orderRepositoryMock := &repository.OrderRepositoryMock{}
+		orderRepositoryMock.On("Insert", mock.Anything).Return(nil)
 
-	scenarios := []struct {
-		name          string
-		id            uint64
-		setupMocks    func()
-		expectedOrder *domain.Order
-		expectedError error
-	}{
-		{
-			name: "Given existing order ID When GetByID is called Then should return order",
-			id:   1,
-			setupMocks: func() {
-				mockOrderRepo.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1}, nil)
-			},
-			expectedOrder: &domain.Order{ID: 1},
-			expectedError: nil,
-		},
-		{
-			name: "Given non-existent order ID When GetByID is called Then should return error",
-			id:   1,
-			setupMocks: func() {
-				mockOrderRepo.On("GetByID", uint64(1)).Return(nil, domain.ErrNotFound)
-			},
-			expectedOrder: nil,
-			expectedError: domain.ErrNotFound,
-		},
-	}
+		orderHistoryRepositoryMock := &repository.OrderHistoryRepositoryMock{}
+		orderHistoryRepositoryMock.On("Insert", mock.Anything).Return(nil)
+		orderHistoryService := OrderHistoryService{orderHistoryRepository: orderHistoryRepositoryMock}
 
-	for _, tt := range scenarios {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Cleanup(func() {
-				mockOrderRepo.ExpectedCalls = nil
-				mockOrderHistoryRepo.ExpectedCalls = nil
-				mockOrderProductRepo.ExpectedCalls = nil
-				mockCustomerRepo.ExpectedCalls = nil
-			})
-
-			tt.setupMocks()
-			order, err := orderService.GetByID(tt.id)
-			assert.Equal(t, tt.expectedError, err)
-			assert.Equal(t, tt.expectedOrder, order)
-		})
-	}
+		customerRepositoryMock := &repository.CustomerRepositoryMock{}
+		customerRepositoryMock.On("GetByID", uint64(1)).Return(&domain.Customer{ID: 1}, nil)
+		customerService := CustomerService{customerRepository: customerRepositoryMock}
+		orderService := OrderService{orderRepository: orderRepositoryMock, customerService: &customerService, orderHistoryService: &orderHistoryService}
+		err := orderService.Create(&order)
+		assert.Nil(t, err)
+	})
 }
 
 func TestOrderService_List(t *testing.T) {
-	mockOrderRepo := new(mocks.MockOrderRepository)
-	mockOrderHistoryRepo := new(mocks.MockOrderHistoryRepository)
-	mockOrderProductRepo := new(mocks.MockOrderProductRepository)
-	mockCustomerRepo := new(mocks.MockCustomerRepository)
-	orderService := NewOrderService(mockOrderRepo, mockOrderHistoryRepo, mockOrderProductRepo, mockCustomerRepo)
+	orderRepositoryMock := &repository.OrderRepositoryMock{}
+	orderHistoryRepositoryMock := &repository.OrderHistoryRepositoryMock{}
+	orderHistoryService := OrderHistoryService{orderHistoryRepository: orderHistoryRepositoryMock}
+	orderService := OrderService{orderRepository: orderRepositoryMock, orderHistoryService: &orderHistoryService}
 
-	scenarios := []struct {
-		name          string
-		clientID      uint64
-		page          int
-		limit         int
-		setupMocks    func()
-		expectedCount int64
-		expectedError error
-	}{
-		{
-			name:     "Given valid parameters When List is called Then should return orders",
-			clientID: 1,
-			page:     1,
-			limit:    10,
-			setupMocks: func() {
-				orders := []domain.Order{{ID: 1, CustomerID: 1}}
-				mockOrderRepo.On("GetAll", uint64(1), 1, 10).Return(orders, int64(1), nil)
-			},
-			expectedCount: 1,
-			expectedError: nil,
-		},
-	}
+	t.Run("Should return an empty list if there is no order from client", func(t *testing.T) {
+		orderRepositoryMock.ExpectedCalls = nil
+		orderHistoryRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetAll", uint64(1), mock.Anything, 0, 10).Return(make([]domain.Order, 0), int64(0), nil)
+		orders, size, err := orderService.List(uint64(1), nil, 0, 10)
+		assert.Len(t, orders, 0)
+		assert.Equal(t, int64(0), size)
+		assert.Nil(t, err)
+	})
 
-	for _, tt := range scenarios {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Cleanup(func() {
-				mockOrderRepo.ExpectedCalls = nil
-				mockOrderHistoryRepo.ExpectedCalls = nil
-				mockOrderProductRepo.ExpectedCalls = nil
-				mockCustomerRepo.ExpectedCalls = nil
-			})
-
-			tt.setupMocks()
-			_, count, err := orderService.List(tt.clientID, tt.page, tt.limit)
-			assert.Equal(t, tt.expectedError, err)
-			assert.Equal(t, tt.expectedCount, count)
-		})
-	}
+	t.Run("Should return all orders from client", func(t *testing.T) {
+		orderRepositoryMock.ExpectedCalls = nil
+		orderHistoryRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetAll", uint64(1), mock.Anything, 0, 10).Return([]domain.Order{{ID: 1, CustomerID: 1}, {ID: 2, CustomerID: 1}}, int64(2), nil)
+		orders, size, err := orderService.List(uint64(1), nil, 0, 10)
+		assert.Len(t, orders, 2)
+		assert.Equal(t, int64(2), size)
+		assert.Nil(t, err)
+	})
 }
 
 func TestOrderService_Update(t *testing.T) {
-	mockOrderRepo := new(mocks.MockOrderRepository)
-	mockOrderHistoryRepo := new(mocks.MockOrderHistoryRepository)
-	mockOrderProductRepo := new(mocks.MockOrderProductRepository)
-	mockCustomerRepo := new(mocks.MockCustomerRepository)
-	orderService := NewOrderService(mockOrderRepo, mockOrderHistoryRepo, mockOrderProductRepo, mockCustomerRepo)
+	orderRepositoryMock := &repository.OrderRepositoryMock{}
+	orderService := OrderService{orderRepository: orderRepositoryMock}
+	t.Run("Should fail if customer has changed", func(t *testing.T) {
+		orderRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}, nil)
+		err := orderService.Update(&domain.Order{ID: 1, CustomerID: 2, Status: domain.OPEN}, nil)
+		assert.NotNil(t, err)
+	})
 
-	currentTime := time.Now()
+	t.Run("Should update a order", func(t *testing.T) {
+		order := domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}
+		orderRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
+		orderRepositoryMock.On("Update", &order).Return(nil)
+		err := orderService.Update(&order, nil)
+		assert.Nil(t, err)
+	})
 
-	scenarios := []struct {
-		name          string
-		order         *domain.Order
-		setupMocks    func()
-		expectedError error
-	}{
-		{
-			name: "Given existing order When Update is called Then should succeed",
-			order: &domain.Order{
-				ID:         1,
-				CustomerID: 1,
-				CreatedAt:  currentTime,
-			},
-			setupMocks: func() {
-				mockOrderRepo.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1}, nil)
-				mockOrderRepo.On("Update", mock.AnythingOfType("*domain.Order")).Return(nil)
-			},
-			expectedError: nil,
-		},
-		{
-			name: "Given non-existent order When Update is called Then should return error",
-			order: &domain.Order{
-				ID:         1,
-				CustomerID: 1,
-			},
-			setupMocks: func() {
-				mockOrderRepo.On("GetByID", uint64(1)).Return(nil, domain.ErrNotFound)
-			},
-			expectedError: domain.ErrNotFound,
-		},
-	}
+	t.Run("Should update a order", func(t *testing.T) {
+		order := domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}
+		orderRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
+		orderRepositoryMock.On("Update", &order).Return(nil)
+		err := orderService.Update(&order, nil)
+		assert.Nil(t, err)
+	})
 
-	for _, tt := range scenarios {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Cleanup(func() {
-				mockOrderRepo.ExpectedCalls = nil
-				mockOrderHistoryRepo.ExpectedCalls = nil
-				mockOrderProductRepo.ExpectedCalls = nil
-				mockCustomerRepo.ExpectedCalls = nil
-			})
+	t.Run("Should fail if status transition not allowed", func(t *testing.T) {
+		order := domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}
+		orderRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
+		orderToUpdate := domain.Order{ID: 1, CustomerID: 1, Status: domain.COMPLETED}
+		err := orderService.Update(&orderToUpdate, nil)
+		assert.EqualError(t, err, domain.ErrOrderInvalidStatusTransition.Error())
+	})
 
-			tt.setupMocks()
-			err := orderService.Update(tt.order)
-			assert.Equal(t, tt.expectedError, err)
-		})
-	}
+	t.Run("Should fail if can transition but staff if not informed", func(t *testing.T) {
+		order := domain.Order{ID: 1, CustomerID: 1, Status: domain.PREPARING}
+		orderRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
+		orderToUpdate := domain.Order{ID: 1, CustomerID: 1, Status: domain.READY}
+		err := orderService.Update(&orderToUpdate, nil)
+		assert.EqualError(t, err, domain.ErrOrderMandatoryStaffId.Error())
+	})
+
+	t.Run("Should fail if status changed to PENDING without Products", func(t *testing.T) {
+		order := domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN, OrderProducts: make([]domain.OrderProduct, 0)}
+		orderRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
+		orderToUpdate := domain.Order{ID: 1, CustomerID: 1, Status: domain.PENDING, OrderProducts: make([]domain.OrderProduct, 0)}
+		err := orderService.Update(&orderToUpdate, nil)
+		assert.EqualError(t, err, domain.ErrOrderWithoutProducts.Error())
+	})
+
 }
 
 func TestOrderService_Delete(t *testing.T) {
-	mockOrderRepo := new(mocks.MockOrderRepository)
-	mockOrderHistoryRepo := new(mocks.MockOrderHistoryRepository)
-	mockOrderProductRepo := new(mocks.MockOrderProductRepository)
-	mockCustomerRepo := new(mocks.MockCustomerRepository)
-	orderService := NewOrderService(mockOrderRepo, mockOrderHistoryRepo, mockOrderProductRepo, mockCustomerRepo)
+	orderRepositoryMock := &repository.OrderRepositoryMock{}
+	orderService := OrderService{orderRepository: orderRepositoryMock}
 
-	scenarios := []struct {
-		name          string
-		id            uint64
-		setupMocks    func()
-		expectedError error
-	}{
-		{
-			name: "Given existing order When Delete is called Then should succeed",
-			id:   1,
-			setupMocks: func() {
-				mockOrderRepo.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1}, nil)
-				mockOrderRepo.On("Delete", uint64(1)).Return(nil)
-			},
-			expectedError: nil,
-		},
-		{
-			name: "Given non-existent order When Delete is called Then should return error",
-			id:   1,
-			setupMocks: func() {
-				mockOrderRepo.On("GetByID", uint64(1)).Return(nil, domain.ErrNotFound)
-			},
-			expectedError: domain.ErrNotFound,
-		},
-	}
+	t.Run("Should fail if order doesn't exists", func(t *testing.T) {
+		orderRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetByID", uint64(1)).Return((*domain.Order)(nil), domain.ErrNotFound)
+		err := orderService.Delete(uint64(1))
+		assert.NotNil(t, err)
+	})
 
-	for _, tt := range scenarios {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Cleanup(func() {
-				mockOrderRepo.ExpectedCalls = nil
-				mockOrderHistoryRepo.ExpectedCalls = nil
-				mockOrderProductRepo.ExpectedCalls = nil
-				mockCustomerRepo.ExpectedCalls = nil
-			})
-
-			tt.setupMocks()
-			err := orderService.Delete(tt.id)
-			assert.Equal(t, tt.expectedError, err)
-		})
-	}
+	t.Run("Should delete a order", func(t *testing.T) {
+		orderRepositoryMock.ExpectedCalls = nil
+		orderRepositoryMock.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1, CustomerID: 1}, nil)
+		orderRepositoryMock.On("Delete", mock.AnythingOfType("uint64")).Return(nil)
+		err := orderService.Delete(uint64(1))
+		assert.Nil(t, err)
+	})
 }
