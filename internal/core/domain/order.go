@@ -44,13 +44,13 @@ func (o OrderStatus) From(status string) OrderStatus {
 }
 
 var OrderStatusTransitions = map[OrderStatus][]OrderStatus{
-	OPEN:      []OrderStatus{CANCELLED, PENDING},
-	CANCELLED: []OrderStatus{},
-	PENDING:   []OrderStatus{OPEN, RECEIVED},
-	RECEIVED:  []OrderStatus{PREPARING},
-	PREPARING: []OrderStatus{READY},
-	READY:     []OrderStatus{COMPLETED},
-	COMPLETED: []OrderStatus{},
+	OPEN:      {CANCELLED, PENDING},
+	CANCELLED: {},
+	PENDING:   {OPEN, RECEIVED},
+	RECEIVED:  {PREPARING},
+	PREPARING: {READY},
+	READY:     {COMPLETED},
+	COMPLETED: {},
 }
 
 type OrderStatusTransitionFSM struct {

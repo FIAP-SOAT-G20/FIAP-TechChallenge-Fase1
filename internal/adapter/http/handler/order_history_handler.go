@@ -35,7 +35,7 @@ func (h *OrderHistoryHandler) GroupRouterPattern() string {
 //	@Tags			orderHistories
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		int	true	"OrderHistoryResponse ID"
+//	@Param			id	path		int	true	"Order History ID"
 //	@Success		200	{object}	response.OrderResponse
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"

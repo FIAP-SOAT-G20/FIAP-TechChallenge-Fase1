@@ -12,7 +12,7 @@ import (
 )
 
 type PathParam struct {
-	OrderID uint64 `uri:"orderId" binding:"required"`
+	OrderID uint64 `uri:"order_id" binding:"required"`
 }
 
 type PaymentHandler struct {
@@ -24,7 +24,7 @@ func NewPaymentHandler(paymentService port.IPaymentService) *PaymentHandler {
 }
 
 func (h *PaymentHandler) Register(router *gin.RouterGroup) {
-	router.POST("/:orderId/checkout", h.CreatePayment)
+	router.POST("/:order_id/checkout", h.CreatePayment)
 	router.POST("/callback", h.UpdatePayment)
 }
 
@@ -39,12 +39,12 @@ func (h *PaymentHandler) GroupRouterPattern() string {
 //	@Tags			products, payments
 //	@Accept			json
 //	@Produce		json
-//	@Param			orderId		path		int				true	"Order ID"
+//	@Param			order_id		path		int				true	"Order ID"
 //	@Success		200		{object}	response.PaymentResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/payments/{orderId}/checkout [post]
+//	@Router			/api/v1/payments/{order_id}/checkout [post]
 func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 	var pathParams *PathParam
 

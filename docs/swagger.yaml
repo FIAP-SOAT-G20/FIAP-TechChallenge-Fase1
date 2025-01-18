@@ -50,7 +50,7 @@ definitions:
       status:
         allOf:
         - $ref: '#/definitions/domain.OrderStatus'
-        example: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
+        example: PENDING
     type: object
   handler.UpdateProduct:
     properties:
@@ -155,7 +155,7 @@ definitions:
       role:
         allOf:
         - $ref: '#/definitions/domain.Role'
-        example: COOK, ATTENDANT or MANAGER
+        example: COOK
     required:
     - name
     - role
@@ -185,7 +185,7 @@ definitions:
       role:
         allOf:
         - $ref: '#/definitions/domain.Role'
-        example: COOK, ATTENDANT or MANAGER
+        example: ATTENDANT
     required:
     - name
     - role
@@ -323,6 +323,10 @@ definitions:
         type: integer
       id:
         type: integer
+      products:
+        items:
+          $ref: '#/definitions/response.OrderProductResponse'
+        type: array
       status:
         type: string
       total_bill:
@@ -772,10 +776,6 @@ paths:
       - application/json
       description: List orders
       parameters:
-      - description: OrderResponse name
-        in: query
-        name: name
-        type: string
       - description: Customer ID
         in: query
         name: customer_id
@@ -803,7 +803,7 @@ paths:
       - application/json
       description: Create an order
       parameters:
-      - description: OrderResponse
+      - description: Consumer ID
         in: body
         name: order
         required: true
@@ -869,7 +869,7 @@ paths:
       - application/json
       description: Get an order
       parameters:
-      - description: OrderResponse ID
+      - description: Order ID
         in: path
         name: id
         required: true
@@ -899,14 +899,25 @@ paths:
     put:
       consumes:
       - application/json
-      description: Update an order
+      description: |-
+        Update an order
+        Only staff can update the order status
+        The status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
+        Transition of status:
+        - OPEN      -> CANCELLED || PENDING
+        - CANCELLED -> {},
+        - PENDING   -> OPEN || RECEIVED
+        - RECEIVED  -> PREPARING
+        - PREPARING -> READY
+        - READY     ->COMPLETED
+        - COMPLETED -> {}
       parameters:
-      - description: OrderResponse ID
+      - description: Order ID
         in: path
         name: id
         required: true
         type: integer
-      - description: OrderResponse
+      - description: UpdateOrder
         in: body
         name: order
         required: true
@@ -972,7 +983,7 @@ paths:
       - application/json
       description: Get an order history
       parameters:
-      - description: OrderHistoryResponse ID
+      - description: Order History ID
         in: path
         name: id
         required: true
@@ -1031,25 +1042,20 @@ paths:
       summary: List order products
       tags:
       - orderHistories
-  /api/v1/orders/products/:orderId/:productId:
+  /api/v1/orders/products/{order_id}/{product_id}:
     delete:
       consumes:
       - application/json
       description: Delete an order product
       parameters:
-      - description: OrderResponse ID
-        in: path
-        name: id
-        required: true
-        type: integer
       - description: Order ID
         in: path
-        name: orderId
+        name: order_id
         required: true
         type: integer
       - description: Product ID
         in: path
-        name: productId
+        name: product_id
         required: true
         type: integer
       produces:
@@ -1081,12 +1087,12 @@ paths:
       parameters:
       - description: Order ID
         in: path
-        name: orderId
+        name: order_id
         required: true
         type: integer
       - description: Product ID
         in: path
-        name: productId
+        name: product_id
         required: true
         type: integer
       produces:
@@ -1118,12 +1124,12 @@ paths:
       parameters:
       - description: Order ID
         in: path
-        name: orderId
+        name: order_id
         required: true
         type: integer
       - description: Product ID
         in: path
-        name: productId
+        name: product_id
         required: true
         type: integer
       - description: OrderProductRequest
@@ -1159,6 +1165,16 @@ paths:
       - application/json
       description: Update an order product
       parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      - description: Product ID
+        in: path
+        name: product_id
+        required: true
+        type: integer
       - description: OrderProductResponse
         in: body
         name: order
@@ -1187,7 +1203,7 @@ paths:
       summary: Update an order product
       tags:
       - orders
-  /api/v1/payments/{orderId}/checkout:
+  /api/v1/payments/{order_id}/checkout:
     post:
       consumes:
       - application/json
@@ -1195,7 +1211,7 @@ paths:
       parameters:
       - description: Order ID
         in: path
-        name: orderId
+        name: order_id
         required: true
         type: integer
       produces:
@@ -1495,7 +1511,12 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a staff
+      description: |-
+        Create a staff
+        Roles:
+        - COOK
+        - ATTENDANT
+        - MANAGER
       parameters:
       - description: Staff
         in: body

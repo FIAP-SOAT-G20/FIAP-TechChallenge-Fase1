@@ -5,6 +5,6 @@ type OrderProductRequest struct {
 }
 
 type OrderProductPathParam struct {
-	OrderID   uint64 `uri:"orderID" binding:"required"`
-	ProductID uint64 `uri:"productID" binding:"required"`
+	OrderID   uint64 `uri:"order_id" binding:"required"`
+	ProductID uint64 `uri:"product_id" binding:"required"`
 }

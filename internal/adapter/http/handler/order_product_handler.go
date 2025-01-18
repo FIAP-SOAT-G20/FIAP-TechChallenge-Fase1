@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
+	"github.com/gin-gonic/gin"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
@@ -20,11 +21,11 @@ func NewOrderProductHandler(service port.IOrderProductService) *OrderProductHand
 }
 
 func (h *OrderProductHandler) Register(router *gin.RouterGroup) {
-	router.GET("/:orderID/:productID", h.GetOrderProduct)
+	router.GET("/:order_id/:product_id", h.GetOrderProduct)
 	router.GET("/", h.ListOrderProducts)
-	router.POST("/:orderID/:productID", h.CreateOrderProduct)
-	router.PUT("/:orderID/:productID", h.UpdateOrderProduct)
-	router.DELETE("/:orderID/:productID", h.DeleteOrderProduct)
+	router.POST("/:order_id/:product_id", h.CreateOrderProduct)
+	router.PUT("/:order_id/:product_id", h.UpdateOrderProduct)
+	router.DELETE("/:order_id/:product_id", h.DeleteOrderProduct)
 }
 
 func (h *OrderProductHandler) GroupRouterPattern() string {
@@ -38,13 +39,13 @@ func (h *OrderProductHandler) GroupRouterPattern() string {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			orderId		path		int				true	"Order ID"
-//	@Param			productId		path		int				true	"Product ID"
+//	@Param			order_id		path		int				true	"Order ID"
+//	@Param			product_id		path		int				true	"Product ID"
 //	@Success		200		{object}	response.OrderProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/orders/products/:orderId/:productId [get]
+//	@Router			/api/v1/orders/products/{order_id}/{product_id} [get]
 func (h *OrderProductHandler) GetOrderProduct(c *gin.Context) {
 	var pathParams *request.OrderProductPathParam
 
@@ -70,14 +71,14 @@ func (h *OrderProductHandler) GetOrderProduct(c *gin.Context) {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			orderId		path		int				true	"Order ID"
-//	@Param			productId		path		int				true	"Product ID"
+//	@Param			order_id		path		int				true	"Order ID"
+//	@Param			product_id		path		int				true	"Product ID"
 //	@Param			order	body		request.OrderProductRequest	true	"OrderProductRequest"
 //	@Success		201		{object}	response.OrderProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/orders/products/:orderId/:productId [post]
+//	@Router			/api/v1/orders/products/{order_id}/{product_id} [post]
 func (h *OrderProductHandler) CreateOrderProduct(c *gin.Context) {
 	var pathParams *request.OrderProductPathParam
 
@@ -114,12 +115,14 @@ func (h *OrderProductHandler) CreateOrderProduct(c *gin.Context) {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
+//	@Param			order_id		path		int				true	"Order ID"
+//	@Param			product_id		path		int				true	"Product ID"
 //	@Param			order	body		request.OrderProductRequest	true	"OrderProductResponse"
 //	@Success		201		{object}	response.OrderProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/orders/products/:orderId/:productId [put]
+//	@Router			/api/v1/orders/products/{order_id}/{product_id} [put]
 func (h *OrderProductHandler) UpdateOrderProduct(c *gin.Context) {
 	var pathParams *request.OrderProductPathParam
 
@@ -209,14 +212,13 @@ func (h *OrderProductHandler) ListOrderProducts(c *gin.Context) {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		int	true	"OrderResponse ID"
-//	@Param			orderId		path		int				true	"Order ID"
-//	@Param			productId		path		int				true	"Product ID"
+//	@Param			order_id		path		int				true	"Order ID"
+//	@Param			product_id		path		int				true	"Product ID"
 //	@Success		204	{object}	string
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/orders/products/:orderId/:productId [delete]
+//	@Router			/api/v1/orders/products/{order_id}/{product_id} [delete]
 func (h *OrderProductHandler) DeleteOrderProduct(c *gin.Context) {
 	var pathParams *request.OrderProductPathParam
 

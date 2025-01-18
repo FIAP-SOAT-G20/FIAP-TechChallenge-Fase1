@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"net/http"
 	"strconv"
+
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 
 	"github.com/gin-gonic/gin"
 
@@ -39,7 +40,7 @@ func (h *OrderHandler) GroupRouterPattern() string {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			order	body		request.CreateOrderRequest	true	"OrderResponse"
+//	@Param			order	body		request.CreateOrderRequest true	"Consumer ID"
 //	@Success		201		{object}	response.OrderResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
@@ -72,7 +73,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		int	true	"OrderResponse ID"
+//	@Param			id	path		int	true	"Order ID"
 //	@Success		200	{object}	response.OrderResponse
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
@@ -104,7 +105,6 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			name		query		string	false	"OrderResponse name"
 //	@Param			customer_id	query		uint64	false	"Customer ID"
 //	@Param			page		query		int		false	"Page"
 //	@Param			limit		query		int		false	"Limit"
@@ -147,18 +147,28 @@ func (h *OrderHandler) ListOrders(c *gin.Context) {
 
 type UpdateOrder struct {
 	StaffID *uint64            `json:"staff_id" example:"1" ommitempty:"true"`
-	Status  domain.OrderStatus `json:"status" example:"OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED" ommitempty:"true"`
+	Status  domain.OrderStatus `json:"status" enum:"OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED" ommitempty:"true" example:"PENDING"`
 }
 
 // UpdateOrder godoc
 //
 //	@Summary		Update an order
 //	@Description	Update an order
+// 	@Description	Only staff can update the order status
+// 	@Description	The status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
+// 	@Description	Transition of status: 
+// 	@Description	- OPEN      -> CANCELLED || PENDING
+// 	@Description	- CANCELLED -> {},
+// 	@Description	- PENDING   -> OPEN || RECEIVED
+// 	@Description	- RECEIVED  -> PREPARING
+// 	@Description	- PREPARING -> READY
+// 	@Description	- READY     -> COMPLETED
+// 	@Description	- COMPLETED -> {}
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		int				true	"OrderResponse ID"
-//	@Param			order	body		UpdateOrder		true	"OrderResponse"
+//	@Param			id		path		int				true	"Order ID"
+//	@Param			order	body		UpdateOrder		true	"UpdateOrder"
 //	@Success		200		{object}	response.OrderResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"

@@ -553,12 +553,6 @@ const docTemplate = `{
                 "summary": "List orders",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "OrderResponse name",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
                         "description": "Customer ID",
                         "name": "customer_id",
@@ -600,7 +594,7 @@ const docTemplate = `{
                 "summary": "Create an order",
                 "parameters": [
                     {
-                        "description": "OrderResponse",
+                        "description": "Consumer ID",
                         "name": "order",
                         "in": "body",
                         "required": true,
@@ -702,7 +696,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "OrderHistoryResponse ID",
+                        "description": "Order History ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -785,7 +779,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/orders/products/:orderId/:productId": {
+        "/api/v1/orders/products/{order_id}/{product_id}": {
             "get": {
                 "description": "Get an order product",
                 "consumes": [
@@ -802,14 +796,14 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Order ID",
-                        "name": "orderId",
+                        "name": "order_id",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Product ID",
-                        "name": "productId",
+                        "name": "product_id",
                         "in": "path",
                         "required": true
                     }
@@ -854,6 +848,20 @@ const docTemplate = `{
                 ],
                 "summary": "Update an order product",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Order ID",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "OrderProductResponse",
                         "name": "order",
@@ -907,14 +915,14 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Order ID",
-                        "name": "orderId",
+                        "name": "order_id",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Product ID",
-                        "name": "productId",
+                        "name": "product_id",
                         "in": "path",
                         "required": true
                     },
@@ -970,22 +978,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "OrderResponse ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
                         "description": "Order ID",
-                        "name": "orderId",
+                        "name": "order_id",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "Product ID",
-                        "name": "productId",
+                        "name": "product_id",
                         "in": "path",
                         "required": true
                     }
@@ -1034,7 +1035,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "OrderResponse ID",
+                        "description": "Order ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1068,7 +1069,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update an order",
+                "description": "Update an order\nOnly staff can update the order status\nThe status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED\nTransition of status:\n- OPEN      -\u003e CANCELLED || PENDING\n- CANCELLED -\u003e {},\n- PENDING   -\u003e OPEN || RECEIVED\n- RECEIVED  -\u003e PREPARING\n- PREPARING -\u003e READY\n- READY     -\u003eCOMPLETED\n- COMPLETED -\u003e {}",
                 "consumes": [
                     "application/json"
                 ],
@@ -1082,13 +1083,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "OrderResponse ID",
+                        "description": "Order ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "OrderResponse",
+                        "description": "UpdateOrder",
                         "name": "order",
                         "in": "body",
                         "required": true,
@@ -1226,7 +1227,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/payments/{orderId}/checkout": {
+        "/api/v1/payments/{order_id}/checkout": {
             "post": {
                 "description": "Create a checkout on a order (2.b: \u003e 2.b.: v. Fake checkout)",
                 "consumes": [
@@ -1244,7 +1245,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Order ID",
-                        "name": "orderId",
+                        "name": "order_id",
                         "in": "path",
                         "required": true
                     }
@@ -1633,7 +1634,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a staff",
+                "description": "Create a staff\nRoles:\n- COOK\n- ATTENDANT\n- MANAGER",
                 "consumes": [
                     "application/json"
                 ],
@@ -1916,7 +1917,7 @@ const docTemplate = `{
                             "$ref": "#/definitions/domain.OrderStatus"
                         }
                     ],
-                    "example": "OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED"
+                    "example": "PENDING"
                 }
             }
         },
@@ -2072,7 +2073,7 @@ const docTemplate = `{
                             "$ref": "#/definitions/domain.Role"
                         }
                     ],
-                    "example": "COOK, ATTENDANT or MANAGER"
+                    "example": "COOK"
                 }
             }
         },
@@ -2118,7 +2119,7 @@ const docTemplate = `{
                             "$ref": "#/definitions/domain.Role"
                         }
                     ],
-                    "example": "COOK, ATTENDANT or MANAGER"
+                    "example": "ATTENDANT"
                 }
             }
         },
@@ -2323,6 +2324,12 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "products": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.OrderProductResponse"
+                    }
                 },
                 "status": {
                     "type": "string"

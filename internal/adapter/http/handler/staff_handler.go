@@ -37,6 +37,10 @@ func (h *StaffHandler) GroupRouterPattern() string {
 //
 //	@Summary		Create a staff
 //	@Description	Create a staff
+//	@Description	Roles:
+//	@Description	- COOK
+//	@Description	- ATTENDANT
+//	@Description	- MANAGER
 //	@Tags			staffs, sign-up
 //	@Accept			json
 //	@Produce		json
