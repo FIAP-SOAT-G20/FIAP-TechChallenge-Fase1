@@ -59,6 +59,7 @@ compose-stop:
 	docker compose down
 
 test:
+	@echo "🟢 Running the tests..."
 	go test -v ./${TEST_PATH} -cover -coverprofile=coverage.out
 
 coverage:

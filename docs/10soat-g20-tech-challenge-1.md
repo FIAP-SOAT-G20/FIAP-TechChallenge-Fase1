@@ -2,7 +2,7 @@
 
 - [Repositório](https://github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1)
 - [Event Storming](https://miro.com/app/board/uXjVLJzdySo=/?share_link_id=228486775564)
-- [Vídeo](TBD)
+- [Vídeo](https://www.youtube.com/watch?v=7Pb2lYjfX3Q&ab_channel=AliceTomaz)
 
 ### Integrantes
 
