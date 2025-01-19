@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"strconv"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
@@ -41,22 +42,28 @@ func (h *PaymentHandler) GroupRouterPattern() string {
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/payments/{order_id}/checkout [post]
-func (h *PaymentHandler) CreatePayment(c *gin.Context) {
-	var pathParams *request.PaymentPathParam
+func (h PaymentHandler) CreatePayment(c *gin.Context) {
+    var pathParams request.PaymentPathParam
 
-	if err := c.ShouldBindUri(&pathParams); err != nil {
-		response.HandleError(c, domain.ErrInvalidParam)
-		return
-	}
+    if err := c.ShouldBindUri(&pathParams); err != nil {
+        response.HandleError(c, domain.ErrInvalidParam)
+        return
+    }
 
-	payment, err := h.service.CreatePayment(pathParams.OrderID)
-	if err != nil {
-		response.HandleError(c, domain.ErrInvalidParam)
-		return
-	}
+    orderIDUint64, err := strconv.ParseUint(pathParams.OrderID, 10, 64)
+    if err != nil {
+        response.HandleError(c, domain.ErrInvalidParam)
+        return
+    }
 
-	paymentReponse := response.NewPaymentResponse(payment)
-	c.JSON(http.StatusCreated, paymentReponse)
+    payment, err := h.service.CreatePayment(orderIDUint64)
+    if err != nil {
+        response.HandleError(c, domain.ErrInvalidParam)
+        return
+    }
+
+    paymentReponse := response.NewPaymentResponse(payment)
+    c.JSON(http.StatusCreated, paymentReponse)
 }
 
 // Update Payment godoc

@@ -6,7 +6,7 @@ import (
 
 // PaymentPathParam contains the path parameters for the payment
 type PaymentPathParam struct {
-	OrderID uint64 `uri:"order_id" binding:"required"`
+	OrderID string `uri:"order_id" binding:"required"`
 }
 
 // CreatePaymentRequest contains the request to create a payment
