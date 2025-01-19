@@ -227,6 +227,15 @@ make run
 - **PUT** `api/v1/orders/:id`: Update an order by ID
 - **DELETE** `api/v1/orders/:id`: Delete an order by ID
 ---
+- **GET** `api/v1/orders/products`: List all orders products
+- **POST** `api/v1/orders/products/:order_id/:product_id`: Create a new order product
+- **GET** `api/v1/orders/products/:order_id/:product_id`: Get an order product by OrderID and ProductID
+- **PUT** `api/v1/orders/products/:order_id/:product_id`: Update an order by OrderID and ProductID
+- **DELETE** `api/v1/orders/products/:order_id/:product_id`: Delete an order by OrderID and ProductID
+---
+- **GET** `api/v1/orders/histories`: List all orders histories
+- **GET** `api/v1/orders/histories/:id`: Get an order history by ID
+---
 - **POST** `/api/v1/payments/:orderId/checkout`: Create a new payment
 - **GET** `/api/v1/payments/callback`: Payment callback
 
