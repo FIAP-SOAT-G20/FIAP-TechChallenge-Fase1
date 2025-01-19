@@ -250,7 +250,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Product 1 updated\",\n    \"description\": \"Product 1 description updated\",\n    \"price\": 12,\n    \"category_id\": 1\n}",
+							"raw": "{\n    \"name\": \"Product 1 updated\",\n    \"description\": \"Product 1 description updated\",\n    \"price\": 12,\n    \"category_id\": 1,\n\t\t\"active\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -747,11 +747,320 @@
 		},
 		{
 			"name": "Orders",
-			"item": []
+			"item": [
+				{
+					"name": "Get orders",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/orders",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "164d94dc-91ad-4660-97e5-990442c2d1c7"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Jan 2025 01:02:31 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "841"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"total\": 5,\n    \"page\": 1,\n    \"limit\": 10,\n    \"orders\": [\n        {\n            \"id\": 3,\n            \"customer_id\": 1,\n            \"total_bill\": 32,\n            \"status\": \"RECEIVED\",\n            \"created_at\": \"2025-01-11T22:36:37.817676Z\",\n            \"updated_at\": \"2025-01-11T22:36:37.817676Z\",\n            \"products\": []\n        },\n        {\n            \"id\": 4,\n            \"customer_id\": 1,\n            \"total_bill\": 149.5,\n            \"status\": \"PENDING\",\n            \"created_at\": \"2025-01-17T23:33:41.771393Z\",\n            \"updated_at\": \"2025-01-18T01:09:07.592055Z\",\n            \"products\": []\n        },\n        {\n            \"id\": 5,\n            \"customer_id\": 3,\n            \"total_bill\": 88.2,\n            \"status\": \"RECEIVED\",\n            \"created_at\": \"2025-01-18T21:41:30.070565Z\",\n            \"updated_at\": \"2025-01-18T21:54:31.505307Z\",\n            \"products\": []\n        },\n        {\n            \"id\": 6,\n            \"customer_id\": 1,\n            \"total_bill\": 0,\n            \"status\": \"OPEN\",\n            \"created_at\": \"2025-01-18T22:02:03.156515Z\",\n            \"updated_at\": \"2025-01-18T22:02:03.156515Z\",\n            \"products\": []\n        },\n        {\n            \"id\": 7,\n            \"customer_id\": 1,\n            \"total_bill\": 0,\n            \"status\": \"OPEN\",\n            \"created_at\": \"2025-01-18T22:02:26.488995Z\",\n            \"updated_at\": \"2025-01-18T22:02:26.488995Z\",\n            \"products\": []\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create an order",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"customer_id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/orders",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "e56f7a81-2621-4b92-a8dc-17468d45a904"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Jan 2025 01:02:26 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "165"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"customer_id\": 1,\n    \"total_bill\": 0,\n    \"status\": \"OPEN\",\n    \"created_at\": \"2025-01-18T22:02:26.488995-03:00\",\n    \"updated_at\": \"2025-01-18T22:02:26.488995-03:00\",\n    \"products\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Creante an order product",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get an order",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/orders/5",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"orders",
+										"5"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "8d1889d2-1bb6-459e-9893-adcd0890147d"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Jan 2025 01:04:10 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "442"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 5,\n    \"customer_id\": 3,\n    \"total_bill\": 88.2,\n    \"status\": \"RECEIVED\",\n    \"created_at\": \"2025-01-18T21:41:30.070565Z\",\n    \"updated_at\": \"2025-01-18T21:54:31.505307Z\",\n    \"products\": [\n        {\n            \"order_id\": 5,\n            \"product_id\": 3,\n            \"price\": 19.5,\n            \"quantity\": 3,\n            \"created_at\": \"2025-01-18T21:46:05.114615Z\",\n            \"updated_at\": \"2025-01-18T21:46:05.114615Z\"\n        },\n        {\n            \"order_id\": 5,\n            \"product_id\": 4,\n            \"price\": 9.9,\n            \"quantity\": 3,\n            \"created_at\": \"2025-01-18T21:46:13.34927Z\",\n            \"updated_at\": \"2025-01-18T21:46:13.34927Z\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
 		},
 		{
 			"name": "Staffs",
-			"item": []
+			"item": [
+				{
+					"name": "Create a staff",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe 2\",\n  \"role\": \"COOK\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/staffs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"staffs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get staffs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/staffs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"staffs"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/staffs",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"staffs"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "49e0c1ae-45ae-4fb8-b90a-ce140b0bf343"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Jan 2025 01:05:26 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "126"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"total\": 2,\n    \"page\": 1,\n    \"limit\": 10,\n    \"staffs\": [\n        {\n            \"id\": 1,\n            \"name\": \"John Doe\",\n            \"role\": \"COOK\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"John Doe 2\",\n            \"role\": \"COOK\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
 		},
 		{
 			"name": "Auth",
