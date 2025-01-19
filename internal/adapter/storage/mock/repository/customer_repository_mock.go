@@ -20,7 +20,7 @@ func (repository *CustomerRepositoryMock) GetByID(id uint64) (*domain.Customer, 
 	args := repository.Called(id)
 	customerArg := args.Get(0)
 	if customerArg == nil {
-		return nil, args.Error(1).(error)
+		return nil, args.Error(1)
 	}
 	errorArg := args.Get(1)
 	if errorArg == nil {

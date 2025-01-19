@@ -37,7 +37,7 @@ func (r *OrderRepository) GetAll(customerID uint64, status *domain.OrderStatus, 
 	var count int64
 
 	var filter = &domain.Order{}
-	if &status != nil && *status != domain.UNDEFINDED {
+	if status != nil && *status != domain.UNDEFINDED {
 		filter.Status = *status
 	}
 

@@ -24,6 +24,9 @@ func NewOrderProductService(orderProductRepository port.IOrderProductRepository,
 func (ops *OrderProductService) Create(orderProduct *domain.OrderProduct) error {
 
 	existingOrderProduct, err := ops.orderProductRepository.GetByID(orderProduct.OrderID, orderProduct.ProductID)
+	if err != nil {
+		return domain.ErrNotFound
+	}
 	if existingOrderProduct != nil {
 		return domain.ErrConflict
 	}
@@ -115,6 +118,9 @@ func (ops *OrderProductService) Delete(orderID, productID uint64) error {
 		return domain.ErrOrderIsNotOnStatusOpen
 	}
 	err = ops.orderProductRepository.Delete(orderID, productID)
+	if err != nil {
+		return err
+	}
 	totalBill, err := ops.orderProductRepository.GetTotalBillByOrderId(orderID)
 	if err != nil {
 		return err

@@ -53,11 +53,6 @@ var OrderStatusTransitions = map[OrderStatus][]OrderStatus{
 	COMPLETED: {},
 }
 
-type OrderStatusTransitionFSM struct {
-	currentStatus OrderStatus
-	transitions   map[OrderStatus][]OrderStatus
-}
-
 func CanTransitionTo(oldStatus, newStatus OrderStatus) bool {
 	allowedStatuses := OrderStatusTransitions[oldStatus]
 	for _, allowedStatus := range allowedStatuses {

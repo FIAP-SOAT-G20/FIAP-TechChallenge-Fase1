@@ -110,6 +110,7 @@ DBML file can be found [here](docs/db-schema-g20-fast-food.dbml).
 
 - [Go](https://golang.org/)
 - [Gin](https://github.com/gin-gonic/gin)
+- [golangci-lint](https://golangci-lint.run/)
 - [Docker](https://www.docker.com/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Make](https://www.gnu.org/software/make/)
