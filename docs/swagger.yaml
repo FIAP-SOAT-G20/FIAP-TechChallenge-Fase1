@@ -1248,7 +1248,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: 'Update a payment on a order (2.b: > 2.b.: v. Fake checkout)'
+      description: |-
+        Update a payment on a order (2.b: > 2.b.: v. Fake checkout)
+        - resource = external payment id
+        - topic = payment
       parameters:
       - description: Update Payment Request
         in: body

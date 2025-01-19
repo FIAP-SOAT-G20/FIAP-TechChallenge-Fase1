@@ -63,6 +63,8 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 //
 //	@Summary		Update a payment on a order
 //	@Description	Update a payment on a order (2.b: > 2.b.: v. Fake checkout)
+// 	@Description	- resource = external payment id, obtained from the checkout response
+// 	@Description	- topic = payment
 //	@Tags			products, payments
 //	@Accept			json
 //	@Produce		json

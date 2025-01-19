@@ -24,8 +24,8 @@ func NewOrderProductService(orderProductRepository port.IOrderProductRepository,
 func (ops *OrderProductService) Create(orderProduct *domain.OrderProduct) error {
 
 	existingOrderProduct, err := ops.orderProductRepository.GetByID(orderProduct.OrderID, orderProduct.ProductID)
-	if err != nil {
-		return domain.ErrNotFound
+	if err != nil && err.Error() != "record not found" {
+		return err
 	}
 	if existingOrderProduct != nil {
 		return domain.ErrConflict

@@ -1176,7 +1176,7 @@ const docTemplate = `{
         },
         "/api/v1/payments/callback": {
             "post": {
-                "description": "Update a payment on a order (2.b: \u003e 2.b.: v. Fake checkout)",
+                "description": "Update a payment on a order (2.b: \u003e 2.b.: v. Fake checkout)\n- resource = external payment id\n- topic = payment",
                 "consumes": [
                     "application/json"
                 ],
