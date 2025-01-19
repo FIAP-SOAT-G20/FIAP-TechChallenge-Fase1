@@ -61,9 +61,17 @@ VALUES (1, 2, 'RECEIVED'),
        (5, 2, 'PREPARING');
 
 -- Inserindo pagamentos
-INSERT INTO payments (status, external_payment_id, order_id, qr_data)
-VALUES ('CONFIRMED', '5c272292-4ba4-41e9-83d8-dea99afe5194', 1, 'QR_DATA_123'),
-       ('CONFIRMED', 'ac174c5e-c9ef-4407-a3b3-bceeb4163af3', 2, 'QR_DATA_456'),
-       ('PROCESSING', 'b7fa4bee-fc25-4bb4-b948-5139af948a39', 3, 'QR_DATA_789'),
-       ('CONFIRMED', '0bbd246e-c04d-44da-88f1-78b4b2cc354c', 4, 'QR_DATA_012'),
-       ('FAILED', '09d92b11-cd55-4a72-b2ee-7377ceefe265', 5, 'QR_DATA_345');
+INSERT INTO payments (id, status, external_payment_id, order_id, qr_data)
+VALUES (1, 'CONFIRMED', '5c272292-4ba4-41e9-83d8-dea99afe5194', 1, 'QR_DATA_123'),
+       (2, 'CONFIRMED', 'ac174c5e-c9ef-4407-a3b3-bceeb4163af3', 2, 'QR_DATA_456'),
+       (3, 'PROCESSING', 'b7fa4bee-fc25-4bb4-b948-5139af948a39', 3, 'QR_DATA_789'),
+       (4, 'CONFIRMED', '0bbd246e-c04d-44da-88f1-78b4b2cc354c', 4, 'QR_DATA_012'),
+       (5, 'FAILED', '09d92b11-cd55-4a72-b2ee-7377ceefe265', 5, 'QR_DATA_345');
+
+-- NEXT VAL
+SELECT setval('categories_id_seq', (SELECT MAX(id) FROM categories));
+SELECT setval('staffs_id_seq', (SELECT MAX(id) FROM staffs));
+SELECT setval('products_id_seq', (SELECT MAX(id) FROM products));
+SELECT setval('customers_id_seq', (SELECT MAX(id) FROM customers));
+SELECT setval('orders_id_seq', (SELECT MAX(id) FROM orders));
+SELECT setval('order_histories_id_seq', (SELECT MAX(id) FROM order_histories));
