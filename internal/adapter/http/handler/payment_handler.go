@@ -33,6 +33,11 @@ func (h *PaymentHandler) GroupRouterPattern() string {
 //
 //	@Summary		Create a checkout on a order
 //	@Description	Create a checkout on a order (2.b: > 2.b.: v. Fake checkout)
+// 	@Description	Possible status:
+// 	@Description	- PROCESSING
+// 	@Description	- CONFIRMED
+// 	@Description	- FAILED
+// 	@Description	- CANCELED
 //	@Tags			products, payments
 //	@Accept			json
 //	@Produce		json
@@ -72,6 +77,11 @@ func (h PaymentHandler) CreatePayment(c *gin.Context) {
 //	@Description	Update a payment on a order (2.b: > 2.b.: v. Fake checkout)
 // 	@Description	- resource = external payment id, obtained from the checkout response
 // 	@Description	- topic = payment
+// 	@Description	Possible status:
+// 	@Description	- PROCESSING
+// 	@Description	- CONFIRMED
+// 	@Description	- FAILED
+// 	@Description	- CANCELED
 //	@Tags			products, payments
 //	@Accept			json
 //	@Produce		json
