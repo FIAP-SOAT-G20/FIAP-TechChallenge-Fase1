@@ -19,7 +19,7 @@ func (r *OrderProductRepository) Insert(orderProduct *domain.OrderProduct) error
 
 func (r *OrderProductRepository) GetByID(orderID, productID uint64) (*domain.OrderProduct, error) {
 	var item domain.OrderProduct
-	err := r.db.Where(&domain.OrderProduct{OrderID: orderID, ProductID: productID}).First(&item).Error
+	err := r.db.Where(&domain.OrderProduct{OrderID: orderID, ProductID: productID}).Preload("Order").Preload("Product").First(&item).Error
 	if err != nil {
 		return nil, err
 	}
