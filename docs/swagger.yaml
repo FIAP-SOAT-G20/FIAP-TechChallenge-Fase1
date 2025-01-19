@@ -54,6 +54,9 @@ definitions:
     type: object
   handler.UpdateProduct:
     properties:
+      active:
+        example: true
+        type: boolean
       category_id:
         example: 1
         type: integer
@@ -93,6 +96,10 @@ definitions:
     type: object
   handler.createProductRequest:
     properties:
+      active:
+        default: true
+        example: true
+        type: boolean
       category_id:
         example: 1
         type: integer
@@ -909,7 +916,7 @@ paths:
         - PENDING   -> OPEN || RECEIVED
         - RECEIVED  -> PREPARING
         - PREPARING -> READY
-        - READY     ->COMPLETED
+        - READY     -> COMPLETED
         - COMPLETED -> {}
       parameters:
       - description: Order ID
@@ -1279,7 +1286,7 @@ paths:
       description: 'List products or filter by category (2.b: iv. Buscar produtos
         por categoria;)'
       parameters:
-      - description: ProductResponse name
+      - description: Product name
         in: query
         name: name
         type: string
@@ -1310,7 +1317,7 @@ paths:
       - application/json
       description: Create a product
       parameters:
-      - description: ProductResponse
+      - description: Create Product Request
         in: body
         name: product
         required: true
@@ -1344,7 +1351,7 @@ paths:
       - application/json
       description: Delete a product
       parameters:
-      - description: ProductResponse ID
+      - description: Product ID
         in: path
         name: id
         required: true
@@ -1376,7 +1383,7 @@ paths:
       - application/json
       description: Get a product
       parameters:
-      - description: ProductResponse ID
+      - description: Product ID
         in: path
         name: id
         required: true
@@ -1408,12 +1415,12 @@ paths:
       - application/json
       description: Update a product
       parameters:
-      - description: ProductResponse ID
+      - description: Product ID
         in: path
         name: id
         required: true
         type: integer
-      - description: ProductResponse
+      - description: Update Product
         in: body
         name: product
         required: true

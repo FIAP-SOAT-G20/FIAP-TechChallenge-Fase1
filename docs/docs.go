@@ -1069,7 +1069,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update an order\nOnly staff can update the order status\nThe status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED\nTransition of status:\n- OPEN      -\u003e CANCELLED || PENDING\n- CANCELLED -\u003e {},\n- PENDING   -\u003e OPEN || RECEIVED\n- RECEIVED  -\u003e PREPARING\n- PREPARING -\u003e READY\n- READY     -\u003eCOMPLETED\n- COMPLETED -\u003e {}",
+                "description": "Update an order\nOnly staff can update the order status\nThe status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED\nTransition of status:\n- OPEN      -\u003e CANCELLED || PENDING\n- CANCELLED -\u003e {},\n- PENDING   -\u003e OPEN || RECEIVED\n- RECEIVED  -\u003e PREPARING\n- PREPARING -\u003e READY\n- READY     -\u003e COMPLETED\n- COMPLETED -\u003e {}",
                 "consumes": [
                     "application/json"
                 ],
@@ -1294,7 +1294,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ProductResponse name",
+                        "description": "Product name",
                         "name": "name",
                         "in": "query"
                     },
@@ -1340,7 +1340,7 @@ const docTemplate = `{
                 "summary": "Create a product",
                 "parameters": [
                     {
-                        "description": "ProductResponse",
+                        "description": "Create Product Request",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -1393,7 +1393,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ProductResponse ID",
+                        "description": "Product ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1441,13 +1441,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ProductResponse ID",
+                        "description": "Product ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "ProductResponse",
+                        "description": "Update Product",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -1498,7 +1498,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ProductResponse ID",
+                        "description": "Product ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1924,6 +1924,10 @@ const docTemplate = `{
         "handler.UpdateProduct": {
             "type": "object",
             "properties": {
+                "active": {
+                    "type": "boolean",
+                    "example": true
+                },
                 "category_id": {
                     "type": "integer",
                     "example": 1
@@ -1985,6 +1989,11 @@ const docTemplate = `{
                 "price"
             ],
             "properties": {
+                "active": {
+                    "type": "boolean",
+                    "default": true,
+                    "example": true
+                },
                 "category_id": {
                     "type": "integer",
                     "example": 1
