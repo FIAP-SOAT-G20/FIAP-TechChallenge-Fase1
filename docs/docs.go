@@ -77,12 +77,12 @@ const docTemplate = `{
                 "summary": "Create a new category",
                 "parameters": [
                     {
-                        "description": "Create category request",
+                        "description": "Create Category Request",
                         "name": "createCategoryRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.createCategoryRequest"
+                            "$ref": "#/definitions/request.CreateCategoryRequest"
                         }
                     }
                 ],
@@ -207,12 +207,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Update category request",
+                        "description": "Update Category Request",
                         "name": "updateCategoryRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.updateCategoryRequest"
+                            "$ref": "#/definitions/request.UpdateCategoryRequest"
                         }
                     }
                 ],
@@ -367,12 +367,12 @@ const docTemplate = `{
                 "summary": "Create a customer",
                 "parameters": [
                     {
-                        "description": "Customer",
-                        "name": "customer",
+                        "description": "Create Customer Request",
+                        "name": "createCustomerRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.createCustomerRequest"
+                            "$ref": "#/definitions/request.CreateCustomerRequest"
                         }
                     }
                 ],
@@ -462,12 +462,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Customer",
-                        "name": "customer",
+                        "description": "Update Customer Request",
+                        "name": "updateCustomerRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.updateCustomerRequest"
+                            "$ref": "#/definitions/request.UpdateCustomerRequest"
                         }
                     }
                 ],
@@ -594,8 +594,8 @@ const docTemplate = `{
                 "summary": "Create an order",
                 "parameters": [
                     {
-                        "description": "Consumer ID",
-                        "name": "order",
+                        "description": "Create Order Request",
+                        "name": "createOrderRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -863,7 +863,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "OrderProductResponse",
+                        "description": "Order Product Response",
                         "name": "order",
                         "in": "body",
                         "required": true,
@@ -927,7 +927,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "OrderProductRequest",
+                        "description": "Order Product Request",
                         "name": "order",
                         "in": "body",
                         "required": true,
@@ -1069,7 +1069,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update an order\nOnly staff can update the order status\nThe status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED\nTransition of status:\n- OPEN      -\u003e CANCELLED || PENDING\n- CANCELLED -\u003e {},\n- PENDING   -\u003e OPEN || RECEIVED\n- RECEIVED  -\u003e PREPARING\n- PREPARING -\u003e READY\n- READY     -\u003eCOMPLETED\n- COMPLETED -\u003e {}",
+                "description": "Update an order\nOnly staff can update the order status\nThe status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED\nTransition of status:\n- OPEN      -\u003e CANCELLED || PENDING\n- CANCELLED -\u003e {},\n- PENDING   -\u003e OPEN || RECEIVED\n- RECEIVED  -\u003e PREPARING\n- PREPARING -\u003e READY\n- READY     -\u003e COMPLETED\n- COMPLETED -\u003e {}",
                 "consumes": [
                     "application/json"
                 ],
@@ -1089,12 +1089,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "UpdateOrder",
-                        "name": "order",
+                        "description": "Update Order Request",
+                        "name": "updateOrderRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.UpdateOrder"
+                            "$ref": "#/definitions/request.UpdateOrderRequest"
                         }
                     }
                 ],
@@ -1140,7 +1140,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "OrderResponse ID",
+                        "description": "Order ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1176,7 +1176,7 @@ const docTemplate = `{
         },
         "/api/v1/payments/callback": {
             "post": {
-                "description": "Update a payment on a order (2.b: \u003e 2.b.: v. Fake checkout)",
+                "description": "Update a payment on a order (2.b: \u003e 2.b.: v. Fake checkout)\n- resource = external payment id\n- topic = payment",
                 "consumes": [
                     "application/json"
                 ],
@@ -1190,7 +1190,7 @@ const docTemplate = `{
                 "summary": "Update a payment on a order",
                 "parameters": [
                     {
-                        "description": "PaymentResponse",
+                        "description": "Update Payment Request",
                         "name": "product",
                         "in": "body",
                         "required": true,
@@ -1294,7 +1294,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ProductResponse name",
+                        "description": "Product name",
                         "name": "name",
                         "in": "query"
                     },
@@ -1340,12 +1340,12 @@ const docTemplate = `{
                 "summary": "Create a product",
                 "parameters": [
                     {
-                        "description": "ProductResponse",
+                        "description": "Create Product Request",
                         "name": "product",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.createProductRequest"
+                            "$ref": "#/definitions/request.CreateProductRequest"
                         }
                     }
                 ],
@@ -1393,7 +1393,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ProductResponse ID",
+                        "description": "Product ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1441,18 +1441,18 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ProductResponse ID",
+                        "description": "Product ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "ProductResponse",
+                        "description": "Update Product Request",
                         "name": "product",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.UpdateProduct"
+                            "$ref": "#/definitions/request.UpdateProductRequest"
                         }
                     }
                 ],
@@ -1498,7 +1498,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ProductResponse ID",
+                        "description": "Product ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1548,12 +1548,12 @@ const docTemplate = `{
                 "summary": "Sign in a customer",
                 "parameters": [
                     {
-                        "description": "SignInResponse",
+                        "description": "SignIn Request",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.signInRequest"
+                            "$ref": "#/definitions/request.SignInRequest"
                         }
                     }
                 ],
@@ -1648,7 +1648,7 @@ const docTemplate = `{
                 "summary": "Create a staff",
                 "parameters": [
                     {
-                        "description": "Staff",
+                        "description": "Create Staff Request",
                         "name": "staff",
                         "in": "body",
                         "required": true,
@@ -1743,8 +1743,8 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Staff",
-                        "name": "customer",
+                        "description": "Update Staff Request",
+                        "name": "staff",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1904,45 +1904,7 @@ const docTemplate = `{
                 "MANAGER"
             ]
         },
-        "handler.UpdateOrder": {
-            "type": "object",
-            "properties": {
-                "staff_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "status": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/domain.OrderStatus"
-                        }
-                    ],
-                    "example": "PENDING"
-                }
-            }
-        },
-        "handler.UpdateProduct": {
-            "type": "object",
-            "properties": {
-                "category_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "description": {
-                    "type": "string",
-                    "example": "The best burger in the world"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "McDonald's Big Mac"
-                },
-                "price": {
-                    "type": "number",
-                    "example": 29.9
-                }
-            }
-        },
-        "handler.createCategoryRequest": {
+        "request.CreateCategoryRequest": {
             "type": "object",
             "required": [
                 "name"
@@ -1954,7 +1916,7 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.createCustomerRequest": {
+        "request.CreateCustomerRequest": {
             "type": "object",
             "required": [
                 "cpf",
@@ -1976,7 +1938,19 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.createProductRequest": {
+        "request.CreateOrderRequest": {
+            "type": "object",
+            "required": [
+                "customer_id"
+            ],
+            "properties": {
+                "customer_id": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "request.CreateProductRequest": {
             "type": "object",
             "required": [
                 "category_id",
@@ -1985,6 +1959,11 @@ const docTemplate = `{
                 "price"
             ],
             "properties": {
+                "active": {
+                    "type": "boolean",
+                    "default": true,
+                    "example": true
+                },
                 "category_id": {
                     "type": "integer",
                     "example": 1
@@ -2000,59 +1979,6 @@ const docTemplate = `{
                 "price": {
                     "type": "number",
                     "example": 29.9
-                }
-            }
-        },
-        "handler.signInRequest": {
-            "type": "object",
-            "required": [
-                "cpf"
-            ],
-            "properties": {
-                "cpf": {
-                    "type": "string",
-                    "example": "000.000.000-00"
-                }
-            }
-        },
-        "handler.updateCategoryRequest": {
-            "type": "object",
-            "required": [
-                "name"
-            ],
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "example": "Beverages"
-                }
-            }
-        },
-        "handler.updateCustomerRequest": {
-            "type": "object",
-            "properties": {
-                "cpf": {
-                    "type": "string",
-                    "example": "123.456.789-00"
-                },
-                "email": {
-                    "type": "string",
-                    "example": "johndoe@email.com"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "John Doe"
-                }
-            }
-        },
-        "request.CreateOrderRequest": {
-            "type": "object",
-            "required": [
-                "customer_id"
-            ],
-            "properties": {
-                "customer_id": {
-                    "type": "integer",
-                    "example": 1
                 }
             }
         },
@@ -2089,6 +2015,64 @@ const docTemplate = `{
                 }
             }
         },
+        "request.SignInRequest": {
+            "type": "object",
+            "required": [
+                "cpf"
+            ],
+            "properties": {
+                "cpf": {
+                    "type": "string",
+                    "example": "000.000.000-00"
+                }
+            }
+        },
+        "request.UpdateCategoryRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Beverages"
+                }
+            }
+        },
+        "request.UpdateCustomerRequest": {
+            "type": "object",
+            "properties": {
+                "cpf": {
+                    "type": "string",
+                    "example": "123.456.789-00"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "johndoe@email.com"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                }
+            }
+        },
+        "request.UpdateOrderRequest": {
+            "type": "object",
+            "properties": {
+                "staff_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "status": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.OrderStatus"
+                        }
+                    ],
+                    "example": "PENDING"
+                }
+            }
+        },
         "request.UpdatePaymentRequest": {
             "type": "object",
             "properties": {
@@ -2099,6 +2083,31 @@ const docTemplate = `{
                 "topic": {
                     "type": "string",
                     "example": "payment"
+                }
+            }
+        },
+        "request.UpdateProductRequest": {
+            "type": "object",
+            "properties": {
+                "active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "category_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "description": {
+                    "type": "string",
+                    "example": "The best burger in the world"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "McDonald's Big Mac"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 29.9
                 }
             }
         },

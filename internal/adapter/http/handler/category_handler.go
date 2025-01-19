@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
@@ -12,13 +13,13 @@ import (
 
 // CategoryHandler represents the HTTP handler for category-related requests
 type CategoryHandler struct {
-	svc port.ICategoryService
+	service port.ICategoryService
 }
 
 // NewCategoryHandler creates a new CategoryHandler instance
-func NewCategoryHandler(svc port.ICategoryService) *CategoryHandler {
+func NewCategoryHandler(service port.ICategoryService) *CategoryHandler {
 	return &CategoryHandler{
-		svc,
+		service,
 	}
 }
 
@@ -34,11 +35,6 @@ func (h *CategoryHandler) GroupRouterPattern() string {
 	return "/api/v1/categories"
 }
 
-// createCategoryRequest represents a request body for creating a new category
-type createCategoryRequest struct {
-	Name string `json:"name" binding:"required" example:"Foods"`
-}
-
 // CreateCategory godoc
 //
 //	@Summary		Create a new category
@@ -46,7 +42,7 @@ type createCategoryRequest struct {
 //	@Tags			categories
 //	@Accept			json
 //	@Produce		json
-//	@Param			createCategoryRequest	body		createCategoryRequest	true	"Create category request"
+//	@Param			createCategoryRequest	body		request.CreateCategoryRequest	true	"Create Category Request"
 //	@Success		200						{object}	response.CategoryResponse		"Category created"
 //	@Failure		400						{object}	response.ErrorResponse	"Validation error"
 //	@Failure		401						{object}	response.ErrorResponse	"Unauthorized error"
@@ -56,17 +52,15 @@ type createCategoryRequest struct {
 //	@Failure		500						{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/categories [post]
 func (ch *CategoryHandler) CreateCategory(ctx *gin.Context) {
-	var req createCategoryRequest
+	var req request.CreateCategoryRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(ctx, err)
 		return
 	}
 
-	category := &domain.Category{
-		Name: req.Name,
-	}
+	category := req.ToDomain()
 
-	err := ch.svc.Create(category)
+	err := ch.service.Create(category)
 	if err != nil {
 		response.HandleError(ctx, err)
 		return
@@ -76,11 +70,6 @@ func (ch *CategoryHandler) CreateCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, rsp)
 }
 
-// getCategoryRequest represents a request body for retrieving a category
-type getCategoryRequest struct {
-	ID uint64 `uri:"id" binding:"required,min=1" example:"1"`
-}
-
 // GetCategory godoc
 //
 //	@Summary		Get a category
@@ -88,20 +77,20 @@ type getCategoryRequest struct {
 //	@Tags			categories
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		uint64				true	"Category ID"
+//	@Param			id	path		uint64		true	"Category ID"
 //	@Success		200	{object}	response.CategoryResponse	"Category retrieved"
 //	@Failure		400	{object}	response.ErrorResponse		"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse		"Data not found error"
 //	@Failure		500	{object}	response.ErrorResponse		"Internal server error"
 //	@Router			/api/v1/categories/{id} [get]
 func (ch *CategoryHandler) GetCategory(ctx *gin.Context) {
-	var req getCategoryRequest
+	var req request.GetCategoryRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		response.ValidationError(ctx, err)
 		return
 	}
 
-	category, err := ch.svc.GetByID(req.ID)
+	category, err := ch.service.GetByID(req.ID)
 	if err != nil {
 		response.HandleError(ctx, err)
 		return
@@ -109,12 +98,6 @@ func (ch *CategoryHandler) GetCategory(ctx *gin.Context) {
 
 	rsp := response.NewCategoryResponse(category)
 	ctx.JSON(http.StatusOK, rsp)
-}
-
-// listCategoriesRequest represents a request body for listing categories
-type listCategoriesRequest struct {
-	Skip  uint64 `form:"skip" binding:"required,min=0" example:"0"`
-	Limit uint64 `form:"limit" binding:"required,min=5" example:"5"`
 }
 
 // ListCategories godoc
@@ -147,7 +130,7 @@ func (ch *CategoryHandler) ListCategories(ctx *gin.Context) {
 		return
 	}
 
-	customers, total, err := ch.svc.List(name, pageInt, limitInt)
+	customers, total, err := ch.service.List(name, pageInt, limitInt)
 	if err != nil {
 		response.HandleError(ctx, err)
 		return
@@ -155,11 +138,6 @@ func (ch *CategoryHandler) ListCategories(ctx *gin.Context) {
 
 	customersResponse := response.NewCategoriesPaginated(customers, total, pageInt, limitInt)
 	ctx.JSON(http.StatusOK, customersResponse)
-}
-
-// updateCategoryRequest represents a request body for updating a category
-type updateCategoryRequest struct {
-	Name string `json:"name" binding:"omitempty,required" example:"Beverages"`
 }
 
 // UpdateCategory godoc
@@ -170,7 +148,7 @@ type updateCategoryRequest struct {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id						path		uint64					true	"Category ID"
-//	@Param			updateCategoryRequest	body		updateCategoryRequest	true	"Update category request"
+//	@Param			updateCategoryRequest	body		request.UpdateCategoryRequest	true	"Update Category Request"
 //	@Success		200		{object}	response.CategoryResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
@@ -178,7 +156,7 @@ type updateCategoryRequest struct {
 //	@Router			/api/v1/categories/{id} [put]
 //	@Security		BearerAuth
 func (ch *CategoryHandler) UpdateCategory(ctx *gin.Context) {
-	var req updateCategoryRequest
+	var req request.UpdateCategoryRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(ctx, err)
 		return
@@ -191,12 +169,9 @@ func (ch *CategoryHandler) UpdateCategory(ctx *gin.Context) {
 		return
 	}
 
-	category := &domain.Category{
-		ID:   id,
-		Name: req.Name,
-	}
+	category := req.ToDomain(id)
 
-	err = ch.svc.Update(category)
+	err = ch.service.Update(category)
 	if err != nil {
 		response.HandleError(ctx, err)
 		return
@@ -204,11 +179,6 @@ func (ch *CategoryHandler) UpdateCategory(ctx *gin.Context) {
 
 	rsp := response.NewCategoryResponse(category)
 	ctx.JSON(http.StatusOK, rsp)
-}
-
-// deleteCategoryRequest represents a request body for deleting a category
-type deleteCategoryRequest struct {
-	ID uint64 `uri:"id" binding:"required,min=1" example:"1"`
 }
 
 // DeleteCategory godoc
@@ -227,13 +197,13 @@ type deleteCategoryRequest struct {
 //	@Failure		500	{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/categories/{id} [delete]
 func (ch *CategoryHandler) DeleteCategory(ctx *gin.Context) {
-	var req deleteCategoryRequest
+	var req request.DeleteCategoryRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		response.ValidationError(ctx, err)
 		return
 	}
 
-	err := ch.svc.Delete(req.ID)
+	err := ch.service.Delete(req.ID)
 	if err != nil {
 		response.HandleError(ctx, err)
 		return

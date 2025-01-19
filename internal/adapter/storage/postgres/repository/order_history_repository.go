@@ -38,7 +38,7 @@ func (r *OrderHistoryRepository) GetAll(orderID uint64, status *domain.OrderStat
 	var tx = r.db.Model(&orderHistories).Preload("Order")
 	var count int64
 	where := map[string]interface{}{}
-	if &status != nil && *status != domain.UNDEFINDED && strings.ToUpper(status.ToString()) != "" {
+	if status != nil && *status != domain.UNDEFINDED && strings.ToUpper(status.ToString()) != "" {
 		where["status"] = &status
 	}
 

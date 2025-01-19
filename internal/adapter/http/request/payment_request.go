@@ -1,20 +1,26 @@
 package request
 
 import (
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 )
 
-type CreatePaymentRequest struct {
-	ExternalReference string  `json:"external_reference"`
-	TotalAmount       float32 `json:"total_amount"`
-	Items             []Items `json:"items"`
-	Title             string  `json:"title"`
-	Description       string  `json:"description"`
-	NotificationURL   string  `json:"notification_url"`
+// PaymentPathParam contains the path parameters for the payment
+type PaymentPathParam struct {
+	OrderID uint64 `uri:"order_id" binding:"required"`
 }
 
-type Items struct {
+// CreatePaymentRequest contains the request to create a payment
+type CreatePaymentRequest struct {
+	ExternalReference string         `json:"external_reference"`
+	TotalAmount       float32        `json:"total_amount"`
+	Items             []ItemsRequest `json:"items"`
+	Title             string         `json:"title"`
+	Description       string         `json:"description"`
+	NotificationURL   string         `json:"notification_url"`
+}
+
+// ItemsRequest contains the request to create a payment item
+type ItemsRequest struct {
 	Category    string  `json:"category"`
 	Title       string  `json:"title"`
 	Description string  `json:"description"`
@@ -24,14 +30,15 @@ type Items struct {
 	TotalAmount float32 `json:"total_amount"`
 }
 
+// NewPaymentRequest creates a new payment request
 func NewPaymentRequest(payment *domain.CreatePaymentIN) *CreatePaymentRequest {
 	if payment == nil {
 		return nil
 	}
 
-	items := make([]Items, 0)
+	items := make([]ItemsRequest, 0)
 	for _, item := range payment.Items {
-		items = append(items, Items{
+		items = append(items, ItemsRequest{
 			Title:       item.Title,
 			Description: item.Description,
 			UnitPrice:   item.UnitPrice,
@@ -52,21 +59,16 @@ func NewPaymentRequest(payment *domain.CreatePaymentIN) *CreatePaymentRequest {
 	}
 }
 
-func NewPaymentRequestOutput(payment *response.CreatePaymentResponse) *domain.CreatePaymentOUT {
-	return &domain.CreatePaymentOUT{
-		InStoreOrderID: payment.InStoreOrderID,
-		QrData:         payment.QrData,
-	}
-}
-
+// UpdatePaymentRequest contains the request to update a payment
 type UpdatePaymentRequest struct {
 	Resource string `json:"resource" example:"c16896f0-483b-4573-a493-f4d2eb59ba31"`
 	Topic    string `json:"topic" enum:"payment" example:"payment"`
 }
 
-func NewUpdatePaymentRequest(payment *UpdatePaymentRequest) *domain.UpdatePaymentIN {
+// ToDomain converts UpdatePaymentRequest to domain.UpdatePaymentIN
+func (r UpdatePaymentRequest) ToDomain() *domain.UpdatePaymentIN {
 	return &domain.UpdatePaymentIN{
-		Resource: payment.Resource,
-		Topic:    payment.Topic,
+		Resource: r.Resource,
+		Topic:    r.Topic,
 	}
 }

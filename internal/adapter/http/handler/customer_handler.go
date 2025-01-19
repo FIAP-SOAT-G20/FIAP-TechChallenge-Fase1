@@ -6,17 +6,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
 )
 
 type CustomerHandler struct {
-	customerService port.ICustomerService
+	service port.ICustomerService
 }
 
 func NewCustomerHandler(customerService port.ICustomerService) *CustomerHandler {
-	return &CustomerHandler{customerService: customerService}
+	return &CustomerHandler{service: customerService}
 }
 
 func (h *CustomerHandler) Register(router *gin.RouterGroup) {
@@ -31,12 +32,6 @@ func (h *CustomerHandler) GroupRouterPattern() string {
 	return "/api/v1/customers"
 }
 
-type createCustomerRequest struct {
-	Name  string `json:"name" binding:"required" example:"John Doe"`
-	Email string `json:"email" binding:"required" example:"johndoe@contact.com"`
-	CPF   string `json:"cpf" binding:"required" example:"123.456.789-00"`
-}
-
 // CreateCustomer godoc
 //
 //	@Summary		Create a customer
@@ -44,25 +39,21 @@ type createCustomerRequest struct {
 //	@Tags			customers, sign-up
 //	@Accept			json
 //	@Produce		json
-//	@Param			customer	body		createCustomerRequest	true	"Customer"
+//	@Param			createCustomerRequest	body		request.CreateCustomerRequest	true	"Create Customer Request"
 //	@Success		201			{object}	response.CustomerResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers [post]
 func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
-	var req createCustomerRequest
+	var req request.CreateCustomerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
 	}
 
-	customer := &domain.Customer{
-		Name:  req.Name,
-		Email: req.Email,
-		CPF:   req.CPF,
-	}
+	customer := req.ToDomain()
 
-	err := h.customerService.Create(customer)
+	err := h.service.Create(customer)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -102,7 +93,7 @@ func (h *CustomerHandler) ListCustomers(c *gin.Context) {
 		return
 	}
 
-	customers, total, err := h.customerService.List(name, pageInt, limitInt)
+	customers, total, err := h.service.List(name, pageInt, limitInt)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -133,7 +124,7 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 		return
 	}
 
-	customer, err := h.customerService.GetByID(idUint64)
+	customer, err := h.service.GetByID(idUint64)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -141,12 +132,6 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 
 	customerResponse := response.NewCustomerResponse(customer)
 	c.JSON(http.StatusOK, customerResponse)
-}
-
-type updateCustomerRequest struct {
-	Name  string `json:"name" example:"John Doe"`
-	Email string `json:"email" example:"johndoe@email.com"`
-	CPF   string `json:"cpf" example:"123.456.789-00"`
 }
 
 // UpdateCustomer godoc
@@ -157,7 +142,7 @@ type updateCustomerRequest struct {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id			path		uint64					true	"Customer ID"
-//	@Param			customer	body		updateCustomerRequest	true	"Customer"
+//	@Param			updateCustomerRequest	body		request.UpdateCustomerRequest	true	"Update Customer Request"
 //	@Success		200			{object}	response.CustomerResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404			{object}	response.ErrorResponse	"Data not found error"
@@ -172,20 +157,15 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	var req updateCustomerRequest
+	var req request.UpdateCustomerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
 	}
 
-	customer := &domain.Customer{
-		ID:    idUint64,
-		Name:  req.Name,
-		Email: req.Email,
-		CPF:   req.CPF,
-	}
+	customer := req.ToDomain(idUint64)
 
-	err = h.customerService.Update(customer)
+	err = h.service.Update(customer)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -216,7 +196,7 @@ func (h *CustomerHandler) DeleteCustomer(c *gin.Context) {
 		return
 	}
 
-	err = h.customerService.Delete(idUint64)
+	err = h.service.Delete(idUint64)
 	if err != nil {
 		response.HandleError(c, err)
 		return

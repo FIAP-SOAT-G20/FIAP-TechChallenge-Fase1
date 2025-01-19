@@ -42,32 +42,7 @@ definitions:
     - COOK
     - ATTENDANT
     - MANAGER
-  handler.UpdateOrder:
-    properties:
-      staff_id:
-        example: 1
-        type: integer
-      status:
-        allOf:
-        - $ref: '#/definitions/domain.OrderStatus'
-        example: PENDING
-    type: object
-  handler.UpdateProduct:
-    properties:
-      category_id:
-        example: 1
-        type: integer
-      description:
-        example: The best burger in the world
-        type: string
-      name:
-        example: McDonald's Big Mac
-        type: string
-      price:
-        example: 29.9
-        type: number
-    type: object
-  handler.createCategoryRequest:
+  request.CreateCategoryRequest:
     properties:
       name:
         example: Foods
@@ -75,7 +50,7 @@ definitions:
     required:
     - name
     type: object
-  handler.createCustomerRequest:
+  request.CreateCustomerRequest:
     properties:
       cpf:
         example: 123.456.789-00
@@ -91,8 +66,20 @@ definitions:
     - email
     - name
     type: object
-  handler.createProductRequest:
+  request.CreateOrderRequest:
     properties:
+      customer_id:
+        example: 1
+        type: integer
+    required:
+    - customer_id
+    type: object
+  request.CreateProductRequest:
+    properties:
+      active:
+        default: true
+        example: true
+        type: boolean
       category_id:
         example: 1
         type: integer
@@ -110,42 +97,6 @@ definitions:
     - description
     - name
     - price
-    type: object
-  handler.signInRequest:
-    properties:
-      cpf:
-        example: 000.000.000-00
-        type: string
-    required:
-    - cpf
-    type: object
-  handler.updateCategoryRequest:
-    properties:
-      name:
-        example: Beverages
-        type: string
-    required:
-    - name
-    type: object
-  handler.updateCustomerRequest:
-    properties:
-      cpf:
-        example: 123.456.789-00
-        type: string
-      email:
-        example: johndoe@email.com
-        type: string
-      name:
-        example: John Doe
-        type: string
-    type: object
-  request.CreateOrderRequest:
-    properties:
-      customer_id:
-        example: 1
-        type: integer
-    required:
-    - customer_id
     type: object
   request.CreateStaffRequest:
     properties:
@@ -168,6 +119,44 @@ definitions:
     required:
     - quantity
     type: object
+  request.SignInRequest:
+    properties:
+      cpf:
+        example: 000.000.000-00
+        type: string
+    required:
+    - cpf
+    type: object
+  request.UpdateCategoryRequest:
+    properties:
+      name:
+        example: Beverages
+        type: string
+    required:
+    - name
+    type: object
+  request.UpdateCustomerRequest:
+    properties:
+      cpf:
+        example: 123.456.789-00
+        type: string
+      email:
+        example: johndoe@email.com
+        type: string
+      name:
+        example: John Doe
+        type: string
+    type: object
+  request.UpdateOrderRequest:
+    properties:
+      staff_id:
+        example: 1
+        type: integer
+      status:
+        allOf:
+        - $ref: '#/definitions/domain.OrderStatus'
+        example: PENDING
+    type: object
   request.UpdatePaymentRequest:
     properties:
       resource:
@@ -176,6 +165,24 @@ definitions:
       topic:
         example: payment
         type: string
+    type: object
+  request.UpdateProductRequest:
+    properties:
+      active:
+        example: true
+        type: boolean
+      category_id:
+        example: 1
+        type: integer
+      description:
+        example: The best burger in the world
+        type: string
+      name:
+        example: McDonald's Big Mac
+        type: string
+      price:
+        example: 29.9
+        type: number
     type: object
   request.UpdateStaffRequest:
     properties:
@@ -462,12 +469,12 @@ paths:
       - application/json
       description: create a new category with name
       parameters:
-      - description: Create category request
+      - description: Create Category Request
         in: body
         name: createCategoryRequest
         required: true
         schema:
-          $ref: '#/definitions/handler.createCategoryRequest'
+          $ref: '#/definitions/request.CreateCategoryRequest'
       produces:
       - application/json
       responses:
@@ -585,12 +592,12 @@ paths:
         name: id
         required: true
         type: integer
-      - description: Update category request
+      - description: Update Category Request
         in: body
         name: updateCategoryRequest
         required: true
         schema:
-          $ref: '#/definitions/handler.updateCategoryRequest'
+          $ref: '#/definitions/request.UpdateCategoryRequest'
       produces:
       - application/json
       responses:
@@ -652,12 +659,12 @@ paths:
       - application/json
       description: Create a customer
       parameters:
-      - description: Customer
+      - description: Create Customer Request
         in: body
-        name: customer
+        name: createCustomerRequest
         required: true
         schema:
-          $ref: '#/definitions/handler.createCustomerRequest'
+          $ref: '#/definitions/request.CreateCustomerRequest'
       produces:
       - application/json
       responses:
@@ -742,12 +749,12 @@ paths:
         name: id
         required: true
         type: integer
-      - description: Customer
+      - description: Update Customer Request
         in: body
-        name: customer
+        name: updateCustomerRequest
         required: true
         schema:
-          $ref: '#/definitions/handler.updateCustomerRequest'
+          $ref: '#/definitions/request.UpdateCustomerRequest'
       produces:
       - application/json
       responses:
@@ -803,9 +810,9 @@ paths:
       - application/json
       description: Create an order
       parameters:
-      - description: Consumer ID
+      - description: Create Order Request
         in: body
-        name: order
+        name: createOrderRequest
         required: true
         schema:
           $ref: '#/definitions/request.CreateOrderRequest'
@@ -837,7 +844,7 @@ paths:
       - application/json
       description: Delete an order
       parameters:
-      - description: OrderResponse ID
+      - description: Order ID
         in: path
         name: id
         required: true
@@ -909,7 +916,7 @@ paths:
         - PENDING   -> OPEN || RECEIVED
         - RECEIVED  -> PREPARING
         - PREPARING -> READY
-        - READY     ->COMPLETED
+        - READY     -> COMPLETED
         - COMPLETED -> {}
       parameters:
       - description: Order ID
@@ -917,12 +924,12 @@ paths:
         name: id
         required: true
         type: integer
-      - description: UpdateOrder
+      - description: Update Order Request
         in: body
-        name: order
+        name: updateOrderRequest
         required: true
         schema:
-          $ref: '#/definitions/handler.UpdateOrder'
+          $ref: '#/definitions/request.UpdateOrderRequest'
       produces:
       - application/json
       responses:
@@ -1132,7 +1139,7 @@ paths:
         name: product_id
         required: true
         type: integer
-      - description: OrderProductRequest
+      - description: Order Product Request
         in: body
         name: order
         required: true
@@ -1175,7 +1182,7 @@ paths:
         name: product_id
         required: true
         type: integer
-      - description: OrderProductResponse
+      - description: Order Product Response
         in: body
         name: order
         required: true
@@ -1241,9 +1248,12 @@ paths:
     post:
       consumes:
       - application/json
-      description: 'Update a payment on a order (2.b: > 2.b.: v. Fake checkout)'
+      description: |-
+        Update a payment on a order (2.b: > 2.b.: v. Fake checkout)
+        - resource = external payment id
+        - topic = payment
       parameters:
-      - description: PaymentResponse
+      - description: Update Payment Request
         in: body
         name: product
         required: true
@@ -1279,7 +1289,7 @@ paths:
       description: 'List products or filter by category (2.b: iv. Buscar produtos
         por categoria;)'
       parameters:
-      - description: ProductResponse name
+      - description: Product name
         in: query
         name: name
         type: string
@@ -1310,12 +1320,12 @@ paths:
       - application/json
       description: Create a product
       parameters:
-      - description: ProductResponse
+      - description: Create Product Request
         in: body
         name: product
         required: true
         schema:
-          $ref: '#/definitions/handler.createProductRequest'
+          $ref: '#/definitions/request.CreateProductRequest'
       produces:
       - application/json
       responses:
@@ -1344,7 +1354,7 @@ paths:
       - application/json
       description: Delete a product
       parameters:
-      - description: ProductResponse ID
+      - description: Product ID
         in: path
         name: id
         required: true
@@ -1376,7 +1386,7 @@ paths:
       - application/json
       description: Get a product
       parameters:
-      - description: ProductResponse ID
+      - description: Product ID
         in: path
         name: id
         required: true
@@ -1408,17 +1418,17 @@ paths:
       - application/json
       description: Update a product
       parameters:
-      - description: ProductResponse ID
+      - description: Product ID
         in: path
         name: id
         required: true
         type: integer
-      - description: ProductResponse
+      - description: Update Product Request
         in: body
         name: product
         required: true
         schema:
-          $ref: '#/definitions/handler.UpdateProduct'
+          $ref: '#/definitions/request.UpdateProductRequest'
       produces:
       - application/json
       responses:
@@ -1447,12 +1457,12 @@ paths:
       - application/json
       description: 'Sign in a customer (2.b: ii. Identificação do Cliente via CPF)'
       parameters:
-      - description: SignInResponse
+      - description: SignIn Request
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handler.signInRequest'
+          $ref: '#/definitions/request.SignInRequest'
       produces:
       - application/json
       responses:
@@ -1518,7 +1528,7 @@ paths:
         - ATTENDANT
         - MANAGER
       parameters:
-      - description: Staff
+      - description: Create Staff Request
         in: body
         name: staff
         required: true
@@ -1608,9 +1618,9 @@ paths:
         name: id
         required: true
         type: integer
-      - description: Staff
+      - description: Update Staff Request
         in: body
-        name: customer
+        name: staff
         required: true
         schema:
           $ref: '#/definitions/request.UpdateStaffRequest'

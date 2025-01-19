@@ -40,7 +40,7 @@ func (h *OrderHandler) GroupRouterPattern() string {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			order	body		request.CreateOrderRequest true	"Consumer ID"
+//	@Param			createOrderRequest	body		request.CreateOrderRequest	true	"Create Order Request"
 //	@Success		201		{object}	response.OrderResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
@@ -53,9 +53,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	order := &domain.Order{
-		CustomerID: req.CustomerID,
-	}
+	order := req.ToDomain()
 
 	if err := h.service.Create(order); err != nil {
 		response.HandleError(c, err)
@@ -105,7 +103,7 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			customer_id	query		uint64	false	"Customer ID"
+//	@Param			customer_id	query		int		false	"Customer ID"
 //	@Param			page		query		int		false	"Page"
 //	@Param			limit		query		int		false	"Limit"
 //	@Success		200			{object}	response.OrderPaginated
@@ -145,11 +143,6 @@ func (h *OrderHandler) ListOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, responses)
 }
 
-type UpdateOrder struct {
-	StaffID *uint64            `json:"staff_id" example:"1" ommitempty:"true"`
-	Status  domain.OrderStatus `json:"status" enum:"OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED" ommitempty:"true" example:"PENDING"`
-}
-
 // UpdateOrder godoc
 //
 //	@Summary		Update an order
@@ -168,7 +161,7 @@ type UpdateOrder struct {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id		path		int				true	"Order ID"
-//	@Param			order	body		UpdateOrder		true	"UpdateOrder"
+//	@Param			updateOrderRequest	body		request.UpdateOrderRequest	true	"Update Order Request"
 //	@Success		200		{object}	response.OrderResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
@@ -183,7 +176,7 @@ func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 		return
 	}
 
-	var req UpdateOrder
+	var req request.UpdateOrderRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
@@ -212,7 +205,7 @@ func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		int	true	"OrderResponse ID"
+//	@Param			id	path		int	true	"Order ID"
 //	@Success		204	{object}	string
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
