@@ -42,7 +42,7 @@ func (h *CategoryHandler) GroupRouterPattern() string {
 //	@Tags			categories
 //	@Accept			json
 //	@Produce		json
-//	@Param			createCategoryRequest	body		createCategoryRequest	true	"Create Category Request"
+//	@Param			createCategoryRequest	body		request.CreateCategoryRequest	true	"Create Category Request"
 //	@Success		200						{object}	response.CategoryResponse		"Category created"
 //	@Failure		400						{object}	response.ErrorResponse	"Validation error"
 //	@Failure		401						{object}	response.ErrorResponse	"Unauthorized error"
