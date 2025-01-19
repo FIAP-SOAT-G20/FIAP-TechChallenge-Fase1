@@ -29,6 +29,8 @@ func NewOrderProductResponse(order *domain.OrderProduct) OrderProductResponse {
 		Quantity:  order.Quantity,
 		CreatedAt: order.CreatedAt,
 		UpdatedAt: order.UpdatedAt,
+		Order:     NewOrderResponse(&order.Order),
+		Product:   NewProductResponse(&order.Product),
 	}
 }
 
