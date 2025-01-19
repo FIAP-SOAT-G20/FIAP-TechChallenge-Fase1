@@ -45,16 +45,6 @@ CREATE TABLE IF NOT EXISTS orders
     updated_at  TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE IF NOT EXISTS order_history
-(
-    order_id   INT REFERENCES orders (id),
-    staff_id   INT REFERENCES staffs (id),
-    status     VARCHAR CHECK (status IN ('RECEIVED', 'PREPARING', 'READY', 'COMPLETED')) DEFAULT 'RECEIVED',
-    created_at TIMESTAMP NOT NULL                                                        DEFAULT now(),
-    updated_at TIMESTAMP NOT NULL                                                        DEFAULT now(),
-    PRIMARY KEY (order_id, staff_id)
-);
-
 CREATE TABLE IF NOT EXISTS order_products
 (
     order_id   INT REFERENCES orders (id),
