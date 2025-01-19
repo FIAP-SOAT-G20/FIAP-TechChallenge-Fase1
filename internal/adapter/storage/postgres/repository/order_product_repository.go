@@ -28,7 +28,7 @@ func (r *OrderProductRepository) GetByID(orderID, productID uint64) (*domain.Ord
 
 func (r *OrderProductRepository) GetAllByOrderID(orderID uint64) ([]domain.OrderProduct, error) {
 	var orderProducts []domain.OrderProduct
-	var tx = r.db.Model(&orderProducts).Preload("Order")
+	var tx = r.db.Model(&orderProducts).Preload("Order").Preload("Product")
 	where := map[string]interface{}{
 		"order_id": orderID,
 	}
@@ -38,7 +38,7 @@ func (r *OrderProductRepository) GetAllByOrderID(orderID uint64) ([]domain.Order
 
 func (r *OrderProductRepository) GetAll(orderID, productID uint64, page, limit int) ([]domain.OrderProduct, int64, error) {
 	var orderProducts []domain.OrderProduct
-	var tx = r.db.Model(&orderProducts).Preload("Order")
+	var tx = r.db.Model(&orderProducts).Preload("Order").Preload("Product")
 	var count int64
 	where := map[string]interface{}{}
 
