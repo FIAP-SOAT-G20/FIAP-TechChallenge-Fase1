@@ -243,12 +243,9 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 			if (err != nil) != tt.wantErr {
 				assert.Error(t, err)
 				return
-				// t.Errorf("PaymentService.CreatePayment() error = %v, wantErr %v", err, tt.wantErr)
-				// return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				assert.Equal(t, tt.want, got)
-				// t.Errorf("PaymentService.CreatePayment() = %v, want %v", got, tt.want)
 			}
 		})
 	}
