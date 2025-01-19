@@ -11,3 +11,4 @@ alter table order_histories
     ALTER COLUMN status SET DEFAULT 'OPEN';
 
 ALTER TABLE orders DROP CONSTRAINT orders_status_check;
+ALTER TABLE orders_histories DROP CONSTRAINT orders_histories_status_check;
