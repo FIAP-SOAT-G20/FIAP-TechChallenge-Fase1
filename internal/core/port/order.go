@@ -6,7 +6,7 @@ type IOrderRepository interface {
 	Insert(order *domain.Order) error
 	GetByID(id uint64) (*domain.Order, error)
 	GetAll(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error)
-	Update(order *domain.Order) error
+	UpdateStatus(order *domain.Order) error
 	Delete(id uint64) error
 }
 
@@ -14,7 +14,7 @@ type IOrderService interface {
 	Create(order *domain.Order) error
 	GetByID(id uint64) (*domain.Order, error)
 	List(customerID uint64, status *domain.OrderStatus, page, limit int) ([]domain.Order, int64, error)
-	Update(order *domain.Order, staffID *uint64) error
+	UpdateStatus(order *domain.Order, staffID *uint64) error
 	Delete(id uint64) error
 }
 

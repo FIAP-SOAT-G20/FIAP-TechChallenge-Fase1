@@ -14,8 +14,8 @@ func (r CreateOrderRequest) ToDomain() *domain.Order {
 	}
 }
 
-// UpdateOrderRequest contains the request to update an order
-type UpdateOrderRequest struct {
+// UpdateOrderRequest contains the request to update an order status
+type UpdateOrderStatusRequest struct {
 	StaffID *uint64            `json:"staff_id" example:"1" ommitempty:"true"`
 	Status  domain.OrderStatus `json:"status" enum:"OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED" ommitempty:"true" example:"PENDING"`
 }
