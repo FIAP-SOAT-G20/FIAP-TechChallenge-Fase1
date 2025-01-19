@@ -11,16 +11,12 @@ import (
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
 )
 
-type PathParam struct {
-	OrderID uint64 `uri:"order_id" binding:"required"`
-}
-
 type PaymentHandler struct {
-	paymentService port.IPaymentService
+	service port.IPaymentService
 }
 
 func NewPaymentHandler(paymentService port.IPaymentService) *PaymentHandler {
-	return &PaymentHandler{paymentService: paymentService}
+	return &PaymentHandler{service: paymentService}
 }
 
 func (h *PaymentHandler) Register(router *gin.RouterGroup) {
@@ -46,14 +42,14 @@ func (h *PaymentHandler) GroupRouterPattern() string {
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/payments/{order_id}/checkout [post]
 func (h *PaymentHandler) CreatePayment(c *gin.Context) {
-	var pathParams *PathParam
+	var pathParams *request.PaymentPathParam
 
 	if err := c.ShouldBindUri(&pathParams); err != nil {
 		response.HandleError(c, domain.ErrInvalidParam)
 		return
 	}
 
-	payment, err := h.paymentService.CreatePayment(pathParams.OrderID)
+	payment, err := h.service.CreatePayment(pathParams.OrderID)
 	if err != nil {
 		response.HandleError(c, domain.ErrInvalidParam)
 		return
@@ -70,7 +66,7 @@ func (h *PaymentHandler) CreatePayment(c *gin.Context) {
 //	@Tags			products, payments
 //	@Accept			json
 //	@Produce		json
-//	@Param			product	body		request.UpdatePaymentRequest	true	"PaymentResponse"
+//	@Param			product	body		request.UpdatePaymentRequest	true	"Update Payment Request"
 //	@Success		200		{object}	response.PaymentResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
@@ -84,9 +80,9 @@ func (h *PaymentHandler) UpdatePayment(c *gin.Context) {
 		return
 	}
 
-	paymentIN := request.NewUpdatePaymentRequest(&req)
+	paymentIN := request.ToUpdatePaymentINDomain(&req)
 
-	payment, err := h.paymentService.UpdatePayment(paymentIN)
+	payment, err := h.service.UpdatePayment(paymentIN)
 	if err != nil {
 		response.HandleError(c, domain.ErrInvalidParam)
 		return

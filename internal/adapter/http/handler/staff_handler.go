@@ -14,11 +14,11 @@ import (
 )
 
 type StaffHandler struct {
-	staffService port.IStaffService
+	service port.IStaffService
 }
 
-func NewStaffHandler(staffService port.IStaffService) *StaffHandler {
-	return &StaffHandler{staffService: staffService}
+func NewStaffHandler(service port.IStaffService) *StaffHandler {
+	return &StaffHandler{service: service}
 }
 
 func (h *StaffHandler) Register(router *gin.RouterGroup) {
@@ -44,7 +44,7 @@ func (h *StaffHandler) GroupRouterPattern() string {
 //	@Tags			staffs, sign-up
 //	@Accept			json
 //	@Produce		json
-//	@Param			staff	body		request.CreateStaffRequest	true	"Staff"
+//	@Param			staff	body		request.CreateStaffRequest	true	"Create Staff Request"
 //	@Success		201			{object}	response.StaffResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
@@ -61,7 +61,7 @@ func (h *StaffHandler) CreateStaff(c *gin.Context) {
 		Role: req.Role,
 	}
 
-	err := h.staffService.Create(staff)
+	err := h.service.Create(staff)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -101,7 +101,7 @@ func (h *StaffHandler) ListStaffs(c *gin.Context) {
 		return
 	}
 
-	staffs, total, err := h.staffService.List(name, pageInt, limitInt)
+	staffs, total, err := h.service.List(name, pageInt, limitInt)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -132,7 +132,7 @@ func (h *StaffHandler) GetStaff(c *gin.Context) {
 		return
 	}
 
-	staff, err := h.staffService.GetByID(idUint64)
+	staff, err := h.service.GetByID(idUint64)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -150,7 +150,7 @@ func (h *StaffHandler) GetStaff(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id			path		uint64						true	"Staff ID"
-//	@Param			customer	body		request.UpdateStaffRequest	true	"Staff"
+//	@Param			staff	body		request.UpdateStaffRequest	true	"Update Staff Request"
 //	@Success		200			{object}	response.CustomerResponse
 //	@Failure		400			{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404			{object}	response.ErrorResponse	"Data not found error"
@@ -179,7 +179,7 @@ func (h *StaffHandler) UpdateStaff(c *gin.Context) {
 		UpdatedAt: time.Time{},
 	}
 
-	err = h.staffService.Update(staff)
+	err = h.service.Update(staff)
 	if err != nil {
 		response.HandleError(c, err)
 		return
@@ -210,7 +210,7 @@ func (h *StaffHandler) DeleteStaff(c *gin.Context) {
 		return
 	}
 
-	err = h.staffService.Delete(idUint64)
+	err = h.service.Delete(idUint64)
 	if err != nil {
 		response.HandleError(c, err)
 		return

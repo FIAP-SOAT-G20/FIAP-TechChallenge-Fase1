@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
@@ -31,13 +32,6 @@ func (h *ProductHandler) GroupRouterPattern() string {
 	return "/api/v1/products"
 }
 
-type createProductRequest struct {
-	Name        string  `json:"name" binding:"required" example:"BK Mega Stacker 2.0"`
-	Description string  `json:"description" binding:"required" example:"The best burger in the world"`
-	Price       float32 `json:"price" binding:"required" example:"29.90"`
-	CategoryID  uint64  `json:"category_id" binding:"required" example:"1"`
-}
-
 // CreateProduct godoc
 //
 //	@Summary		Create a product
@@ -45,14 +39,14 @@ type createProductRequest struct {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			product	body		createProductRequest	true	"ProductResponse"
+//	@Param			product	body		request.CreateProductRequest	true	"Create Product Request"
 //	@Success		201		{object}	response.ProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
-	var req createProductRequest
+	var req request.CreateProductRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
@@ -63,6 +57,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 		Description: req.Description,
 		Price:       req.Price,
 		CategoryID:  req.CategoryID,
+		Category:    domain.Category{ID: req.CategoryID},
 	}
 
 	if err := h.service.Create(product); err != nil {
@@ -81,7 +76,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		int	true	"ProductResponse ID"
+//	@Param			id	path		int	true	"Product ID"
 //	@Success		200	{object}	response.ProductResponse
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"
@@ -113,7 +108,7 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			name		query		string	false	"ProductResponse name"
+//	@Param			name		query		string	false	"Product name"
 //	@Param			category_id	query		uint64	false	"Category ID"
 //	@Param			page		query		int		false	"Page"
 //	@Param			limit		query		int		false	"Limit"
@@ -153,13 +148,6 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, productResponses)
 }
 
-type UpdateProduct struct {
-	Name        string  `json:"name" example:"McDonald's Big Mac"`
-	Description string  `json:"description" example:"The best burger in the world"`
-	Price       float32 `json:"price" example:"29.90"`
-	CategoryID  uint64  `json:"category_id" example:"1"`
-}
-
 // UpdateProduct godoc
 //
 //	@Summary		Update a product
@@ -167,8 +155,8 @@ type UpdateProduct struct {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		int				true	"ProductResponse ID"
-//	@Param			product	body		UpdateProduct	true	"ProductResponse"
+//	@Param			id		path		int				true	"Product ID"
+//	@Param			product	body		request.UpdateProductRequest	true	"Update Product Request"
 //	@Success		200		{object}	response.ProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
@@ -183,7 +171,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	var req UpdateProduct
+	var req request.UpdateProductRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
@@ -195,6 +183,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 		Description: req.Description,
 		Price:       req.Price,
 		CategoryID:  req.CategoryID,
+		Active:		 req.Active,
 	}
 
 	if err := h.service.Update(product); err != nil {
@@ -213,7 +202,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		int	true	"ProductResponse ID"
+//	@Param			id	path		int	true	"Product ID"
 //	@Success		204	{object}	string
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse	"Data not found error"

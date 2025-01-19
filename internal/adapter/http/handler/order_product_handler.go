@@ -73,7 +73,7 @@ func (h *OrderProductHandler) GetOrderProduct(c *gin.Context) {
 //	@Produce		json
 //	@Param			order_id		path		int				true	"Order ID"
 //	@Param			product_id		path		int				true	"Product ID"
-//	@Param			order	body		request.OrderProductRequest	true	"OrderProductRequest"
+//	@Param			order	body		request.OrderProductRequest	true	"Order Product Request"
 //	@Success		201		{object}	response.OrderProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
@@ -117,7 +117,7 @@ func (h *OrderProductHandler) CreateOrderProduct(c *gin.Context) {
 //	@Produce		json
 //	@Param			order_id		path		int				true	"Order ID"
 //	@Param			product_id		path		int				true	"Product ID"
-//	@Param			order	body		request.OrderProductRequest	true	"OrderProductResponse"
+//	@Param			order	body		request.OrderProductRequest	true	"Order Product Response"
 //	@Success		201		{object}	response.OrderProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"

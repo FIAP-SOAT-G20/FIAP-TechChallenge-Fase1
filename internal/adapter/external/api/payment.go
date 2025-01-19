@@ -2,9 +2,10 @@ package api
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"os"
 	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/response"
@@ -40,7 +41,7 @@ func (ps *ExternalPaymentService) CreatePayment(payment *domain.CreatePaymentIN)
 		return nil, fmt.Errorf("error: response status %d", resp.StatusCode())
 	}
 
-	response := request.NewPaymentRequestOutput(resp.Result().(*response.CreatePaymentResponse))
+	response := response.ToCreatePaymentOUTDomain(resp.Result().(*response.CreatePaymentResponse))
 
 	return response, nil
 }
