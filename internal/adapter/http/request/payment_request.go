@@ -65,10 +65,10 @@ type UpdatePaymentRequest struct {
 	Topic    string `json:"topic" enum:"payment" example:"payment"`
 }
 
-// ToUpdatePaymentINDomain creates a new update payment request
-func ToUpdatePaymentINDomain(payment *UpdatePaymentRequest) *domain.UpdatePaymentIN {
+// ToDomain converts UpdatePaymentRequest to domain.UpdatePaymentIN
+func (r UpdatePaymentRequest) ToDomain() *domain.UpdatePaymentIN {
 	return &domain.UpdatePaymentIN{
-		Resource: payment.Resource,
-		Topic:    payment.Topic,
+		Resource: r.Resource,
+		Topic:    r.Topic,
 	}
 }

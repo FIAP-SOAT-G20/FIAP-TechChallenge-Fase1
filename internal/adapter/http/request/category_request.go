@@ -7,6 +7,7 @@ type CreateCategoryRequest struct {
 	Name string `json:"name" binding:"required" example:"Foods"`
 }
 
+// ToDomain converts CreateCategoryRequest to domain.Category
 func (r CreateCategoryRequest) ToDomain() *domain.Category {
 	return &domain.Category{
 		Name: r.Name,
@@ -29,6 +30,7 @@ type UpdateCategoryRequest struct {
 	Name string `json:"name" binding:"omitempty,required" example:"Beverages"`
 }
 
+// ToDomain converts UpdateCategoryRequest to domain.Category
 func (r UpdateCategoryRequest) ToDomain(id uint64) *domain.Category {
 	return &domain.Category{
 		ID:   id,

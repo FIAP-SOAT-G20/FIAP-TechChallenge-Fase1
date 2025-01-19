@@ -80,7 +80,7 @@ func (h *PaymentHandler) UpdatePayment(c *gin.Context) {
 		return
 	}
 
-	paymentIN := request.ToUpdatePaymentINDomain(&req)
+	paymentIN := req.ToDomain()
 
 	payment, err := h.service.UpdatePayment(paymentIN)
 	if err != nil {

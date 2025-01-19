@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 	"net/http"
 	"strconv"
-	"time"
+
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/request"
 
 	"github.com/gin-gonic/gin"
 
@@ -56,10 +56,7 @@ func (h *StaffHandler) CreateStaff(c *gin.Context) {
 		return
 	}
 
-	staff := &domain.Staff{
-		Name: req.Name,
-		Role: req.Role,
-	}
+	staff := req.ToDomain()
 
 	err := h.service.Create(staff)
 	if err != nil {
@@ -171,13 +168,7 @@ func (h *StaffHandler) UpdateStaff(c *gin.Context) {
 		return
 	}
 
-	staff := &domain.Staff{
-		ID:        idUint64,
-		Name:      req.Name,
-		Role:      req.Role,
-		CreatedAt: time.Time{},
-		UpdatedAt: time.Time{},
-	}
+	staff := req.ToDomain(idUint64)
 
 	err = h.service.Update(staff)
 	if err != nil {

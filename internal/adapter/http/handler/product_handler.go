@@ -52,13 +52,7 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 		return
 	}
 
-	product := &domain.Product{
-		Name:        req.Name,
-		Description: req.Description,
-		Price:       req.Price,
-		CategoryID:  req.CategoryID,
-		Category:    domain.Category{ID: req.CategoryID},
-	}
+	product := req.ToDomain()
 
 	if err := h.service.Create(product); err != nil {
 		response.HandleError(c, err)
@@ -177,14 +171,7 @@ func (h *ProductHandler) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	product := &domain.Product{
-		ID:          idUint64,
-		Name:        req.Name,
-		Description: req.Description,
-		Price:       req.Price,
-		CategoryID:  req.CategoryID,
-		Active:		 req.Active,
-	}
+	product := req.ToDomain(idUint64)
 
 	if err := h.service.Update(product); err != nil {
 		response.HandleError(c, err)

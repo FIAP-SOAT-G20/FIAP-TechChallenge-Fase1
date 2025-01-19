@@ -53,9 +53,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	order := &domain.Order{
-		CustomerID: req.CustomerID,
-	}
+	order := req.ToDomain()
 
 	if err := h.service.Create(order); err != nil {
 		response.HandleError(c, err)

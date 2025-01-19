@@ -51,11 +51,7 @@ func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 		return
 	}
 
-	customer := &domain.Customer{
-		Name:  req.Name,
-		Email: req.Email,
-		CPF:   req.CPF,
-	}
+	customer := req.ToDomain()
 
 	err := h.service.Create(customer)
 	if err != nil {
@@ -167,12 +163,7 @@ func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	customer := &domain.Customer{
-		ID:    idUint64,
-		Name:  req.Name,
-		Email: req.Email,
-		CPF:   req.CPF,
-	}
+	customer := req.ToDomain(idUint64)
 
 	err = h.service.Update(customer)
 	if err != nil {

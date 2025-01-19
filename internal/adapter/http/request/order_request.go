@@ -2,8 +2,16 @@ package request
 
 import "github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 
+// CreateOrderRequest contains the request to create an order
 type CreateOrderRequest struct {
 	CustomerID uint64 `json:"customer_id" binding:"required" example:"1"`
+}
+
+// ToDomain converts CreateOrderRequest to domain.Order
+func (r CreateOrderRequest) ToDomain() *domain.Order {
+	return &domain.Order{
+		CustomerID: r.CustomerID,
+	}
 }
 
 // UpdateOrderRequest contains the request to update an order
