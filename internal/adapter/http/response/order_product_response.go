@@ -7,12 +7,14 @@ import (
 )
 
 type OrderProductResponse struct {
-	OrderID   uint64    `json:"order_id"`
-	ProductID uint64    `json:"product_id"`
-	Price     float32   `json:"price"`
-	Quantity  uint32    `json:"quantity"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	OrderID   uint64          `json:"order_id"`
+	ProductID uint64          `json:"product_id"`
+	Price     float32         `json:"price"`
+	Quantity  uint32          `json:"quantity"`
+	CreatedAt time.Time       `json:"created_at"`
+	UpdatedAt time.Time       `json:"updated_at"`
+	Order     OrderResponse   `json:"order"`
+	Product   ProductResponse `json:"product"`
 }
 
 func NewOrderProductResponse(order *domain.OrderProduct) OrderProductResponse {
