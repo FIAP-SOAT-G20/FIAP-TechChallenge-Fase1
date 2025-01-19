@@ -52,7 +52,7 @@ VALUES (1, 1, 25.90, 1),
        (5, 3, 12.90, 1);
 
 -- Inserindo histórico dos pedidos
-INSERT INTO order_history (order_id, staff_id, status)
+INSERT INTO order_histories (order_id, staff_id, status)
 VALUES (1, 2, 'RECEIVED'),
        (1, 1, 'PREPARING'),
        (2, 2, 'READY'),
