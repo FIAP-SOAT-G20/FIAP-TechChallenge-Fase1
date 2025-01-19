@@ -29,7 +29,7 @@ func (repository *OrderRepositoryMock) GetAll(customerID uint64, status *domain.
 	return args.Get(0).([]domain.Order), args.Get(1).(int64), args.Error(2)
 }
 
-func (repository *OrderRepositoryMock) Update(order *domain.Order) error {
+func (repository *OrderRepositoryMock) UpdateStatus(order *domain.Order) error {
 	args := repository.Called(order)
 	return args.Error(0)
 }

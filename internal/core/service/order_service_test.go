@@ -71,31 +71,22 @@ func TestOrderService_List(t *testing.T) {
 	})
 }
 
-func TestOrderService_Update(t *testing.T) {
+func TestOrderService_UpdateStatus(t *testing.T) {
 	orderRepositoryMock := &repository.OrderRepositoryMock{}
 	orderService := OrderService{orderRepository: orderRepositoryMock}
 	t.Run("Should fail if customer has changed", func(t *testing.T) {
 		orderRepositoryMock.ExpectedCalls = nil
 		orderRepositoryMock.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}, nil)
-		err := orderService.Update(&domain.Order{ID: 1, CustomerID: 2, Status: domain.OPEN}, nil)
+		err := orderService.UpdateStatus(&domain.Order{ID: 1, CustomerID: 2, Status: domain.OPEN}, nil)
 		assert.NotNil(t, err)
 	})
 
-	t.Run("Should update a order", func(t *testing.T) {
+	t.Run("Should update a order status", func(t *testing.T) {
 		order := domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}
 		orderRepositoryMock.ExpectedCalls = nil
 		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
-		orderRepositoryMock.On("Update", &order).Return(nil)
-		err := orderService.Update(&order, nil)
-		assert.Nil(t, err)
-	})
-
-	t.Run("Should update a order", func(t *testing.T) {
-		order := domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}
-		orderRepositoryMock.ExpectedCalls = nil
-		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
-		orderRepositoryMock.On("Update", &order).Return(nil)
-		err := orderService.Update(&order, nil)
+		orderRepositoryMock.On("UpdateStatus", &order).Return(nil)
+		err := orderService.UpdateStatus(&order, nil)
 		assert.Nil(t, err)
 	})
 
@@ -104,7 +95,7 @@ func TestOrderService_Update(t *testing.T) {
 		orderRepositoryMock.ExpectedCalls = nil
 		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
 		orderToUpdate := domain.Order{ID: 1, CustomerID: 1, Status: domain.COMPLETED}
-		err := orderService.Update(&orderToUpdate, nil)
+		err := orderService.UpdateStatus(&orderToUpdate, nil)
 		assert.EqualError(t, err, domain.ErrOrderInvalidStatusTransition.Error())
 	})
 
@@ -113,7 +104,7 @@ func TestOrderService_Update(t *testing.T) {
 		orderRepositoryMock.ExpectedCalls = nil
 		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
 		orderToUpdate := domain.Order{ID: 1, CustomerID: 1, Status: domain.READY}
-		err := orderService.Update(&orderToUpdate, nil)
+		err := orderService.UpdateStatus(&orderToUpdate, nil)
 		assert.EqualError(t, err, domain.ErrOrderMandatoryStaffId.Error())
 	})
 
@@ -122,7 +113,7 @@ func TestOrderService_Update(t *testing.T) {
 		orderRepositoryMock.ExpectedCalls = nil
 		orderRepositoryMock.On("GetByID", uint64(1)).Return(&order, nil)
 		orderToUpdate := domain.Order{ID: 1, CustomerID: 1, Status: domain.PENDING, OrderProducts: make([]domain.OrderProduct, 0)}
-		err := orderService.Update(&orderToUpdate, nil)
+		err := orderService.UpdateStatus(&orderToUpdate, nil)
 		assert.EqualError(t, err, domain.ErrOrderWithoutProducts.Error())
 	})
 

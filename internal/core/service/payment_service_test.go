@@ -358,7 +358,7 @@ func TestPaymentService_UpdatePayment(t *testing.T) {
 					Return(&domain.Order{ID: 1}, nil)
 
 				mockOrderRepository.
-					On("Update", mock.Anything).
+					On("UpdateStatus", mock.Anything).
 					Return(nil)
 			},
 			want:    &domain.Payment{ID: 1},

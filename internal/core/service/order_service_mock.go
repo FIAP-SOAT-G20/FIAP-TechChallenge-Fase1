@@ -28,7 +28,7 @@ func (os *OrderServiceMock) List(customerID uint64, status *domain.OrderStatus, 
 	return args.Get(0).([]domain.Order), args.Get(1).(int64), args.Error(2)
 }
 
-func (os *OrderServiceMock) Update(order *domain.Order, staffID *uint64) error {
+func (os *OrderServiceMock) UpdateStatus(order *domain.Order, staffID *uint64) error {
 	args := os.Called(order, staffID)
 	return args.Error(0)
 }
