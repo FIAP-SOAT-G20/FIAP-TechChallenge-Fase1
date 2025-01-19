@@ -1,6 +1,8 @@
 <a name="readme-top"></a>
 
 ![GitHub CI - Tests](https://github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/actions/workflows/test.yml/badge.svg)
+[![License](https://img.shields.io/github/license/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1)](https://github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/blob/main/LICENSE)
+
 
 # <p align="center">FIAP Tech Challenge-1 - G20 Fast Food</p>
 
@@ -73,6 +75,10 @@ DBML file can be found [here](docs/db-schema-g20-fast-food.dbml).
 
 ```
 
+
+<details>
+<summary>Project Structure Explanation</summary>
+
 - `bin`: directory to store compiled executable binary.
 - `docs`: directory to store project's documentation, such as swagger static files.
 - `cmd`: directory for main entry points or commands of the application. The http sub-directory holds the main HTTP server entry point.
@@ -86,13 +92,15 @@ DBML file can be found [here](docs/db-schema-g20-fast-food.dbml).
 - `handler/http`: directory that contains HTTP request and response handler.
 - `repository/postgres`: directory that contains database adapters for PostgreSQL.
 
-### :pushpin: Decisions
+</details>
 
-- We chose Go as the programming language for its performance, simplicity, and concurrency features.
-- We chose the Gin framework for its simplicity and performance.
-- We chose PostgreSQL as the database for its performance, scalability, and reliability.
+### 🧐 Decisions
 
-### :pushpin: Features
+1. **Language**: We chose Go as the programming language for its performance, simplicity, and concurrency features.
+2. **Framework**: We chose the Gin framework for its simplicity and performance.
+3. **Database**: We chose PostgreSQL as the database for its performance, scalability, and reliability.
+
+### ✨ Features
 - [x] Dockerfile: small image with multi-stage docker build, and independent of the host environment
 - [x] Makefile: to simplify the build and run commands
 - [x] Hexagonal architecture
@@ -134,6 +142,7 @@ DBML file can be found [here](docs/db-schema-g20-fast-food.dbml).
 ### Build/Run Locally
 
 - [Go](https://golang.org/)
+- [Docker](https://www.docker.com/)
 
 > [!NOTE]
 > You need to have Go (> 1.18) installed in your machine to build, run and test the application locally
@@ -143,13 +152,14 @@ DBML file can be found [here](docs/db-schema-g20-fast-food.dbml).
 ## :cd: Installation
 
 ```sh
-git clone git@github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1.git
+git clone https://github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1.git
 ```
 
 ```sh
 cd FIAP-TechChallenge-Fase1
 ```
 
+[Optional] Set the environment variables
 ```sh
 cp .env.example .env
 ```
@@ -162,12 +172,6 @@ cp .env.example .env
 ```sh
 make compose-build
 ```
-
-### :hammer: Build (build locally)
-
-```sh
-make build
-```
 > The binary will be created in the `bin` folder
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -177,21 +181,11 @@ make build
 ### :whale: Docker
 
 ```sh
-make run-compose
+make compose-run
 ```
 
 > [!NOTE]
-> To stop the application, run `stop-compose`
-
-### :hammer: Build (run locally)
-
-```sh
-make run
-```
-
-> [!NOTE]
-> `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose  
-> Alternatively, you can run `make run-air` to run the application using Air (live reload)  
+> To stop the application, run `compose-stop`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -251,20 +245,6 @@ make run
 > Returns http status `200` if the application is running  
 > Returns http status `503` if the application or any of its dependencies are not running appropriately  
 > Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
-
-Example response:
-```json
-{
-    "status": "pass",
-    "checks": {
-        "database": {
-            "componentId": "database",
-            "status": "pass",
-            "time": "2025-01-13T19:43:33.701318-03:00"
-        }
-    }
-}
-```
 ---
 
 > [!NOTE]
@@ -272,6 +252,22 @@ Example response:
 > Alternatively, a postman collection is available at [here](docs/10soat-g20-tech-challenge-1.postman_collection.json)  
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## :hammer_and_wrench: Development
+
+1. Install Go: https://golang.org/doc/install
+2. Clone this repository: `git clone https://github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1`
+3. Change to the project directory: `cd FIAP-TechChallenge-Fase1`
+4. Set the environment variables: `cp .env.example .env`
+3. Install dependencies by running `make build`
+4. Run the application by running `make run-air` or `make run`
+
+> [!NOTE]
+> `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose  
+> Alternatively, you can run `make run-air` to run the application using Air (live reload) 
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 ## :white_check_mark: Tests
 
@@ -293,6 +289,7 @@ make test
 - [Event Storming](https://www.eventstorming.com/)
 - [Swagger](https://swagger.io/)
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+- [Shields.io](https://shields.io/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
