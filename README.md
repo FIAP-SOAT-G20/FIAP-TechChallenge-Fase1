@@ -1,7 +1,6 @@
 <a name="readme-top"></a>
 
 ![GitHub CI - Tests](https://github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/actions/workflows/test.yml/badge.svg)
-[![License](https://img.shields.io/github/license/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1)](https://github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/blob/main/LICENSE)
 
 
 # <p align="center">FIAP Tech Challenge-1 - G20 Fast Food</p>
