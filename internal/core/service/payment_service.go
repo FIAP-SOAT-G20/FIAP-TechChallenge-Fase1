@@ -1,7 +1,6 @@
 package service
 
 import (
-	"os"
 	"strconv"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
@@ -9,26 +8,26 @@ import (
 )
 
 type PaymentService struct {
-	paymentRepository      port.IPaymentRepository
-	orderService           port.IOrderService
-	externalPaymentService port.IExternalPaymentService
+	paymentRepository     port.IPaymentRepository
+	orderService          port.IOrderService
+	paymentGatewayService port.IPaymentGatewayService
 }
 
 func NewPaymentService(
 	paymentRepository port.IPaymentRepository,
 	orderService port.IOrderService,
-	externalPaymentService port.IExternalPaymentService,
+	paymentGatewayService port.IPaymentGatewayService,
 ) *PaymentService {
 	return &PaymentService{
-		paymentRepository:      paymentRepository,
-		orderService:           orderService,
-		externalPaymentService: externalPaymentService,
+		paymentRepository:     paymentRepository,
+		orderService:          orderService,
+		paymentGatewayService: paymentGatewayService,
 	}
 }
 
 func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error) {
 	existentPedingPayment, err := ps.paymentRepository.GetPaymentByOrderIDAndStatus(domain.PROCESSING, orderID)
-	if err != nil {
+	if err != nil && err != domain.ErrNotFound {
 		return nil, err
 	}
 
@@ -45,9 +44,9 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 		return nil, domain.ErrOrderWithoutProducts
 	}
 
-	paymentPayload := ps.createPaymentPayload(order)
+	extPGPayload := createPaymentGatewayPayload(order)
 
-	extPayment, err := ps.externalPaymentService.CreatePaymentMock(paymentPayload)
+	extPayment, err := ps.paymentGatewayService.CreatePayment(extPGPayload)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +72,8 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 	return payment, nil
 }
 
-func (ps *PaymentService) createPaymentPayload(order *domain.Order) *domain.CreatePaymentIN {
+// remove ps
+func createPaymentGatewayPayload(order *domain.Order) *domain.CreatePaymentIN {
 	var items []domain.ItemsIN
 
 	externalReference := strconv.FormatUint(order.ID, 10)
@@ -96,7 +96,6 @@ func (ps *PaymentService) createPaymentPayload(order *domain.Order) *domain.Crea
 		Items:             items,
 		Title:             "FIAP Tech Challenge - Product Order",
 		Description:       "Purchases made at the FIAP Tech Challenge store",
-		NotificationUrl:   os.Getenv("MERCADO_PAGO_NOTIFICATION_URL"),
 	}
 }
 

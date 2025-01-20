@@ -1,9 +1,10 @@
 package service
 
 import (
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/storage/mock/repository"
 	"reflect"
 	"testing"
+
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/storage/mock/repository"
 
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/port"
@@ -14,9 +15,9 @@ import (
 
 func TestNewPaymentService(t *testing.T) {
 	type args struct {
-		paymentRepository      port.IPaymentRepository
-		orderService           port.IOrderService
-		externalPaymentService port.IExternalPaymentService
+		paymentRepository     port.IPaymentRepository
+		orderService          port.IOrderService
+		paymentGatewayService port.IPaymentGatewayService
 	}
 	tests := []struct {
 		name string
@@ -26,20 +27,20 @@ func TestNewPaymentService(t *testing.T) {
 		{
 			name: "TestNewPaymentService",
 			args: args{
-				paymentRepository:      nil,
-				orderService:           nil,
-				externalPaymentService: nil,
+				paymentRepository:     nil,
+				orderService:          nil,
+				paymentGatewayService: nil,
 			},
 			want: &PaymentService{
-				paymentRepository:      nil,
-				orderService:           nil,
-				externalPaymentService: nil,
+				paymentRepository:     nil,
+				orderService:          nil,
+				paymentGatewayService: nil,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPaymentService(tt.args.paymentRepository, tt.args.orderService, tt.args.externalPaymentService); !reflect.DeepEqual(got, tt.want) {
+			if got := NewPaymentService(tt.args.paymentRepository, tt.args.orderService, tt.args.paymentGatewayService); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewPaymentService() = %v, want %v", got, tt.want)
 			}
 		})
@@ -49,7 +50,7 @@ func TestNewPaymentService(t *testing.T) {
 func TestPaymentService_CreatePayment(t *testing.T) {
 	mockPaymentRepository := new(mocks.MockPaymentRepository)
 	mockOrderRepository := new(repository.OrderRepositoryMock)
-	mockExternalPaymentService := new(mocks.MockExternalPaymentService)
+	mockExternalPaymentService := new(mocks.MockPaymentGatewayService)
 	mockCustomerRepository := new(repository.CustomerRepositoryMock)
 	mockOrderHistoryRepository := new(repository.OrderHistoryRepositoryMock)
 	mockStaffRepository := new(repository.StaffRepositoryMock)
@@ -296,11 +297,8 @@ func TestPaymentService_createPaymentPayload(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Arrange
-			ps := NewPaymentService(nil, nil, nil)
-
 			// Act
-			if got := ps.createPaymentPayload(tt.args.order); !reflect.DeepEqual(got, tt.want) {
+			if got := createPaymentGatewayPayload(tt.args.order); !reflect.DeepEqual(got, tt.want) {
 
 				// Assert
 				assert.Equal(t, tt.want, got)

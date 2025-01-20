@@ -1,8 +1,8 @@
 package adapter
 
 import (
-	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/external/api"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/http/external/repository"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/storage/postgres"
 	"go.uber.org/fx"
 )
@@ -10,5 +10,5 @@ import (
 var Module = fx.Options(
 	http.Module,
 	postgres.Module,
-	api.Module,
+	repository.Module,
 )
