@@ -37,8 +37,8 @@ VALUES (1, 32.80, 'OPEN'),
        (3, 25.90, 'CANCELLED'),
        (4, 58.70, 'RECEIVED'),
        (5, 19.80, 'PREPARING'),
-       (6, 25.90, 'READY'),
-       (7, 6.90, 'COMPLETED');
+       (1, 25.90, 'READY'),
+       (2, 6.90, 'COMPLETED');
 
 
 -- Inserindo produtos dos pedidos
@@ -86,12 +86,12 @@ VALUES (1, null, 'OPEN'),
 
 -- Inserindo pagamentos
 INSERT INTO payments (id, status, external_payment_id, order_id, qr_data)
-VALUES (2, 'PROCESSING', '09d92b11-cd55-4a72-b2ee-7377ceefe265', 6, 'QR_DATA_345'),
-       (3, 'FAILED', 'b7fa4bee-fc25-4bb4-b948-5139af948a39', 3, 'QR_DATA_789'), 
-       (4, 'CONFIRMED', '5c272292-4ba4-41e9-83d8-dea99afe5194', 1, 'QR_DATA_123'),
-       (5, 'CONFIRMED', 'ac174c5e-c9ef-4407-a3b3-bceeb4163af3', 2, 'QR_DATA_456'),
-       (6, 'CONFIRMED', '09d92b11-cd55-4a72-b2ee-7377ceefe265', 5, 'QR_DATA_345'),
-       (7, 'CONFIRMED', '26e24f2a-5b00-4687-800f-a7be71104b2a', 4, 'QR_DATA_789');
+VALUES (1, 'PROCESSING', '09d92b11-cd55-4a72-b2ee-7377ceefe265', 2, 'QR_DATA_345'),
+       (2, 'FAILED', 'b7fa4bee-fc25-4bb4-b948-5139af948a39', 3, 'QR_DATA_789'), 
+       (3, 'CONFIRMED', '5c272292-4ba4-41e9-83d8-dea99afe5194', 4, 'QR_DATA_123'),
+       (4, 'CONFIRMED', 'ac174c5e-c9ef-4407-a3b3-bceeb4163af3', 5, 'QR_DATA_456'),
+       (5, 'CONFIRMED', '09d92b11-cd55-4a72-b2ee-7377ceefe265', 6, 'QR_DATA_345'),
+       (6, 'CONFIRMED', '26e24f2a-5b00-4687-800f-a7be71104b2a', 7, 'QR_DATA_789');
        
 
 -- NEXT VAL
