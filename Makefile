@@ -5,7 +5,7 @@ MIGRATION_PATH = internal/adapter/storage/postgres/migrations
 MAIN_FILE = cmd/http/main.go
 TEST_PATH = internal/core/service
 
-.PHONE: build run run-air stop install migrate-create migrate-up migrate-down docs-swag docs-fmt compose-build compose-run compose-stop test lint help
+.PHONE: build run run-air stop install migrate-create migrate-up migrate-down docs-swag docs-fmt compose-build compose-run compose-stop compose-clean test lint help
 
 build: install
 	@echo  "🟢 Building the application..."
@@ -56,7 +56,11 @@ compose-run: compose-build
 
 compose-stop:
 	echo "🔴 Stopping the application with docker compose..."
-	docker compose down -v
+	docker compose down
+
+compose-clean:
+	echo "🔴 Cleaning the application with docker compose..."
+	docker compose down --volumes --rmi all
 
 test:
 	@echo "🟢 Running the tests..."
@@ -86,5 +90,6 @@ help:
 	@echo "compose-run: Run the docker compose"
 	@echo "stop: Stop the application"
 	@echo "compose-stop: Stop the docker compose"
+	@echo "compose-clean: Clean the docker compose"
 	@echo "lint: Run the linter"
 	@echo "test: Run the tests"
