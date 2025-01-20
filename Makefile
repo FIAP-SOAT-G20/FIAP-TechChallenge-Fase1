@@ -56,7 +56,7 @@ compose-run: compose-build
 
 compose-stop:
 	echo "🔴 Stopping the application with docker compose..."
-	docker compose down
+	docker compose down -v
 
 test:
 	@echo "🟢 Running the tests..."
