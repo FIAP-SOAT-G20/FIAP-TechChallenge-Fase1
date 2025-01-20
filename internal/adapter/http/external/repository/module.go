@@ -7,7 +7,7 @@ import (
 
 var Module = fx.Options(
 	fx.Provide(
-		// fx.Annotate(NewPaymentGatewayRepository, fx.As(new(port.IPaymentGatewayService))),
+		// fx.Annotate(NewPaymentGatewayRepository, fx.As(new(port.IPaymentGatewayRepository))),
 		fx.Annotate(NewFakePaymentGatewayRepository, fx.As(new(port.IPaymentGatewayRepository))),
 	),
 )
