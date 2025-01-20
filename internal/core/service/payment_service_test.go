@@ -414,7 +414,10 @@ func TestPaymentService_UpdatePayment(t *testing.T) {
 			tt.setupMocks()
 			ps := NewPaymentService(mockPaymentRepository, os, nil)
 
+			// Act
 			got, err := ps.UpdatePayment(tt.args.payment)
+
+			// Assert
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PaymentService.UpdatePayment() error = %v, wantErr %v", err, tt.wantErr)
 				return
