@@ -65,7 +65,7 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 	}
 
 	order.Status = domain.PENDING
-	err = ps.orderService.Update(order, nil)
+	err = ps.orderService.UpdateStatus(order, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ func (ps *PaymentService) UpdatePayment(payment *domain.UpdatePaymentIN) (*domai
 	}
 
 	order.Status = domain.RECEIVED
-	err = ps.orderService.Update(order, nil)
+	err = ps.orderService.UpdateStatus(order, nil)
 	if err != nil {
 		return nil, err
 	}

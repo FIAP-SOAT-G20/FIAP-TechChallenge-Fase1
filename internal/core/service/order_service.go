@@ -50,7 +50,7 @@ func (os *OrderService) List(customerID uint64, status *domain.OrderStatus, page
 	return os.orderRepository.GetAll(customerID, status, page, limit)
 }
 
-func (os *OrderService) Update(order *domain.Order, staffID *uint64) error {
+func (os *OrderService) UpdateStatus(order *domain.Order, staffID *uint64) error {
 	existing, err := os.orderRepository.GetByID(order.ID)
 	if err != nil {
 		return domain.ErrNotFound
@@ -83,7 +83,7 @@ func (os *OrderService) Update(order *domain.Order, staffID *uint64) error {
 
 	order.UpdatedAt = time.Now()
 
-	err = os.orderRepository.Update(order)
+	err = os.orderRepository.UpdateStatus(order)
 	if err != nil {
 		return err
 	}

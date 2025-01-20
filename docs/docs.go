@@ -1019,9 +1019,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/orders/{id}": {
-            "get": {
-                "description": "Get an order",
+        "/api/v1/orders/status/{id}": {
+            "put": {
+                "description": "Update an order status\nOnly staff can update the order status\nThe status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED\nTransition of status:\n- OPEN      -\u003e CANCELLED || PENDING\n- CANCELLED -\u003e {},\n- PENDING   -\u003e OPEN || RECEIVED\n- RECEIVED  -\u003e PREPARING\n- PREPARING -\u003e READY\n- READY     -\u003e COMPLETED\n- COMPLETED -\u003e {}",
                 "consumes": [
                     "application/json"
                 ],
@@ -1031,7 +1031,7 @@ const docTemplate = `{
                 "tags": [
                     "orders"
                 ],
-                "summary": "Get an order",
+                "summary": "Update an order status",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1039,6 +1039,15 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Update Order Status Request",
+                        "name": "UpdateOrderStatusRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateOrderStatusRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -1067,9 +1076,11 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "put": {
-                "description": "Update an order\nOnly staff can update the order status\nThe status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED\nTransition of status:\n- OPEN      -\u003e CANCELLED || PENDING\n- CANCELLED -\u003e {},\n- PENDING   -\u003e OPEN || RECEIVED\n- RECEIVED  -\u003e PREPARING\n- PREPARING -\u003e READY\n- READY     -\u003e COMPLETED\n- COMPLETED -\u003e {}",
+            }
+        },
+        "/api/v1/orders/{id}": {
+            "get": {
+                "description": "Get an order",
                 "consumes": [
                     "application/json"
                 ],
@@ -1079,7 +1090,7 @@ const docTemplate = `{
                 "tags": [
                     "orders"
                 ],
-                "summary": "Update an order",
+                "summary": "Get an order",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1087,15 +1098,6 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Update Order Request",
-                        "name": "updateOrderRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.UpdateOrderRequest"
-                        }
                     }
                 ],
                 "responses": {
@@ -1176,7 +1178,7 @@ const docTemplate = `{
         },
         "/api/v1/payments/callback": {
             "post": {
-                "description": "Update a payment on a order (2.b: \u003e 2.b.: v. Fake checkout)\n- resource = external payment id\n- topic = payment",
+                "description": "Update a payment on a order (2.b: \u003e 2.b.: v. Fake checkout)\n- resource = external payment id, obtained from the checkout response\n- topic = payment\nPossible status:\n- PROCESSING\n- CONFIRMED\n- FAILED\n- CANCELED",
                 "consumes": [
                     "application/json"
                 ],
@@ -1229,7 +1231,7 @@ const docTemplate = `{
         },
         "/api/v1/payments/{order_id}/checkout": {
             "post": {
-                "description": "Create a checkout on a order (2.b: \u003e 2.b.: v. Fake checkout)",
+                "description": "Create a checkout on a order (2.b: \u003e 2.b.: v. Fake checkout)\nPossible status:\n- PROCESSING\n- CONFIRMED\n- FAILED\n- CANCELED",
                 "consumes": [
                     "application/json"
                 ],
@@ -2056,7 +2058,7 @@ const docTemplate = `{
                 }
             }
         },
-        "request.UpdateOrderRequest": {
+        "request.UpdateOrderStatusRequest": {
             "type": "object",
             "properties": {
                 "staff_id": {
@@ -2305,11 +2307,17 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "order": {
+                    "$ref": "#/definitions/response.OrderResponse"
+                },
                 "order_id": {
                     "type": "integer"
                 },
                 "price": {
                     "type": "number"
+                },
+                "product": {
+                    "$ref": "#/definitions/response.ProductResponse"
                 },
                 "product_id": {
                     "type": "integer"

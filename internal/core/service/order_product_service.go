@@ -61,7 +61,7 @@ func (ops *OrderProductService) Create(orderProduct *domain.OrderProduct) error 
 		return err
 	}
 	order.TotalBill = totalBill
-	return ops.orderService.Update(order, nil)
+	return ops.orderService.UpdateStatus(order, nil)
 }
 
 func (ops *OrderProductService) GetByID(orderID, productID uint64) (*domain.OrderProduct, error) {
@@ -102,7 +102,7 @@ func (ops *OrderProductService) Update(orderProduct *domain.OrderProduct) error 
 		return err
 	}
 	order.TotalBill = totalBill
-	return ops.orderService.Update(order, nil)
+	return ops.orderService.UpdateStatus(order, nil)
 }
 
 func (ops *OrderProductService) Delete(orderID, productID uint64) error {
@@ -126,5 +126,5 @@ func (ops *OrderProductService) Delete(orderID, productID uint64) error {
 		return err
 	}
 	order.TotalBill = totalBill
-	return ops.orderService.Update(order, nil)
+	return ops.orderService.UpdateStatus(order, nil)
 }

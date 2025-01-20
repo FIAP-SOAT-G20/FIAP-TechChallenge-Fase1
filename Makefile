@@ -5,24 +5,23 @@ MIGRATION_PATH = internal/adapter/storage/postgres/migrations
 MAIN_FILE = cmd/http/main.go
 TEST_PATH = internal/core/service
 
-.PHONE: build run run-air stop install migrate-create migrate-up migrate-down docs-swag docs-fmt compose-build compose-run compose-stop test help
+.PHONE: build run run-air stop install migrate-create migrate-up migrate-down docs-swag docs-fmt compose-build compose-run compose-stop test lint help
 
 build: install
-	@echo "Building the application"
+	@echo  "🟢 Building the application..."
 	go build -o bin/server ${MAIN_FILE}
 
 run: build
-	@echo "Running the application"
+	echo "🟢 Running the application..."
 	docker-compose up -d db
 	go run ${MAIN_FILE}
 
 run-air: build
-	@echo "Running the application"
+	echo "🟢 Running the application with air..."
 	docker-compose up -d db
 	air -c air.toml
 
 stop:
-	@echo "Stopping the application"
 	docker-compose down
 
 install:
@@ -34,9 +33,11 @@ migrate-create:
 	migrate create -ext sql -dir ${MIGRATION_PATH} -seq $(name)
 
 migrate-up:
+	echo "🟢 Running the migrations..."
 	migrate -path ./${MIGRATION_PATH} -database ${DATABASE_URL} -verbose up
 
 migrate-down:
+	echo "🔴 Rolling back the migrations..."
 	migrate -path ./${MIGRATION_PATH} -database ${DATABASE_URL} -verbose down
 
 docs-swag:
@@ -46,20 +47,28 @@ docs-fmt:
 	swag fmt ./...
 
 compose-build:
+	@echo "🟢 Building the application with docker compose..."
 	docker compose build
 
 compose-run: compose-build
+	@echo "🟢 Running the application with docker compose..."
 	docker compose up -d --wait
 
 compose-stop:
+	echo "🔴 Stopping the application with docker compose..."
 	docker compose down
 
 test:
+	@echo "🟢 Running the tests..."
 	go test -v ./${TEST_PATH} -cover -coverprofile=coverage.out
 
 coverage:
 	@echo "🟢 Running coverage..."
 	go tool cover -html=coverage.out
+
+lint:
+	@echo "🟢 Running the linter..."
+	golangci-lint run
 
 help:
 	@echo "build: Build the application"
@@ -77,4 +86,5 @@ help:
 	@echo "compose-run: Run the docker compose"
 	@echo "stop: Stop the application"
 	@echo "compose-stop: Stop the docker compose"
+	@echo "lint: Run the linter"
 	@echo "test: Run the tests"

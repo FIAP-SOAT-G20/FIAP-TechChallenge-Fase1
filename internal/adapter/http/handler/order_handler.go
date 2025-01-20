@@ -25,7 +25,7 @@ func (h *OrderHandler) Register(router *gin.RouterGroup) {
 	router.POST("/", h.CreateOrder)
 	router.GET("/", h.ListOrders)
 	router.GET("/:id", h.GetOrder)
-	router.PUT("/:id", h.UpdateOrder)
+	router.PUT("/status/:id", h.UpdateOrderStatus)
 	router.DELETE("/:id", h.DeleteOrder)
 }
 
@@ -145,8 +145,8 @@ func (h *OrderHandler) ListOrders(c *gin.Context) {
 
 // UpdateOrder godoc
 //
-//	@Summary		Update an order
-//	@Description	Update an order
+//	@Summary		Update an order status
+//	@Description	Update an order status
 // 	@Description	Only staff can update the order status
 // 	@Description	The status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
 // 	@Description	Transition of status: 
@@ -161,13 +161,13 @@ func (h *OrderHandler) ListOrders(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			id		path		int				true	"Order ID"
-//	@Param			updateOrderRequest	body		request.UpdateOrderRequest	true	"Update Order Request"
+//	@Param			UpdateOrderStatusRequest	body		request.UpdateOrderStatusRequest	true	"Update Order Status Request"
 //	@Success		200		{object}	response.OrderResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
-//	@Router			/api/v1/orders/{id} [put]
-func (h *OrderHandler) UpdateOrder(c *gin.Context) {
+//	@Router			/api/v1/orders/status/{id} [put]
+func (h *OrderHandler) UpdateOrderStatus(c *gin.Context) {
 	id := c.Param("id")
 
 	idUint64, err := strconv.ParseUint(id, 10, 64)
@@ -176,7 +176,7 @@ func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 		return
 	}
 
-	var req request.UpdateOrderRequest
+	var req request.UpdateOrderStatusRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ValidationError(c, err)
 		return
@@ -189,7 +189,7 @@ func (h *OrderHandler) UpdateOrder(c *gin.Context) {
 	}
 	order.Status = req.Status
 
-	if err := h.service.Update(order, req.StaffID); err != nil {
+	if err := h.service.UpdateStatus(order, req.StaffID); err != nil {
 		response.HandleError(c, err)
 		return
 	}

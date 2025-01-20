@@ -53,7 +53,8 @@ VALUES (1, 1, 25.90, 1),
 
 -- Inserindo histórico dos pedidos
 INSERT INTO order_histories (order_id, staff_id, status)
-VALUES (1, 2, 'RECEIVED'),
+VALUES (1, null, 'OPEN'),
+       (1, null, 'RECEIVED'),
        (1, 1, 'PREPARING'),
        (2, 2, 'READY'),
        (3, 2, 'COMPLETED'),
@@ -75,3 +76,4 @@ SELECT setval('products_id_seq', (SELECT MAX(id) FROM products));
 SELECT setval('customers_id_seq', (SELECT MAX(id) FROM customers));
 SELECT setval('orders_id_seq', (SELECT MAX(id) FROM orders));
 SELECT setval('order_histories_id_seq', (SELECT MAX(id) FROM order_histories));
+SELECT setval('payments_id_seq', (SELECT MAX(id) FROM payments));

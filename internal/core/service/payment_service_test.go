@@ -243,12 +243,9 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 			if (err != nil) != tt.wantErr {
 				assert.Error(t, err)
 				return
-				// t.Errorf("PaymentService.CreatePayment() error = %v, wantErr %v", err, tt.wantErr)
-				// return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				assert.Equal(t, tt.want, got)
-				// t.Errorf("PaymentService.CreatePayment() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -358,7 +355,7 @@ func TestPaymentService_UpdatePayment(t *testing.T) {
 					Return(&domain.Order{ID: 1}, nil)
 
 				mockOrderRepository.
-					On("Update", mock.Anything).
+					On("UpdateStatus", mock.Anything).
 					Return(nil)
 			},
 			want:    &domain.Payment{ID: 1},

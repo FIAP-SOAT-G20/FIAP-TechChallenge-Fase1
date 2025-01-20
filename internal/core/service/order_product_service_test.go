@@ -67,7 +67,7 @@ func TestOrderProductService_Create(t *testing.T) {
 		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}, nil)
 		productServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Product{ID: 1, Price: 1}, nil)
 		orderProductRepositoryMock.On("GetTotalBillByOrderId", mock.AnythingOfType("uint64")).Return(float32(1), nil)
-		orderServiceMock.On("Update", mock.Anything, mock.Anything).Return(nil)
+		orderServiceMock.On("UpdateStatus", mock.Anything, mock.Anything).Return(nil)
 		orderProductRepositoryMock.On("Insert", mock.Anything).Return(nil)
 
 		err := orderProductService.Create(&orderProduct)
@@ -121,7 +121,7 @@ func TestOrderProductService_Update(t *testing.T) {
 	t.Run("Should update a order product", func(t *testing.T) {
 		resetMocks()
 		orderServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Order{ID: 1, CustomerID: 1, Status: domain.OPEN}, nil)
-		orderServiceMock.On("Update", mock.Anything, mock.Anything).Return(nil)
+		orderServiceMock.On("UpdateStatus", mock.Anything, mock.Anything).Return(nil)
 		productServiceMock.On("GetByID", mock.AnythingOfType("uint64")).Return(&domain.Product{ID: 1, Price: 1}, nil)
 		orderProductRepositoryMock.On("GetByID", uint64(1), uint64(1)).Return(&domain.OrderProduct{OrderID: 1, ProductID: 1, Quantity: 1, Price: 1}, nil)
 		orderProductRepositoryMock.On("GetTotalBillByOrderId", mock.AnythingOfType("uint64")).Return(float32(2), nil)
@@ -211,7 +211,7 @@ func TestOrderProductService_Delete(t *testing.T) {
 		orderProductRepositoryMock.On("GetTotalBillByOrderId", mock.AnythingOfType("uint64")).Return(float32(0), nil)
 		orderProductRepositoryMock.On("Delete", uint64(1), uint64(1)).Return(nil)
 		orderServiceMock.On("GetByID", uint64(1)).Return(&domain.Order{ID: 1, Status: domain.OPEN}, nil)
-		orderServiceMock.On("Update", mock.Anything, mock.Anything).Return(nil)
+		orderServiceMock.On("UpdateStatus", mock.Anything, mock.Anything).Return(nil)
 		err := orderProductService.Delete(uint64(1), uint64(1))
 		assert.Nil(t, err)
 	})

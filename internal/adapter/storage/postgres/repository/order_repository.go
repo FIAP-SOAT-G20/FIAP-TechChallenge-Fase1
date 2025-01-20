@@ -49,7 +49,7 @@ func (r *OrderRepository) GetAll(customerID uint64, status *domain.OrderStatus, 
 	return orders, count, err
 }
 
-func (r *OrderRepository) Update(order *domain.Order) error {
+func (r *OrderRepository) UpdateStatus(order *domain.Order) error {
 	return r.db.
 		Model(domain.Order{ID: order.ID}).
 		Save(order).

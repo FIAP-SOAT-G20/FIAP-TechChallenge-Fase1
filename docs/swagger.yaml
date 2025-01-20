@@ -147,7 +147,7 @@ definitions:
         example: John Doe
         type: string
     type: object
-  request.UpdateOrderRequest:
+  request.UpdateOrderStatusRequest:
     properties:
       staff_id:
         example: 1
@@ -311,10 +311,14 @@ definitions:
     properties:
       created_at:
         type: string
+      order:
+        $ref: '#/definitions/response.OrderResponse'
       order_id:
         type: integer
       price:
         type: number
+      product:
+        $ref: '#/definitions/response.ProductResponse'
       product_id:
         type: integer
       quantity:
@@ -903,55 +907,6 @@ paths:
       summary: Get an order
       tags:
       - orders
-    put:
-      consumes:
-      - application/json
-      description: |-
-        Update an order
-        Only staff can update the order status
-        The status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
-        Transition of status:
-        - OPEN      -> CANCELLED || PENDING
-        - CANCELLED -> {},
-        - PENDING   -> OPEN || RECEIVED
-        - RECEIVED  -> PREPARING
-        - PREPARING -> READY
-        - READY     -> COMPLETED
-        - COMPLETED -> {}
-      parameters:
-      - description: Order ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Update Order Request
-        in: body
-        name: updateOrderRequest
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpdateOrderRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.OrderResponse'
-        "400":
-          description: Validation error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Data not found error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-      summary: Update an order
-      tags:
-      - orders
   /api/v1/orders/histories:
     get:
       consumes:
@@ -1210,11 +1165,67 @@ paths:
       summary: Update an order product
       tags:
       - orders
+  /api/v1/orders/status/{id}:
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Update an order status
+        Only staff can update the order status
+        The status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
+        Transition of status:
+        - OPEN      -> CANCELLED || PENDING
+        - CANCELLED -> {},
+        - PENDING   -> OPEN || RECEIVED
+        - RECEIVED  -> PREPARING
+        - PREPARING -> READY
+        - READY     -> COMPLETED
+        - COMPLETED -> {}
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Order Status Request
+        in: body
+        name: UpdateOrderStatusRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateOrderStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.OrderResponse'
+        "400":
+          description: Validation error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Data not found error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Update an order status
+      tags:
+      - orders
   /api/v1/payments/{order_id}/checkout:
     post:
       consumes:
       - application/json
-      description: 'Create a checkout on a order (2.b: > 2.b.: v. Fake checkout)'
+      description: |-
+        Create a checkout on a order (2.b: > 2.b.: v. Fake checkout)
+        Possible status:
+        - PROCESSING
+        - CONFIRMED
+        - FAILED
+        - CANCELED
       parameters:
       - description: Order ID
         in: path
@@ -1250,8 +1261,13 @@ paths:
       - application/json
       description: |-
         Update a payment on a order (2.b: > 2.b.: v. Fake checkout)
-        - resource = external payment id
+        - resource = external payment id, obtained from the checkout response
         - topic = payment
+        Possible status:
+        - PROCESSING
+        - CONFIRMED
+        - FAILED
+        - CANCELED
       parameters:
       - description: Update Payment Request
         in: body
