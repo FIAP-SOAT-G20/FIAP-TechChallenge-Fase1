@@ -7,17 +7,17 @@ import (
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
 )
 
-type FakeFakePaymentGatewayRepository struct {
+type FakePaymentGatewayRepository struct {
 	cfg *config.Environment
 }
 
-func NewFakePaymentGatewayRepository(cfg *config.Environment) *FakeFakePaymentGatewayRepository {
-	return &FakeFakePaymentGatewayRepository{
+func NewFakePaymentGatewayRepository(cfg *config.Environment) *FakePaymentGatewayRepository {
+	return &FakePaymentGatewayRepository{
 		cfg: cfg,
 	}
 }
 
-func (ps *FakeFakePaymentGatewayRepository) CreatePayment(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error) {
+func (ps *FakePaymentGatewayRepository) CreatePayment(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error) {
 	return &domain.CreatePaymentOUT{
 		InStoreOrderID: uuid.New().String(),
 		QrData:         "https://www.fiap-10-soat-g20.com.br/qr/123456",
