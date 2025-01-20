@@ -21,8 +21,7 @@ run-air: build
 	docker-compose up -d db
 	air -c air.toml
 
-stop:
-	docker-compose down
+stop: compose-stop
 
 install:
 	go mod download
