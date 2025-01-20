@@ -31,10 +31,10 @@ func NewPaymentResponse(payment *domain.Payment) *PaymentResponse {
 	}
 }
 
-// ToCreatePaymentOUTDomain creates a new payment request output
-func ToCreatePaymentOUTDomain(payment *CreatePaymentResponse) *domain.CreatePaymentOUT {
+// ToDomain creates a new payment request output
+func (pr *CreatePaymentResponse) ToDomain() *domain.CreatePaymentOUT {
 	return &domain.CreatePaymentOUT{
-		InStoreOrderID: payment.InStoreOrderID,
-		QrData:         payment.QrData,
+		InStoreOrderID: pr.InStoreOrderID,
+		QrData:         pr.QrData,
 	}
 }

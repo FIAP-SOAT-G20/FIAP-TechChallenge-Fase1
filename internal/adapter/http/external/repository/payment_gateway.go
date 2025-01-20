@@ -43,7 +43,7 @@ func (ps *PaymentGatewayRepository) CreatePayment(payment *domain.CreatePaymentI
 		return nil, fmt.Errorf("error: response status %d", resp.StatusCode())
 	}
 
-	response := response.ToCreatePaymentOUTDomain(resp.Result().(*response.CreatePaymentResponse))
+	response := resp.Result().(*response.CreatePaymentResponse).ToDomain()
 
 	return response, nil
 }
