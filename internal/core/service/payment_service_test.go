@@ -50,7 +50,7 @@ func TestNewPaymentService(t *testing.T) {
 func TestPaymentService_CreatePayment(t *testing.T) {
 	mockPaymentRepository := new(mocks.MockPaymentRepository)
 	mockOrderRepository := new(repository.OrderRepositoryMock)
-	mockExternalPaymentService := new(mocks.MockPaymentGatewayService)
+	mockPaymentGatewayService := new(mocks.MockPaymentGatewayService)
 	mockCustomerRepository := new(repository.CustomerRepositoryMock)
 	mockOrderHistoryRepository := new(repository.OrderHistoryRepositoryMock)
 	mockStaffRepository := new(repository.StaffRepositoryMock)
@@ -103,7 +103,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 					On("GetByID", uint64(1)).
 					Return(&domain.Order{ID: 1}, nil)
 
-				mockExternalPaymentService.
+				mockPaymentGatewayService.
 					On("CreatePaymentMock", &domain.CreatePaymentIN{
 						ExternalReference: "1",
 						TotalAmount:       0,
@@ -179,7 +179,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 					On("GetByID", uint64(1)).
 					Return(&domain.Order{ID: 1}, nil)
 
-				mockExternalPaymentService.
+				mockPaymentGatewayService.
 					On("CreatePaymentMock", &domain.CreatePaymentIN{
 						ExternalReference: "1",
 						TotalAmount:       0,
@@ -211,7 +211,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 					On("GetByID", mock.Anything).
 					Return(&domain.Order{ID: 1}, nil)
 
-				mockExternalPaymentService.
+				mockPaymentGatewayService.
 					On("CreatePaymentMock", mock.Anything).
 					Return(&domain.CreatePaymentOUT{
 						InStoreOrderID: "123",
@@ -226,7 +226,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange
 			t.Cleanup(func() {
-				mockExternalPaymentService.ExpectedCalls = nil
+				mockPaymentGatewayService.ExpectedCalls = nil
 				mockOrderRepository.ExpectedCalls = nil
 				mockPaymentRepository.ExpectedCalls = nil
 			})
@@ -234,7 +234,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 			ps := NewPaymentService(
 				mockPaymentRepository,
 				os,
-				mockExternalPaymentService,
+				mockPaymentGatewayService,
 			)
 
 			// Act
