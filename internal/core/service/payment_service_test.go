@@ -15,9 +15,9 @@ import (
 
 func TestNewPaymentService(t *testing.T) {
 	type args struct {
-		paymentRepository     port.IPaymentRepository
-		orderService          port.IOrderService
-		paymentGatewayService port.IPaymentGatewayService
+		paymentRepository        port.IPaymentRepository
+		orderRepository          port.IOrderRepository
+		paymentGatewayReposiroty port.IPaymentGatewayRepository
 	}
 	tests := []struct {
 		name string
@@ -27,20 +27,20 @@ func TestNewPaymentService(t *testing.T) {
 		{
 			name: "TestNewPaymentService",
 			args: args{
-				paymentRepository:     nil,
-				orderService:          nil,
-				paymentGatewayService: nil,
+				paymentRepository:        nil,
+				orderRepository:          nil,
+				paymentGatewayReposiroty: nil,
 			},
 			want: &PaymentService{
-				paymentRepository:     nil,
-				orderService:          nil,
-				paymentGatewayService: nil,
+				paymentRepository:        nil,
+				orderRepository:          nil,
+				paymentGatewayRepository: nil,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPaymentService(tt.args.paymentRepository, tt.args.orderService, tt.args.paymentGatewayService); !reflect.DeepEqual(got, tt.want) {
+			if got := NewPaymentService(tt.args.paymentRepository, tt.args.orderRepository, tt.args.paymentGatewayReposiroty); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewPaymentService() = %v, want %v", got, tt.want)
 			}
 		})
@@ -51,14 +51,6 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 	mockPaymentRepository := new(mocks.MockPaymentRepository)
 	mockOrderRepository := new(repository.OrderRepositoryMock)
 	mockPaymentGatewayService := new(mocks.MockPaymentGatewayService)
-	mockCustomerRepository := new(repository.CustomerRepositoryMock)
-	mockOrderHistoryRepository := new(repository.OrderHistoryRepositoryMock)
-	mockStaffRepository := new(repository.StaffRepositoryMock)
-
-	cs := NewCustomerService(mockCustomerRepository)
-	ohs := NewOrderHistoryService(mockOrderHistoryRepository)
-	ss := NewStaffService(mockStaffRepository)
-	os := NewOrderService(mockOrderRepository, cs, ohs, ss)
 
 	type args struct {
 		orderID uint64
@@ -233,7 +225,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 			tt.setupMocks()
 			ps := NewPaymentService(
 				mockPaymentRepository,
-				os,
+				mockOrderRepository,
 				mockPaymentGatewayService,
 			)
 
@@ -310,14 +302,6 @@ func TestPaymentService_createPaymentPayload(t *testing.T) {
 func TestPaymentService_UpdatePayment(t *testing.T) {
 	mockPaymentRepository := new(mocks.MockPaymentRepository)
 	mockOrderRepository := new(repository.OrderRepositoryMock)
-	mockCustomerRepository := new(repository.CustomerRepositoryMock)
-	mockOrderHistoryRepository := new(repository.OrderHistoryRepositoryMock)
-	mockStaffRepository := new(repository.StaffRepositoryMock)
-
-	cs := NewCustomerService(mockCustomerRepository)
-	ohs := NewOrderHistoryService(mockOrderHistoryRepository)
-	ss := NewStaffService(mockStaffRepository)
-	os := NewOrderService(mockOrderRepository, cs, ohs, ss)
 
 	type args struct {
 		payment *domain.UpdatePaymentIN
@@ -412,7 +396,7 @@ func TestPaymentService_UpdatePayment(t *testing.T) {
 				mockPaymentRepository.ExpectedCalls = nil
 			})
 			tt.setupMocks()
-			ps := NewPaymentService(mockPaymentRepository, os, nil)
+			ps := NewPaymentService(mockPaymentRepository, mockOrderRepository, nil)
 
 			// Act
 			got, err := ps.UpdatePayment(tt.args.payment)

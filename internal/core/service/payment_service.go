@@ -8,20 +8,20 @@ import (
 )
 
 type PaymentService struct {
-	paymentRepository     port.IPaymentRepository
-	orderService          port.IOrderService
-	paymentGatewayService port.IPaymentGatewayService
+	orderRepository          port.IOrderRepository
+	paymentRepository        port.IPaymentRepository
+	paymentGatewayRepository port.IPaymentGatewayRepository
 }
 
 func NewPaymentService(
 	paymentRepository port.IPaymentRepository,
-	orderService port.IOrderService,
-	paymentGatewayService port.IPaymentGatewayService,
+	orderRepository port.IOrderRepository,
+	paymentGatewayRepository port.IPaymentGatewayRepository,
 ) *PaymentService {
 	return &PaymentService{
-		paymentRepository:     paymentRepository,
-		orderService:          orderService,
-		paymentGatewayService: paymentGatewayService,
+		paymentRepository:        paymentRepository,
+		orderRepository:          orderRepository,
+		paymentGatewayRepository: paymentGatewayRepository,
 	}
 }
 
@@ -35,7 +35,7 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 		return existentPedingPayment, nil
 	}
 
-	order, err := ps.orderService.GetByID(orderID)
+	order, err := ps.orderRepository.GetByID(orderID)
 	if err != nil {
 		return nil, domain.ErrNotFound
 	}
@@ -46,7 +46,7 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 
 	extPGPayload := createPaymentGatewayPayload(order)
 
-	extPayment, err := ps.paymentGatewayService.CreatePayment(extPGPayload)
+	extPayment, err := ps.paymentGatewayRepository.CreatePayment(extPGPayload)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 	}
 
 	order.Status = domain.PENDING
-	err = ps.orderService.UpdateStatus(order, nil)
+	err = ps.orderRepository.UpdateStatus(order)
 	if err != nil {
 		return nil, err
 	}
@@ -109,13 +109,13 @@ func (ps *PaymentService) UpdatePayment(payment *domain.UpdatePaymentIN) (*domai
 		return nil, err
 	}
 
-	order, err := ps.orderService.GetByID(paymentOUT.OrderID)
+	order, err := ps.orderRepository.GetByID(paymentOUT.OrderID)
 	if err != nil {
 		return nil, err
 	}
 
 	order.Status = domain.RECEIVED
-	err = ps.orderService.UpdateStatus(order, nil)
+	err = ps.orderRepository.UpdateStatus(order)
 	if err != nil {
 		return nil, err
 	}
