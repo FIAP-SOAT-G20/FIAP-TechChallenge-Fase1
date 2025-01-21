@@ -1544,7 +1544,6 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "customers",
                     "sign-in"
                 ],
                 "summary": "Sign in a customer",
@@ -1733,7 +1732,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "customers"
+                    "staffs"
                 ],
                 "summary": "Update a staff",
                 "parameters": [

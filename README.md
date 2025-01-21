@@ -191,57 +191,83 @@ make compose-run
 
 ## :rocket: Routes
 
-- **POST** `api/v1/customers`: Create a new customer
-- **GET** `api/v1/customers`: List all customers
-- **GET** `api/v1/customers/:id`: Get a customer by ID
-- **PUT** `api/v1/customers/:id`: Update a customer by ID
-- **DELETE** `api/v1/customers/:id`: Delete a customer by ID
+### sign-up (2.b: i.Cadastro do Cliente)
+**POST** `/api/v1/customers` - Create a customer  
+**POST** `/api/v1/staffs` - Create a staff  
 
-> 2.b. Apis: i. Cadastro do Cliente;
 ---
-- **POST** `api/v1/products`: Create a new product
-- **GET** `api/v1/products`: List all products
-- **GET** `api/v1/products?category_id=:id`: List all products by category ID
-> 2.b: iv. Buscar produtos por categoria;
-- **GET** `api/v1/products/:id`: Get a product by ID
-- **PUT** `api/v1/products/:id`: Update a product by ID
-- **DELETE** `api/v1/products/:id`: Delete a product by ID
 
-> 2.b: iii. Criar, editar e remover produtos;
----
-- **POST** `api/v1/catagories`: Create a new category
-- **GET** `api/v1/catagories`: List all categories
-- **GET** `api/v1/catagories/:id`: Get a category by ID
-- **PUT** `api/v1/catagories/:id`: Update a category by ID
-- **DELETE** `api/v1/catagories/:id`: Delete a category by ID
----
-- **POST** `api/v1/orders`: Create a new order
-- **GET** `api/v1/orders`: List all orders
-- **GET** `api/v1/orders/:id`: Get an order by ID
-- **PUT** `api/v1/orders/:id`: Update an order by ID
-- **DELETE** `api/v1/orders/:id`: Delete an order by ID
----
-- **GET** `api/v1/orders/products`: List all orders products
-- **POST** `api/v1/orders/products/:order_id/:product_id`: Create a new order product
-- **GET** `api/v1/orders/products/:order_id/:product_id`: Get an order product by OrderID and ProductID
-- **PUT** `api/v1/orders/products/:order_id/:product_id`: Update an order by OrderID and ProductID
-- **DELETE** `api/v1/orders/products/:order_id/:product_id`: Delete an order by OrderID and ProductID
----
-- **GET** `api/v1/orders/histories`: List all orders histories
-- **GET** `api/v1/orders/histories/:id`: Get an order history by ID
----
-- **POST** `/api/v1/payments/:orderId/checkout`: Create a new payment
-- **GET** `/api/v1/payments/callback`: Payment callback
+### products (2.b: iii. Criar, editar e remover produtos;)
+**POST** `/api/v1/payments/callback` - Update a payment on a order  
+**POST** `/api/v1/payments/{order_id}/checkout` - Create a checkout on a order  
+**GET** `/api/v1/products` - List products  
+**POST** `/api/v1/products` - Create a product  
+**GET** `/api/v1/products/{id}` - Get a product (2.b: iv. Buscar produtos por categoria;)  
+**PUT** `/api/v1/products/{id}` - Update a product  
+**DELETE** `/api/v1/products/{id}` - Delete a product  
 
-> 2.b.: v. Fake checkout
 ---
-- **POST** `/api/v1/sign-in`: Sign in a customer with CPF
 
-> 2.b.: ii. Identificação do Cliente via CPF;
+### payments (2.b: v. Fake checkout)
+**POST** `/api/v1/payments/callback` - Update a payment on a order  
+**POST** `/api/v1/payments/{order_id}/checkout` - Create a checkout on a order  
+
 ---
-- **GET** `/docs/index.html`: Swagger documentation
+
+### sign-in (2.b: ii. Identificação do Cliente via CPF)
+**POST** `/api/v1/sign`-in - Sign in a customer  
+
 ---
-- **GET** `/health`
+
+### categories
+**GET** `/api/v1/categories` - List categories  
+**POST** `/api/v1/categories` - Create a new category  
+**GET** `/api/v1/categories/{id}` - Get a category  
+**PUT** `/api/v1/categories/{id}` - Update a category  
+**DELETE** `/api/v1/categories/{id}` - Delete a category  
+
+---
+
+### customers
+**GET** `/api/v1/customers` - List customers  
+**POST** `/api/v1/customers` - Create a customer  
+**GET** `/api/v1/customers/{id}` - Get a customer  
+**PUT** `/api/v1/customers/{id}` - Update a customer  
+**DELETE** `/api/v1/customers/{id}` - Delete a customer  
+
+---
+
+### orders
+**GET** `/api/v1/orders` - List orders (2.b: vi. Listar os pedidos.)  
+**POST** `/api/v1/orders` - Create an order  
+**GET** `/api/v1/orders/products/{order_id}/{product_id}` - Get an order product  
+**PUT** `/api/v1/orders/products/{o`rder_id}/{product_id} - Update an order product  
+**POST** `/api/v1/orders/products/{order_id}/{product_id}` - Create an order product  
+**DELETE** `/api/v1/orders/products/{o`rder_id}/{product_id} - Delete an order product  
+**PUT** `/api/v1/orders/status/{id}` - Update an order status  
+**GET** `/api/v1/orders/{id}` - Get an order  
+**DELETE** `/api/v1/orders/{id}` - Delete an order  
+
+---
+
+### order-histories
+**GET** `/api/v1/orders/histories` - List order histories  
+**GET** `/api/v1/orders/histories/{id}` - Get an order history  
+**GET** `/api/v1/orders/products` - List order products  
+
+---
+
+### staffs
+**GET** `/api/v1/staffs` - List staffs  
+**POST** `/api/v1/staffs` - Create a staff  
+**GET** `/api/v1/staffs/{id}` - Get a staff  
+**PUT** `/api/v1/staffs/{id}` - Update a staff  
+**DELETE** `/api/v1/staffs/{id}` - Delete a staff  
+
+---
+
+### healthcheck
+**GET** `/health - Application` HealthCheck  
 > Returns http status `200` if the application is running  
 > Returns http status `503` if the application or any of its dependencies are not running appropriately  
 > Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)

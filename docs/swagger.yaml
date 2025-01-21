@@ -1500,7 +1500,6 @@ paths:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Sign in a customer
       tags:
-      - customers
       - sign-in
   /api/v1/staffs:
     get:
@@ -1661,7 +1660,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Update a staff
       tags:
-      - customers
+      - staffs
   /health:
     get:
       description: Checks application health
