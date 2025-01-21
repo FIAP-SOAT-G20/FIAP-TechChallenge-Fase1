@@ -1,17 +1,19 @@
 package service
 
 import (
+	"testing"
+
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/adapter/storage/mock/repository"
 	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/core/domain"
+	"github.com/FIAP-SOAT-G20/FIAP-TechChallenge-Fase1/internal/mocks"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
 )
 
 func TestOrderProductService_Create(t *testing.T) {
 
-	orderServiceMock := new(OrderServiceMock)
-	productServiceMock := new(ProductServiceMock)
+	orderServiceMock := new(mocks.OrderServiceMock)
+	productServiceMock := new(mocks.ProductServiceMock)
 	orderProductRepositoryMock := new(repository.OrderProductRepositoryMock)
 	orderProductService := NewOrderProductService(orderProductRepositoryMock, orderServiceMock, productServiceMock)
 
@@ -78,8 +80,8 @@ func TestOrderProductService_Create(t *testing.T) {
 
 func TestOrderProductService_Update(t *testing.T) {
 
-	orderServiceMock := new(OrderServiceMock)
-	productServiceMock := new(ProductServiceMock)
+	orderServiceMock := new(mocks.OrderServiceMock)
+	productServiceMock := new(mocks.ProductServiceMock)
 	orderProductRepositoryMock := new(repository.OrderProductRepositoryMock)
 	orderProductService := NewOrderProductService(orderProductRepositoryMock, orderServiceMock, productServiceMock)
 
@@ -135,7 +137,7 @@ func TestOrderProductService_Update(t *testing.T) {
 }
 
 func TestOrderProductService_List(t *testing.T) {
-	orderServiceMock := new(OrderServiceMock)
+	orderServiceMock := new(mocks.OrderServiceMock)
 	productRepositoryMock := new(repository.ProductRepositoryMock)
 	categoryRepositoryMock := new(repository.CategoryRepositoryMock)
 	productService := NewProductService(productRepositoryMock, categoryRepositoryMock)
@@ -168,8 +170,8 @@ func TestOrderProductService_List(t *testing.T) {
 }
 
 func TestOrderProductService_Delete(t *testing.T) {
-	orderServiceMock := new(OrderServiceMock)
-	productServiceMock := new(ProductServiceMock)
+	orderServiceMock := new(mocks.OrderServiceMock)
+	productServiceMock := new(mocks.ProductServiceMock)
 	orderProductRepositoryMock := &repository.OrderProductRepositoryMock{}
 	orderProductService := NewOrderProductService(orderProductRepositoryMock, orderServiceMock, productServiceMock)
 

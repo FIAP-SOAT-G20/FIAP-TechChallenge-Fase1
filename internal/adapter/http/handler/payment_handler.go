@@ -63,7 +63,7 @@ func (h PaymentHandler) CreatePayment(c *gin.Context) {
 
     payment, err := h.service.CreatePayment(orderIDUint64)
     if err != nil {
-        response.HandleError(c, domain.ErrInvalidParam)
+        response.HandleError(c, err)
         return
     }
 

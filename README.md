@@ -185,6 +185,7 @@ make compose-run
 
 > [!NOTE]
 > To stop the application, run `compose-stop`
+> To remove the application, run `compose-clean`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

@@ -15,8 +15,3 @@ type IPaymentService interface {
 	CreatePayment(orderID uint64) (*domain.Payment, error)
 	UpdatePayment(payment *domain.UpdatePaymentIN) (*domain.Payment, error)
 }
-
-type IExternalPaymentService interface {
-	CreatePayment(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error)
-	CreatePaymentMock(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error)
-}
