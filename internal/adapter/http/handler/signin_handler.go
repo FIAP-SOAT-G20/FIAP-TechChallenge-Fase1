@@ -33,7 +33,7 @@ func (h *SignInHandler) Register(router *gin.RouterGroup) {
 //
 //	@Summary		Sign in a customer
 //	@Description	Sign in a customer (2.b: ii. Identificação do Cliente via CPF)
-//	@Tags			customers, sign-in
+//	@Tags			 	sign-in
 //	@Accept			json
 //	@Produce		json
 //	@Param			request	body		request.SignInRequest			true	"SignIn Request"

@@ -143,7 +143,7 @@ func (h *StaffHandler) GetStaff(c *gin.Context) {
 //
 //	@Summary		Update a staff
 //	@Description	Update a staff
-//	@Tags			customers
+//	@Tags			staffs
 //	@Accept			json
 //	@Produce		json
 //	@Param			id			path		uint64						true	"Staff ID"
