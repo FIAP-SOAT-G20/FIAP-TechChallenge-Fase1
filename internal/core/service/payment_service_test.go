@@ -50,7 +50,7 @@ func TestNewPaymentService(t *testing.T) {
 func TestPaymentService_CreatePayment(t *testing.T) {
 	mockPaymentRepository := new(mocks.MockPaymentRepository)
 	mockOrderRepository := new(repository.OrderRepositoryMock)
-	mockPaymentGatewayService := new(mocks.MockPaymentGatewayService)
+	mockPaymentGatewayRepository := new(mocks.MockPaymentGatewayRepository)
 
 	type args struct {
 		orderID uint64
@@ -95,8 +95,8 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 					On("GetByID", uint64(1)).
 					Return(&domain.Order{ID: 1}, nil)
 
-				mockPaymentGatewayService.
-					On("CreatePaymentMock", &domain.CreatePaymentIN{
+				mockPaymentGatewayRepository.
+					On("CreatePayment", &domain.CreatePaymentIN{
 						ExternalReference: "1",
 						TotalAmount:       0,
 						Items:             nil,
@@ -171,7 +171,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 					On("GetByID", uint64(1)).
 					Return(&domain.Order{ID: 1}, nil)
 
-				mockPaymentGatewayService.
+				mockPaymentGatewayRepository.
 					On("CreatePaymentMock", &domain.CreatePaymentIN{
 						ExternalReference: "1",
 						TotalAmount:       0,
@@ -203,7 +203,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 					On("GetByID", mock.Anything).
 					Return(&domain.Order{ID: 1}, nil)
 
-				mockPaymentGatewayService.
+				mockPaymentGatewayRepository.
 					On("CreatePaymentMock", mock.Anything).
 					Return(&domain.CreatePaymentOUT{
 						InStoreOrderID: "123",
@@ -218,7 +218,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange
 			t.Cleanup(func() {
-				mockPaymentGatewayService.ExpectedCalls = nil
+				mockPaymentGatewayRepository.ExpectedCalls = nil
 				mockOrderRepository.ExpectedCalls = nil
 				mockPaymentRepository.ExpectedCalls = nil
 			})
@@ -226,7 +226,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 			ps := NewPaymentService(
 				mockPaymentRepository,
 				mockOrderRepository,
-				mockPaymentGatewayService,
+				mockPaymentGatewayRepository,
 			)
 
 			// Act
