@@ -117,6 +117,13 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 						QrData:            "456",
 					}).
 					Return(&domain.Payment{ID: 1}, nil)
+
+				mockOrderRepository.
+					On("UpdateStatus", &domain.Order{
+						ID:     1,
+						Status: domain.PENDING,
+					}).
+					Return(nil)
 			},
 			want: &domain.Payment{
 				ID: 1,
@@ -124,7 +131,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Error - GetPaymentByOrderIDAndStatus",
+			name: "Error - PaymentRepository - GetPaymentByOrderIDAndStatus",
 			args: args{
 				orderID: 0,
 			},
@@ -137,7 +144,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Error - GetByID",
+			name: "Error - OrderRepository - GetByID",
 			args: args{
 				orderID: 1,
 			},
@@ -156,7 +163,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Error - CreatePaymentMock",
+			name: "Error - PaymentGatewayRepository - CreatePayment",
 			args: args{
 				orderID: 1,
 			},
@@ -172,7 +179,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 					Return(&domain.Order{ID: 1}, nil)
 
 				mockPaymentGatewayRepository.
-					On("CreatePaymentMock", &domain.CreatePaymentIN{
+					On("CreatePayment", &domain.CreatePaymentIN{
 						ExternalReference: "1",
 						TotalAmount:       0,
 						Items:             nil,
@@ -186,7 +193,7 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Error - Insert - Payment",
+			name: "Error - PaymentRepository - Insert",
 			args: args{
 				orderID: 1,
 			},
@@ -204,11 +211,43 @@ func TestPaymentService_CreatePayment(t *testing.T) {
 					Return(&domain.Order{ID: 1}, nil)
 
 				mockPaymentGatewayRepository.
-					On("CreatePaymentMock", mock.Anything).
+					On("CreatePayment", mock.Anything).
 					Return(&domain.CreatePaymentOUT{
 						InStoreOrderID: "123",
 						QrData:         "456",
 					}, nil)
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Error - OrderReposritory - UpdateStatus",
+			args: args{
+				orderID: 1,
+			},
+			setupMocks: func() {
+				mockPaymentRepository.
+					On("GetPaymentByOrderIDAndStatus", domain.PROCESSING, uint64(1)).
+					Return(&domain.Payment{ID: 0}, nil)
+
+				mockPaymentRepository.
+					On("Insert", mock.Anything).
+					Return(&domain.Payment{ID: 1}, nil)
+
+				mockOrderRepository.
+					On("GetByID", mock.Anything).
+					Return(&domain.Order{ID: 1}, nil)
+
+				mockPaymentGatewayRepository.
+					On("CreatePayment", mock.Anything).
+					Return(&domain.CreatePaymentOUT{
+						InStoreOrderID: "123",
+						QrData:         "456",
+					}, nil)
+
+				mockOrderRepository.
+					On("UpdateStatus", mock.Anything).
+					Return(assert.AnError)
 			},
 			want:    nil,
 			wantErr: true,
@@ -301,7 +340,7 @@ func TestPaymentService_createPaymentPayload(t *testing.T) {
 
 func TestPaymentService_UpdatePayment(t *testing.T) {
 	mockPaymentRepository := new(mocks.MockPaymentRepository)
-	mockOrderRepository := new(repository.OrderRepositoryMock)
+	mockOrderRepository := new(mocks.MockOrderRepository)
 
 	type args struct {
 		payment *domain.UpdatePaymentIN
@@ -344,7 +383,7 @@ func TestPaymentService_UpdatePayment(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Error - UpdateStatus",
+			name: "Error - PaymentRepository - UpdateStatus",
 			args: args{
 				payment: &domain.UpdatePaymentIN{
 					Resource: "123",
@@ -364,7 +403,7 @@ func TestPaymentService_UpdatePayment(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Error - GetByExternalPaymentID",
+			name: "Error - PaymentRepository - GetByExternalPaymentID",
 			args: args{
 				payment: &domain.UpdatePaymentIN{
 					Resource: "123",
@@ -388,12 +427,65 @@ func TestPaymentService_UpdatePayment(t *testing.T) {
 			want:    nil,
 			wantErr: true,
 		},
+		{
+			name: "Error - OrderRepository - GetByID",
+			args: args{
+				payment: &domain.UpdatePaymentIN{
+					Resource: "123",
+					Topic:    "topic",
+				},
+			},
+			setupMocks: func() {
+				mockPaymentRepository.
+					On("UpdateStatus", domain.CONFIRMED, "123").
+					Return(nil)
+
+				mockPaymentRepository.
+					On("GetByExternalPaymentID", "123").
+					Return(&domain.Payment{ID: 1}, nil)
+
+				mockOrderRepository.
+					On("GetByID", mock.Anything).
+					Return(nil, assert.AnError)
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "Error - OrderRepository - UpdateStatus",
+			args: args{
+				payment: &domain.UpdatePaymentIN{
+					Resource: "123",
+					Topic:    "topic",
+				},
+			},
+			setupMocks: func() {
+				mockPaymentRepository.
+					On("UpdateStatus", domain.CONFIRMED, "123").
+					Return(nil)
+
+				mockPaymentRepository.
+					On("GetByExternalPaymentID", "123").
+					Return(&domain.Payment{ID: 1}, nil)
+
+				mockOrderRepository.
+					On("GetByID", mock.Anything).
+					Return(&domain.Order{ID: 1}, nil)
+
+				mockOrderRepository.
+					On("UpdateStatus", mock.Anything).
+					Return(assert.AnError)
+			},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange
 			t.Cleanup(func() {
 				mockPaymentRepository.ExpectedCalls = nil
+				mockOrderRepository.ExpectedCalls = nil
 			})
 			tt.setupMocks()
 			ps := NewPaymentService(mockPaymentRepository, mockOrderRepository, nil)
@@ -403,11 +495,11 @@ func TestPaymentService_UpdatePayment(t *testing.T) {
 
 			// Assert
 			if (err != nil) != tt.wantErr {
-				t.Errorf("PaymentService.UpdatePayment() error = %v, wantErr %v", err, tt.wantErr)
+				assert.Error(t, err)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("PaymentService.UpdatePayment() = %v, want %v", got, tt.want)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}

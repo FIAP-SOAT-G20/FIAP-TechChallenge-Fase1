@@ -72,7 +72,6 @@ func (ps *PaymentService) CreatePayment(orderID uint64) (*domain.Payment, error)
 	return payment, nil
 }
 
-// remove ps
 func createPaymentGatewayPayload(order *domain.Order) *domain.CreatePaymentIN {
 	var items []domain.ItemsIN
 
