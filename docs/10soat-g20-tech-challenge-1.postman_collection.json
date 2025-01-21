@@ -148,7 +148,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/v1/products/1",
+							"raw": "{{host}}/api/v1/products/6",
 							"host": [
 								"{{host}}"
 							],
@@ -156,11 +156,54 @@
 								"api",
 								"v1",
 								"products",
-								"1"
+								"6"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Get a product by ID",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/v1/products/6",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"products",
+										"6"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "af3b7614-83a3-447a-a3e4-dab91bad5005"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 21 Jan 2025 16:01:06 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "267"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 6,\n    \"name\": \"Product X UPDATED\",\n    \"description\": \"Product X description UPDATED\",\n    \"price\": 12,\n    \"active\": true,\n    \"category_id\": 1,\n    \"category\": {\n        \"id\": 0,\n        \"name\": \"\",\n        \"created_at\": \"0001-01-01T00:00:00Z\"\n    },\n    \"created_at\": \"0001-01-01T00:00:00Z\",\n    \"updated_at\": \"2025-01-21T16:00:55.427872Z\"\n}"
+						}
+					]
 				},
 				{
 					"name": "Create a product",
@@ -169,7 +212,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Product 3\",\n    \"description\": \"Product 3 description\",\n    \"price\": 13,\n    \"category_id\": 1\n}",
+							"raw": "{\n    \"name\": \"Product X\",\n    \"description\": \"Product X description\",\n    \"price\": 13,\n    \"category_id\": 1,\n\t\t\"active\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -250,7 +293,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Product 1 updated\",\n    \"description\": \"Product 1 description updated\",\n    \"price\": 12,\n    \"category_id\": 1,\n\t\t\"active\": true\n}",
+							"raw": "{\n    \"name\": \"Product X UPDATED\",\n    \"description\": \"Product X description UPDATED\",\n    \"price\": 12,\n    \"category_id\": 1,\n\t\t\"active\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -258,7 +301,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/api/v1/products/1",
+							"raw": "{{host}}/api/v1/products/6",
 							"host": [
 								"{{host}}"
 							],
@@ -266,7 +309,7 @@
 								"api",
 								"v1",
 								"products",
-								"1"
+								"6"
 							]
 						}
 					},
@@ -330,7 +373,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/v1/products/2",
+							"raw": "{{host}}/api/v1/products/6",
 							"host": [
 								"{{host}}"
 							],
@@ -338,7 +381,7 @@
 								"api",
 								"v1",
 								"products",
-								"2"
+								"6"
 							]
 						}
 					},
@@ -603,7 +646,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/api/v1/payments/3/checkout",
+							"raw": "{{host}}/api/v1/payments/8/checkout",
 							"host": [
 								"{{host}}"
 							],
@@ -611,7 +654,7 @@
 								"api",
 								"v1",
 								"payments",
-								"3",
+								"8",
 								"checkout"
 							]
 						}
@@ -669,7 +712,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"resource\": \"123456\",\n    \"topic\": \"payment\"\n}",
+							"raw": "{\n    \"resource\": \"de3ffde8-6315-452a-b952-d86a4bd745bf\",\n    \"topic\": \"payment\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -752,7 +795,29 @@
 					"name": "Get orders",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/v1/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders"
+							]
+						}
 					},
 					"response": [
 						{
@@ -806,10 +871,134 @@
 					]
 				},
 				{
-					"name": "Create an order",
+					"name": "Get orders by customer id",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/v1/orders?customer_id=6",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "customer_id",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get orders Copy",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "{{host}}/api/v1/orders?customer_id=6",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"orders"
+									],
+									"query": [
+										{
+											"key": "customer_id",
+											"value": "6"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "ccc718b6-8706-4aa6-983c-bc96cadfe782"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 21 Jan 2025 16:10:33 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "204"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"total\": 1,\n    \"page\": 1,\n    \"limit\": 10,\n    \"orders\": [\n        {\n            \"id\": 8,\n            \"customer_id\": 6,\n            \"total_bill\": 51.8,\n            \"status\": \"RECEIVED\",\n            \"created_at\": \"2025-01-21T16:03:51.48294Z\",\n            \"updated_at\": \"2025-01-21T16:08:15.388034Z\",\n            \"products\": []\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Create an order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"customer_id\": 6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/orders",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders"
+							]
+						}
 					},
 					"response": [
 						{
@@ -878,8 +1067,31 @@
 				{
 					"name": "Creante an order product",
 					"request": {
-						"method": "GET",
-						"header": []
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/v1/orders/products/8/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"products",
+								"8",
+								"1"
+							]
+						}
 					},
 					"response": []
 				},
@@ -887,7 +1099,24 @@
 					"name": "Get an order",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/v1/orders/8",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"8"
+							]
+						}
 					},
 					"response": [
 						{
@@ -970,12 +1199,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/staffs",
-							"protocol": "http",
+							"raw": "{{host}}/api/v1/staffs",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v1",
@@ -996,12 +1223,10 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/staffs",
-							"protocol": "http",
+							"raw": "{{host}}/api/v1/staffs",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"v1",
@@ -1072,7 +1297,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"cpf\": \"000.000.000-00\"\n}",
+							"raw": "{\n    \"cpf\": \"000.000.000-01\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
