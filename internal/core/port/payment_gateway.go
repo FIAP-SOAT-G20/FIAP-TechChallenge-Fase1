@@ -7,7 +7,3 @@ import (
 type IPaymentGatewayRepository interface {
 	CreatePayment(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error)
 }
-
-type IPaymentGatewayService interface {
-	CreatePayment(payment *domain.CreatePaymentIN) (*domain.CreatePaymentOUT, error)
-}
