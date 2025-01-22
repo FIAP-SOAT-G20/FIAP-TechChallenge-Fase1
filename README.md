@@ -195,13 +195,15 @@ make compose-run
 
 ## :rocket: Routes
 
-### sign-up (2.b: i.Cadastro do Cliente)
+### sign-up
 **POST** `/api/v1/customers` - Create a customer  
+> 2.b: i.Cadastro do Cliente
 **POST** `/api/v1/staffs` - Create a staff  
 
 ---
 
-### products (2.b: iii. Criar, editar e remover produtos;)
+### products
+> 2.b: iii. Criar, editar e remover produtos;
 **POST** `/api/v1/payments/callback` - Update a payment on a order  
 **POST** `/api/v1/payments/{order_id}/checkout` - Create a checkout on a order  
 **GET** `/api/v1/products` - List products  
@@ -218,7 +220,8 @@ make compose-run
 
 ---
 
-### sign-in (2.b: ii. Identificação do Cliente via CPF)
+### sign-in 
+> 2.b: ii. Identificação do Cliente via CPF
 **POST** `/api/v1/sign`-in - Sign in a customer  
 
 ---
@@ -271,7 +274,7 @@ make compose-run
 ---
 
 ### healthcheck
-**GET** `/health - Application` HealthCheck  
+**GET** `/health` - Application HealthCheck  
 > Returns http status `200` if the application is running  
 > Returns http status `503` if the application or any of its dependencies are not running appropriately  
 > Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
