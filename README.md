@@ -278,9 +278,7 @@ make compose-run
 
 ### healthcheck
 **GET** `/health` - Application HealthCheck  
-> Returns http status `200` if the application is running  
-> Returns http status `503` if the application or any of its dependencies are not running appropriately  
-> Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
+> Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)  
 ---
 
 > [!NOTE]
