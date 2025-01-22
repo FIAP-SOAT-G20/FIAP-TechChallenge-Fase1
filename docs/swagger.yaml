@@ -1695,7 +1695,7 @@ securityDefinitions:
     type: apiKey
 swagger: "2.0"
 tags:
-- description: Cadastro de clientes e funcionários
+- description: Regiter a new customer or staff
   name: sign-up
 - description: '2.b: iii. Criar, editar e remover produtos;'
   name: products

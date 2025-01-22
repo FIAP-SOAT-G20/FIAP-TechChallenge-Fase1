@@ -2481,7 +2481,7 @@ const docTemplate = `{
     },
     "tags": [
         {
-            "description": "Cadastro de clientes e funcionários",
+            "description": "Regiter a new customer or staff",
             "name": "sign-up"
         },
         {
