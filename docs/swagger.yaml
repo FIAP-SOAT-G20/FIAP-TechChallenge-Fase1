@@ -247,8 +247,8 @@ definitions:
     properties:
       errors:
         example:
-        - '[''Validation failed: field X is required'''
-        - ' ''Invalid format for field Y'']'
+        - '["error message 1"'
+        - ' "error message 2"]'
         items:
           type: string
         type: array
@@ -431,8 +431,8 @@ externalDocs:
 host: localhost:8080
 info:
   contact: {}
-  description: API de um Fast Food para o Tech Challenge da FIAP - Fase 1 - 10SOAT
-    - G20
+  description: '### API de um Fast Food para o Tech Challenge da FIAP - Fase 1 - 10SOAT
+    - G20'
   title: FIAP Tech Challenge Fase 1 - 10SOAT - G20
   version: "1"
 paths:
@@ -471,7 +471,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: create a new category with name
+      description: Create a category with a name
       parameters:
       - description: Create Category Request
         in: body
@@ -510,7 +510,7 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      summary: Create a new category
+      summary: Create a category
       tags:
       - categories
   /api/v1/categories/{id}:
@@ -557,7 +557,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: get a category by id
+      description: Get a category by id
       parameters:
       - description: Category ID
         in: path
@@ -589,7 +589,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: update a category's name by id
+      description: Update a category's name by id
       parameters:
       - description: Category ID
         in: path
@@ -621,8 +621,6 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      security:
-      - BearerAuth: []
       summary: Update a category
       tags:
       - categories
@@ -661,7 +659,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a customer
+      description: |-
+        Create a customer
+        > 2.b: i.Cadastro do Cliente
       parameters:
       - description: Create Customer Request
         in: body
@@ -938,7 +938,7 @@ paths:
             $ref: '#/definitions/response.OrderPaginated'
       summary: List order histories
       tags:
-      - orderHistories
+      - order-histories
   /api/v1/orders/histories/{id}:
     get:
       consumes:
@@ -971,7 +971,7 @@ paths:
             $ref: '#/definitions/response.ErrorResponse'
       summary: Get an order history
       tags:
-      - orderHistories
+      - order-histories
   /api/v1/orders/products:
     get:
       consumes:
@@ -1003,7 +1003,7 @@ paths:
             $ref: '#/definitions/response.OrderProductPaginated'
       summary: List order products
       tags:
-      - orderHistories
+      - order-histories
   /api/v1/orders/products/{order_id}/{product_id}:
     delete:
       consumes:
@@ -1172,8 +1172,8 @@ paths:
       description: |-
         Update an order status
         Only staff can update the order status
-        The status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
-        Transition of status:
+        The status are: **OPEN**, **CANCELLED**, **PENDING**, **RECEIVED**, **PREPARING**, **READY**, **COMPLETED**
+        ## Transition of status:
         - OPEN      -> CANCELLED || PENDING
         - CANCELLED -> {},
         - PENDING   -> OPEN || RECEIVED
@@ -1221,7 +1221,7 @@ paths:
       - application/json
       description: |-
         Create a checkout on a order (2.b: > 2.b.: v. Fake checkout)
-        Possible status:
+        ## Possible status:
         - PROCESSING
         - CONFIRMED
         - FAILED
@@ -1263,7 +1263,7 @@ paths:
         Update a payment on a order (2.b: > 2.b.: v. Fake checkout)
         - resource = external payment id, obtained from the checkout response
         - topic = payment
-        Possible status:
+        ## Possible status:
         - PROCESSING
         - CONFIRMED
         - FAILED
@@ -1302,8 +1302,9 @@ paths:
     get:
       consumes:
       - application/json
-      description: 'List products or filter by category (2.b: iv. Buscar produtos
-        por categoria;)'
+      description: |-
+        List products or filter by category
+        > 2.b: iv. Buscar produtos por categoria;
       parameters:
       - description: Product name
         in: query
@@ -1351,10 +1352,6 @@ paths:
             $ref: '#/definitions/response.ProductResponse'
         "400":
           description: Validation error
-          schema:
-            $ref: '#/definitions/response.ErrorResponse'
-        "404":
-          description: Data not found error
           schema:
             $ref: '#/definitions/response.ErrorResponse'
         "500":
@@ -1471,7 +1468,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: 'Sign in a customer (2.b: ii. Identificação do Cliente via CPF)'
+      description: |-
+        Sign in a customer
+        Example CPF: 123.456.789-00
+        > 2.b: ii. Identificação do Cliente via CPF
       parameters:
       - description: SignIn Request
         in: body
@@ -1538,7 +1538,7 @@ paths:
       - application/json
       description: |-
         Create a staff
-        Roles:
+        ## Roles:
         - COOK
         - ATTENDANT
         - MANAGER
@@ -1626,7 +1626,12 @@ paths:
     put:
       consumes:
       - application/json
-      description: Update a staff
+      description: |-
+        Update a staff
+        Roles:
+        - COOK
+        - ATTENDANT
+        - MANAGER
       parameters:
       - description: Staff ID
         in: path
@@ -1690,7 +1695,7 @@ securityDefinitions:
     type: apiKey
 swagger: "2.0"
 tags:
-- description: '2.b: i.Cadastro do Cliente'
+- description: Cadastro de clientes e funcionários
   name: sign-up
 - description: '2.b: iii. Criar, editar e remover produtos;'
   name: products

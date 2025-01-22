@@ -64,7 +64,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "create a new category with name",
+                "description": "Create a category with a name",
                 "consumes": [
                     "application/json"
                 ],
@@ -74,7 +74,7 @@ const docTemplate = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "Create a new category",
+                "summary": "Create a category",
                 "parameters": [
                     {
                         "description": "Create Category Request",
@@ -134,7 +134,7 @@ const docTemplate = `{
         },
         "/api/v1/categories/{id}": {
             "get": {
-                "description": "get a category by id",
+                "description": "Get a category by id",
                 "consumes": [
                     "application/json"
                 ],
@@ -182,12 +182,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "update a category's name by id",
+                "description": "Update a category's name by id",
                 "consumes": [
                     "application/json"
                 ],
@@ -353,7 +348,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a customer",
+                "description": "Create a customer\n\u003e 2.b: i.Cadastro do Cliente",
                 "consumes": [
                     "application/json"
                 ],
@@ -641,7 +636,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "orderHistories"
+                    "order-histories"
                 ],
                 "summary": "List order histories",
                 "parameters": [
@@ -690,7 +685,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "orderHistories"
+                    "order-histories"
                 ],
                 "summary": "Get an order history",
                 "parameters": [
@@ -740,7 +735,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "orderHistories"
+                    "order-histories"
                 ],
                 "summary": "List order products",
                 "parameters": [
@@ -1021,7 +1016,7 @@ const docTemplate = `{
         },
         "/api/v1/orders/status/{id}": {
             "put": {
-                "description": "Update an order status\nOnly staff can update the order status\nThe status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED\nTransition of status:\n- OPEN      -\u003e CANCELLED || PENDING\n- CANCELLED -\u003e {},\n- PENDING   -\u003e OPEN || RECEIVED\n- RECEIVED  -\u003e PREPARING\n- PREPARING -\u003e READY\n- READY     -\u003e COMPLETED\n- COMPLETED -\u003e {}",
+                "description": "Update an order status\nOnly staff can update the order status\nThe status are: **OPEN**, **CANCELLED**, **PENDING**, **RECEIVED**, **PREPARING**, **READY**, **COMPLETED**\n## Transition of status:\n- OPEN      -\u003e CANCELLED || PENDING\n- CANCELLED -\u003e {},\n- PENDING   -\u003e OPEN || RECEIVED\n- RECEIVED  -\u003e PREPARING\n- PREPARING -\u003e READY\n- READY     -\u003e COMPLETED\n- COMPLETED -\u003e {}",
                 "consumes": [
                     "application/json"
                 ],
@@ -1178,7 +1173,7 @@ const docTemplate = `{
         },
         "/api/v1/payments/callback": {
             "post": {
-                "description": "Update a payment on a order (2.b: \u003e 2.b.: v. Fake checkout)\n- resource = external payment id, obtained from the checkout response\n- topic = payment\nPossible status:\n- PROCESSING\n- CONFIRMED\n- FAILED\n- CANCELED",
+                "description": "Update a payment on a order (2.b: \u003e 2.b.: v. Fake checkout)\n- resource = external payment id, obtained from the checkout response\n- topic = payment\n## Possible status:\n- PROCESSING\n- CONFIRMED\n- FAILED\n- CANCELED",
                 "consumes": [
                     "application/json"
                 ],
@@ -1231,7 +1226,7 @@ const docTemplate = `{
         },
         "/api/v1/payments/{order_id}/checkout": {
             "post": {
-                "description": "Create a checkout on a order (2.b: \u003e 2.b.: v. Fake checkout)\nPossible status:\n- PROCESSING\n- CONFIRMED\n- FAILED\n- CANCELED",
+                "description": "Create a checkout on a order (2.b: \u003e 2.b.: v. Fake checkout)\n## Possible status:\n- PROCESSING\n- CONFIRMED\n- FAILED\n- CANCELED",
                 "consumes": [
                     "application/json"
                 ],
@@ -1282,7 +1277,7 @@ const docTemplate = `{
         },
         "/api/v1/products": {
             "get": {
-                "description": "List products or filter by category (2.b: iv. Buscar produtos por categoria;)",
+                "description": "List products or filter by category\n\u003e 2.b: iv. Buscar produtos por categoria;",
                 "consumes": [
                     "application/json"
                 ],
@@ -1360,12 +1355,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Validation error",
-                        "schema": {
-                            "$ref": "#/definitions/response.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Data not found error",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorResponse"
                         }
@@ -1536,7 +1525,7 @@ const docTemplate = `{
         },
         "/api/v1/sign-in": {
             "post": {
-                "description": "Sign in a customer (2.b: ii. Identificação do Cliente via CPF)",
+                "description": "Sign in a customer\nExample CPF: 123.456.789-00\n\u003e 2.b: ii. Identificação do Cliente via CPF",
                 "consumes": [
                     "application/json"
                 ],
@@ -1635,7 +1624,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a staff\nRoles:\n- COOK\n- ATTENDANT\n- MANAGER",
+                "description": "Create a staff\n## Roles:\n- COOK\n- ATTENDANT\n- MANAGER",
                 "consumes": [
                     "application/json"
                 ],
@@ -1724,7 +1713,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update a staff",
+                "description": "Update a staff\nRoles:\n- COOK\n- ATTENDANT\n- MANAGER",
                 "consumes": [
                     "application/json"
                 ],
@@ -2213,8 +2202,8 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "['Validation failed: field X is required'",
-                        " 'Invalid format for field Y']"
+                        "[\"error message 1\"",
+                        " \"error message 2\"]"
                     ]
                 }
             }
@@ -2492,7 +2481,7 @@ const docTemplate = `{
     },
     "tags": [
         {
-            "description": "2.b: i.Cadastro do Cliente",
+            "description": "Cadastro de clientes e funcionários",
             "name": "sign-up"
         },
         {
@@ -2521,7 +2510,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "FIAP Tech Challenge Fase 1 - 10SOAT - G20",
-	Description:      "API de um Fast Food para o Tech Challenge da FIAP - Fase 1 - 10SOAT - G20",
+	Description:      "### API de um Fast Food para o Tech Challenge da FIAP - Fase 1 - 10SOAT - G20",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
