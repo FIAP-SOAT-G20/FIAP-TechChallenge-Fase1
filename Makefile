@@ -27,6 +27,7 @@ stop: compose-stop
 install:
 	go mod download
 	go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	go install golang.org/x/vuln/cmd/govulncheck@latest
 	go install github.com/swaggo/swag/cmd/swag@latest
 
 migrate-create:
@@ -72,6 +73,10 @@ lint:
 	@echo "🟢 Running the linter..."
 	golangci-lint run
 
+check-vulnerabilities:
+	@echo "🟢 Checking vulnerabilities..."
+	govulncheck ./... 
+
 help:
 	@echo "build: Build the application"
 	@echo "compose-build: Build the docker compose"
@@ -89,4 +94,5 @@ help:
 	@echo "compose-stop: Stop the docker compose"
 	@echo "compose-clean: Clean the docker compose"
 	@echo "lint: Run the linter"
+	@echo "check-vulnerabilities: Check the vulnerabilities"
 	@echo "test: Run the tests"
