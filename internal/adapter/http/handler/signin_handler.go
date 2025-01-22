@@ -32,11 +32,13 @@ func (h *SignInHandler) Register(router *gin.RouterGroup) {
 // SignIn godoc
 //
 //	@Summary		Sign in a customer
-//	@Description	Sign in a customer (2.b: ii. Identificação do Cliente via CPF)
-//	@Tags			 	sign-in
+//	@Description	Sign in a customer
+//	@Description	Example CPF: 123.456.789-00
+//	@Description	> 2.b: ii. Identificação do Cliente via CPF
+//	@Tags			sign-in
 //	@Accept			json
 //	@Produce		json
-//	@Param			request	body		request.SignInRequest			true	"SignIn Request"
+//	@Param			request	body		request.SignInRequest	true	"SignIn Request"
 //	@Success		200		{object}	response.SignInResponse	"Succesfully signed in"
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
 //	@Failure		401		{object}	response.ErrorResponse	"Unauthorized error"

@@ -41,10 +41,10 @@ func (h *OrderHandler) GroupRouterPattern() string {
 //	@Accept			json
 //	@Produce		json
 //	@Param			createOrderRequest	body		request.CreateOrderRequest	true	"Create Order Request"
-//	@Success		201		{object}	response.OrderResponse
-//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
-//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
-//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Success		201					{object}	response.OrderResponse
+//	@Failure		400					{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404					{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500					{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/orders [post]
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	var req request.CreateOrderRequest
@@ -103,9 +103,9 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			customer_id	query		int		false	"Customer ID"
-//	@Param			page		query		int		false	"Page"
-//	@Param			limit		query		int		false	"Limit"
+//	@Param			customer_id	query		int	false	"Customer ID"
+//	@Param			page		query		int	false	"Page"
+//	@Param			limit		query		int	false	"Limit"
 //	@Success		200			{object}	response.OrderPaginated
 //	@Router			/api/v1/orders [get]
 func (h *OrderHandler) ListOrders(c *gin.Context) {
@@ -147,25 +147,25 @@ func (h *OrderHandler) ListOrders(c *gin.Context) {
 //
 //	@Summary		Update an order status
 //	@Description	Update an order status
-// 	@Description	Only staff can update the order status
-// 	@Description	The status are: OPEN, CANCELLED, PENDING, RECEIVED, PREPARING, READY, COMPLETED
-// 	@Description	Transition of status: 
-// 	@Description	- OPEN      -> CANCELLED || PENDING
-// 	@Description	- CANCELLED -> {},
-// 	@Description	- PENDING   -> OPEN || RECEIVED
-// 	@Description	- RECEIVED  -> PREPARING
-// 	@Description	- PREPARING -> READY
-// 	@Description	- READY     -> COMPLETED
-// 	@Description	- COMPLETED -> {}
+//	@Description	Only staff can update the order status
+//	@Description	The status are: **OPEN**, **CANCELLED**, **PENDING**, **RECEIVED**, **PREPARING**, **READY**, **COMPLETED**
+//	@Description	## Transition of status:
+//	@Description	- OPEN      -> CANCELLED || PENDING
+//	@Description	- CANCELLED -> {},
+//	@Description	- PENDING   -> OPEN || RECEIVED
+//	@Description	- RECEIVED  -> PREPARING
+//	@Description	- PREPARING -> READY
+//	@Description	- READY     -> COMPLETED
+//	@Description	- COMPLETED -> {}
 //	@Tags			orders
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		int				true	"Order ID"
+//	@Param			id							path		int									true	"Order ID"
 //	@Param			UpdateOrderStatusRequest	body		request.UpdateOrderStatusRequest	true	"Update Order Status Request"
-//	@Success		200		{object}	response.OrderResponse
-//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
-//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
-//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Success		200							{object}	response.OrderResponse
+//	@Failure		400							{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404							{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500							{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/orders/status/{id} [put]
 func (h *OrderHandler) UpdateOrderStatus(c *gin.Context) {
 	id := c.Param("id")

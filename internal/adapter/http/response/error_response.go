@@ -66,7 +66,7 @@ func parseError(err error) []string {
 
 // ErrorResponse represents the standard error response format
 type ErrorResponse struct {
-	Errors []string `json:"errors" example:"['Validation failed: field X is required', 'Invalid format for field Y']"`
+	Errors []string `json:"errors" example:"[\"error message 1\", \"error message 2\"]"`
 }
 
 func newErrorResponse(errMsgs []string) ErrorResponse {

@@ -37,19 +37,19 @@ func (h *CategoryHandler) GroupRouterPattern() string {
 
 // CreateCategory godoc
 //
-//	@Summary		Create a new category
-//	@Description	create a new category with name
+//	@Summary		Create a category
+//	@Description	Create a category with a name
 //	@Tags			categories
 //	@Accept			json
 //	@Produce		json
 //	@Param			createCategoryRequest	body		request.CreateCategoryRequest	true	"Create Category Request"
 //	@Success		200						{object}	response.CategoryResponse		"Category created"
-//	@Failure		400						{object}	response.ErrorResponse	"Validation error"
-//	@Failure		401						{object}	response.ErrorResponse	"Unauthorized error"
-//	@Failure		403						{object}	response.ErrorResponse	"Forbidden error"
-//	@Failure		404						{object}	response.ErrorResponse	"Data not found error"
-//	@Failure		409						{object}	response.ErrorResponse	"Data conflict error"
-//	@Failure		500						{object}	response.ErrorResponse	"Internal server error"
+//	@Failure		400						{object}	response.ErrorResponse			"Validation error"
+//	@Failure		401						{object}	response.ErrorResponse			"Unauthorized error"
+//	@Failure		403						{object}	response.ErrorResponse			"Forbidden error"
+//	@Failure		404						{object}	response.ErrorResponse			"Data not found error"
+//	@Failure		409						{object}	response.ErrorResponse			"Data conflict error"
+//	@Failure		500						{object}	response.ErrorResponse			"Internal server error"
 //	@Router			/api/v1/categories [post]
 func (ch *CategoryHandler) CreateCategory(ctx *gin.Context) {
 	var req request.CreateCategoryRequest
@@ -73,11 +73,11 @@ func (ch *CategoryHandler) CreateCategory(ctx *gin.Context) {
 // GetCategory godoc
 //
 //	@Summary		Get a category
-//	@Description	get a category by id
+//	@Description	Get a category by id
 //	@Tags			categories
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		uint64		true	"Category ID"
+//	@Param			id	path		uint64						true	"Category ID"
 //	@Success		200	{object}	response.CategoryResponse	"Category retrieved"
 //	@Failure		400	{object}	response.ErrorResponse		"Validation error"
 //	@Failure		404	{object}	response.ErrorResponse		"Data not found error"
@@ -107,11 +107,11 @@ func (ch *CategoryHandler) GetCategory(ctx *gin.Context) {
 //	@Tags			categories
 //	@Accept			json
 //	@Produce		json
-//	@Param			name	query		string	false	"Name"
-//	@Param			page	query		int		false	"Page"
-//	@Param			limit	query		int		false	"Limit"
+//	@Param			name	query		string							false	"Name"
+//	@Param			page	query		int								false	"Page"
+//	@Param			limit	query		int								false	"Limit"
 //	@Success		200		{object}	response.CategoriesPaginated	"List of categories"
-//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Failure		500		{object}	response.ErrorResponse			"Internal server error"
 //	@Router			/api/v1/categories [get]
 func (ch *CategoryHandler) ListCategories(ctx *gin.Context) {
 	name := ctx.Query("name")
@@ -143,18 +143,17 @@ func (ch *CategoryHandler) ListCategories(ctx *gin.Context) {
 // UpdateCategory godoc
 //
 //	@Summary		Update a category
-//	@Description	update a category's name by id
+//	@Description	Update a category's name by id
 //	@Tags			categories
 //	@Accept			json
 //	@Produce		json
-//	@Param			id						path		uint64					true	"Category ID"
+//	@Param			id						path		uint64							true	"Category ID"
 //	@Param			updateCategoryRequest	body		request.UpdateCategoryRequest	true	"Update Category Request"
-//	@Success		200		{object}	response.CategoryResponse
-//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
-//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
-//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
+//	@Success		200						{object}	response.CategoryResponse
+//	@Failure		400						{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404						{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500						{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/categories/{id} [put]
-//	@Security		BearerAuth
 func (ch *CategoryHandler) UpdateCategory(ctx *gin.Context) {
 	var req request.UpdateCategoryRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -188,8 +187,8 @@ func (ch *CategoryHandler) UpdateCategory(ctx *gin.Context) {
 //	@Tags			categories
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		uint64			true	"Category ID"
-//	@Success		204	{object}	string		"Category deleted"
+//	@Param			id	path		uint64					true	"Category ID"
+//	@Success		204	{object}	string					"Category deleted"
 //	@Failure		400	{object}	response.ErrorResponse	"Validation error"
 //	@Failure		401	{object}	response.ErrorResponse	"Unauthorized error"
 //	@Failure		403	{object}	response.ErrorResponse	"Forbidden error"

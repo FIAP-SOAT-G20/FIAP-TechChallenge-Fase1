@@ -33,7 +33,6 @@ func (r *OrderHistoryRepository) GetByID(id uint64) (*domain.OrderHistory, error
 }
 
 func (r *OrderHistoryRepository) GetAll(orderID uint64, status *domain.OrderStatus, page, limit int) ([]domain.OrderHistory, int64, error) {
-	// Add the orderHistories get all
 	var orderHistories []domain.OrderHistory
 	var tx = r.db.Model(&orderHistories).Preload("Order")
 	var count int64

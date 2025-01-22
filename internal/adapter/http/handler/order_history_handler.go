@@ -64,7 +64,7 @@ func (h *OrderHistoryHandler) GetOrderHistory(c *gin.Context) {
 //
 //	@Summary		List order histories
 //	@Description	List order histories
-//	@Tags			orderHistories
+//	@Tags			order-histories
 //	@Accept			json
 //	@Produce		json
 //	@Param			status		query		string	false	"Status name"

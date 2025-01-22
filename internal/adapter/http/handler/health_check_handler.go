@@ -32,9 +32,9 @@ func (h *HealthCheckHandler) GroupRouterPattern() string {
 //	@Description	Checks application health
 //	@Tags			healthcheck
 //	@Produce		json
-//	@Success		200			{object}	response.HealthCheckResponse
-//	@Failure		500			{object}	response.ErrorResponse "Internal server error"
-//	@Failure		503			{object}	response.HealthCheckResponse "Service Unavailable"
+//	@Success		200	{object}	response.HealthCheckResponse
+//	@Failure		500	{object}	response.ErrorResponse			"Internal server error"
+//	@Failure		503	{object}	response.HealthCheckResponse	"Service Unavailable"
 //	@Router			/health [GET]
 func (h *HealthCheckHandler) HealthCheck(c *gin.Context) {
 	hc := &response.HealthCheckResponse{

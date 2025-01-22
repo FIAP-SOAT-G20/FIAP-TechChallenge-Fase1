@@ -37,7 +37,7 @@ func (h *StaffHandler) GroupRouterPattern() string {
 //
 //	@Summary		Create a staff
 //	@Description	Create a staff
-//	@Description	Roles:
+//	@Description	## Roles:
 //	@Description	- COOK
 //	@Description	- ATTENDANT
 //	@Description	- MANAGER
@@ -45,9 +45,9 @@ func (h *StaffHandler) GroupRouterPattern() string {
 //	@Accept			json
 //	@Produce		json
 //	@Param			staff	body		request.CreateStaffRequest	true	"Create Staff Request"
-//	@Success		201			{object}	response.StaffResponse
-//	@Failure		400			{object}	response.ErrorResponse	"Validation error"
-//	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
+//	@Success		201		{object}	response.StaffResponse
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/staffs [post]
 func (h *StaffHandler) CreateStaff(c *gin.Context) {
 	var req request.CreateStaffRequest
@@ -143,15 +143,19 @@ func (h *StaffHandler) GetStaff(c *gin.Context) {
 //
 //	@Summary		Update a staff
 //	@Description	Update a staff
+//	@Description	Roles:
+//	@Description	- COOK
+//	@Description	- ATTENDANT
+//	@Description	- MANAGER
 //	@Tags			staffs
 //	@Accept			json
 //	@Produce		json
-//	@Param			id			path		uint64						true	"Staff ID"
+//	@Param			id		path		uint64						true	"Staff ID"
 //	@Param			staff	body		request.UpdateStaffRequest	true	"Update Staff Request"
-//	@Success		200			{object}	response.CustomerResponse
-//	@Failure		400			{object}	response.ErrorResponse	"Validation error"
-//	@Failure		404			{object}	response.ErrorResponse	"Data not found error"
-//	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
+//	@Success		200		{object}	response.CustomerResponse
+//	@Failure		400		{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/staffs/{id} [put]
 func (h *StaffHandler) UpdateStaff(c *gin.Context) {
 	id := c.Param("id")
