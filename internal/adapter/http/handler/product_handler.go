@@ -42,7 +42,6 @@ func (h *ProductHandler) GroupRouterPattern() string {
 //	@Param			product	body		request.CreateProductRequest	true	"Create Product Request"
 //	@Success		201		{object}	response.ProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"
-//	@Failure		404		{object}	response.ErrorResponse	"Data not found error"
 //	@Failure		500		{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/products [post]
 func (h *ProductHandler) CreateProduct(c *gin.Context) {
@@ -98,7 +97,8 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 // ListProducts godoc
 //
 //	@Summary		List products
-//	@Description	List products or filter by category (2.b: iv. Buscar produtos por categoria;)
+//	@Description	List products or filter by category
+//	@Description	> 2.b: iv. Buscar produtos por categoria;
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
@@ -149,7 +149,7 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 //	@Tags			products
 //	@Accept			json
 //	@Produce		json
-//	@Param			id		path		int				true	"Product ID"
+//	@Param			id		path		int								true	"Product ID"
 //	@Param			product	body		request.UpdateProductRequest	true	"Update Product Request"
 //	@Success		200		{object}	response.ProductResponse
 //	@Failure		400		{object}	response.ErrorResponse	"Validation error"

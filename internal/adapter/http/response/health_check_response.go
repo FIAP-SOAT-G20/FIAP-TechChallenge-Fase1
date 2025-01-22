@@ -8,9 +8,9 @@ type HealthCheckResponse struct {
 }
 
 type HealthCheckVerifications struct {
-	ComponentId string    `json:"componentId"`
-	Status      HealthCheckStatus    `json:"status"`
-	Time        time.Time `json:"time"`
+	ComponentId string            `json:"componentId"`
+	Status      HealthCheckStatus `json:"status"`
+	Time        time.Time         `json:"time"`
 }
 
 // HealthCheckStatus represents the status of a health check

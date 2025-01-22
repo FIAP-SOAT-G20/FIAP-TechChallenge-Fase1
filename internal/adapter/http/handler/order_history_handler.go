@@ -32,7 +32,7 @@ func (h *OrderHistoryHandler) GroupRouterPattern() string {
 //
 //	@Summary		Get an order history
 //	@Description	Get an order history
-//	@Tags			orderHistories
+//	@Tags			order-histories
 //	@Accept			json
 //	@Produce		json
 //	@Param			id	path		int	true	"Order History ID"
@@ -64,7 +64,7 @@ func (h *OrderHistoryHandler) GetOrderHistory(c *gin.Context) {
 //
 //	@Summary		List order histories
 //	@Description	List order histories
-//	@Tags			orderHistories
+//	@Tags			order-histories
 //	@Accept			json
 //	@Produce		json
 //	@Param			status		query		string	false	"Status name"

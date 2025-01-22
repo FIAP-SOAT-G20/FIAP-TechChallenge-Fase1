@@ -36,13 +36,14 @@ func (h *CustomerHandler) GroupRouterPattern() string {
 //
 //	@Summary		Create a customer
 //	@Description	Create a customer
+//	@Description	> 2.b: i.Cadastro do Cliente
 //	@Tags			customers, sign-up
 //	@Accept			json
 //	@Produce		json
 //	@Param			createCustomerRequest	body		request.CreateCustomerRequest	true	"Create Customer Request"
-//	@Success		201			{object}	response.CustomerResponse
-//	@Failure		400			{object}	response.ErrorResponse	"Validation error"
-//	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
+//	@Success		201						{object}	response.CustomerResponse
+//	@Failure		400						{object}	response.ErrorResponse	"Validation error"
+//	@Failure		500						{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers [post]
 func (h *CustomerHandler) CreateCustomer(c *gin.Context) {
 	var req request.CreateCustomerRequest
@@ -141,12 +142,12 @@ func (h *CustomerHandler) GetCustomer(c *gin.Context) {
 //	@Tags			customers
 //	@Accept			json
 //	@Produce		json
-//	@Param			id			path		uint64					true	"Customer ID"
+//	@Param			id						path		uint64							true	"Customer ID"
 //	@Param			updateCustomerRequest	body		request.UpdateCustomerRequest	true	"Update Customer Request"
-//	@Success		200			{object}	response.CustomerResponse
-//	@Failure		400			{object}	response.ErrorResponse	"Validation error"
-//	@Failure		404			{object}	response.ErrorResponse	"Data not found error"
-//	@Failure		500			{object}	response.ErrorResponse	"Internal server error"
+//	@Success		200						{object}	response.CustomerResponse
+//	@Failure		400						{object}	response.ErrorResponse	"Validation error"
+//	@Failure		404						{object}	response.ErrorResponse	"Data not found error"
+//	@Failure		500						{object}	response.ErrorResponse	"Internal server error"
 //	@Router			/api/v1/customers/{id} [put]
 func (h *CustomerHandler) UpdateCustomer(c *gin.Context) {
 	id := c.Param("id")

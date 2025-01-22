@@ -34,7 +34,7 @@ type UpdateProductRequest struct {
 // ToDomain converts UpdateProductRequest to domain.Product
 func (r UpdateProductRequest) ToDomain(id uint64) *domain.Product {
 	return &domain.Product{
-		ID:					id,
+		ID:          id,
 		Name:        r.Name,
 		Description: r.Description,
 		Price:       r.Price,

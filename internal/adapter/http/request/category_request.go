@@ -42,4 +42,3 @@ func (r UpdateCategoryRequest) ToDomain(id uint64) *domain.Category {
 type DeleteCategoryRequest struct {
 	ID uint64 `uri:"id" binding:"required,min=1" example:"1"`
 }
-

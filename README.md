@@ -108,16 +108,20 @@ DBML file can be found [here](docs/db-schema-g20-fast-food.dbml).
 - [x] Unit tests
 - [x] Code coverage
 - [x] Swagger documentation
+- [x] Postman collection
 - [x] Feature branch workflow
 - [x] Air to run go
 - [x] Pagination
-
+- [x] Health Check
+- [x] Lint
+- [x] Vulnerability check
 
 ## :computer: Technologies
 
 - [Go](https://golang.org/)
 - [Gin](https://github.com/gin-gonic/gin)
 - [golangci-lint](https://golangci-lint.run/)
+- [govulncheck](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)
 - [Docker](https://www.docker.com/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Make](https://www.gnu.org/software/make/)
@@ -191,60 +195,90 @@ make compose-run
 
 ## :rocket: Routes
 
-- **POST** `api/v1/customers`: Create a new customer
-- **GET** `api/v1/customers`: List all customers
-- **GET** `api/v1/customers/:id`: Get a customer by ID
-- **PUT** `api/v1/customers/:id`: Update a customer by ID
-- **DELETE** `api/v1/customers/:id`: Delete a customer by ID
+### sign-up
+**POST** `/api/v1/customers` - Create a customer  (2.b: i.Cadastro do Cliente)  
+**POST** `/api/v1/staffs` - Create a staff  
 
-> 2.b. Apis: i. Cadastro do Cliente;
 ---
-- **POST** `api/v1/products`: Create a new product
-- **GET** `api/v1/products`: List all products
-- **GET** `api/v1/products?category_id=:id`: List all products by category ID
-> 2.b: iv. Buscar produtos por categoria;
-- **GET** `api/v1/products/:id`: Get a product by ID
-- **PUT** `api/v1/products/:id`: Update a product by ID
-- **DELETE** `api/v1/products/:id`: Delete a product by ID
 
-> 2.b: iii. Criar, editar e remover produtos;
----
-- **POST** `api/v1/catagories`: Create a new category
-- **GET** `api/v1/catagories`: List all categories
-- **GET** `api/v1/catagories/:id`: Get a category by ID
-- **PUT** `api/v1/catagories/:id`: Update a category by ID
-- **DELETE** `api/v1/catagories/:id`: Delete a category by ID
----
-- **POST** `api/v1/orders`: Create a new order
-- **GET** `api/v1/orders`: List all orders
-- **GET** `api/v1/orders/:id`: Get an order by ID
-- **PUT** `api/v1/orders/:id`: Update an order by ID
-- **DELETE** `api/v1/orders/:id`: Delete an order by ID
----
-- **GET** `api/v1/orders/products`: List all orders products
-- **POST** `api/v1/orders/products/:order_id/:product_id`: Create a new order product
-- **GET** `api/v1/orders/products/:order_id/:product_id`: Get an order product by OrderID and ProductID
-- **PUT** `api/v1/orders/products/:order_id/:product_id`: Update an order by OrderID and ProductID
-- **DELETE** `api/v1/orders/products/:order_id/:product_id`: Delete an order by OrderID and ProductID
----
-- **GET** `api/v1/orders/histories`: List all orders histories
-- **GET** `api/v1/orders/histories/:id`: Get an order history by ID
----
-- **POST** `/api/v1/payments/:orderId/checkout`: Create a new payment
-- **GET** `/api/v1/payments/callback`: Payment callback
+### products
+> 2.b: iii. Criar, editar e remover produtos;  
 
-> 2.b.: v. Fake checkout
----
-- **POST** `/api/v1/sign-in`: Sign in a customer with CPF
+**POST** `/api/v1/payments/callback` - Update a payment on a order  
+**POST** `/api/v1/payments/{order_id}/checkout` - Create a checkout on a order  
+**GET** `/api/v1/products` - List products  
+**POST** `/api/v1/products` - Create a product  
+**GET** `/api/v1/products/{id}` - Get a product (2.b: iv. Buscar produtos por categoria;)  
+**PUT** `/api/v1/products/{id}` - Update a product  
+**DELETE** `/api/v1/products/{id}` - Delete a product  
 
-> 2.b.: ii. Identificação do Cliente via CPF;
 ---
-- **GET** `/docs/index.html`: Swagger documentation
+
+### payments 
+> 2.b: v. Fake checkout  
+
+**POST** `/api/v1/payments/callback` - Update a payment on a order  
+**POST** `/api/v1/payments/{order_id}/checkout` - Create a checkout on a order  
+
 ---
-- **GET** `/health`
-> Returns http status `200` if the application is running  
-> Returns http status `503` if the application or any of its dependencies are not running appropriately  
-> Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
+
+### sign-in 
+> 2.b: ii. Identificação do Cliente via CPF  
+
+**POST** `/api/v1/sign`-in - Sign in a customer  
+
+---
+
+### categories
+**GET** `/api/v1/categories` - List categories  
+**POST** `/api/v1/categories` - Create a new category  
+**GET** `/api/v1/categories/{id}` - Get a category  
+**PUT** `/api/v1/categories/{id}` - Update a category  
+**DELETE** `/api/v1/categories/{id}` - Delete a category  
+
+---
+
+### customers
+**GET** `/api/v1/customers` - List customers  
+**POST** `/api/v1/customers` - Create a customer  
+**GET** `/api/v1/customers/{id}` - Get a customer  
+**PUT** `/api/v1/customers/{id}` - Update a customer  
+**DELETE** `/api/v1/customers/{id}` - Delete a customer  
+
+---
+
+### orders
+**GET** `/api/v1/orders` - List orders (2.b: vi. Listar os pedidos.)  
+**POST** `/api/v1/orders` - Create an order  
+**GET** `/api/v1/orders/products/{order_id}/{product_id}` - Get an order product  
+**PUT** `/api/v1/orders/products/{o`rder_id}/{product_id} - Update an order product  
+**POST** `/api/v1/orders/products/{order_id}/{product_id}` - Create an order product  
+**DELETE** `/api/v1/orders/products/{o`rder_id}/{product_id} - Delete an order product  
+**PUT** `/api/v1/orders/status/{id}` - Update an order status  
+**GET** `/api/v1/orders/{id}` - Get an order  
+**DELETE** `/api/v1/orders/{id}` - Delete an order  
+
+---
+
+### order-histories
+**GET** `/api/v1/orders/histories` - List order histories  
+**GET** `/api/v1/orders/histories/{id}` - Get an order history  
+**GET** `/api/v1/orders/products` - List order products  
+
+---
+
+### staffs
+**GET** `/api/v1/staffs` - List staffs  
+**POST** `/api/v1/staffs` - Create a staff  
+**GET** `/api/v1/staffs/{id}` - Get a staff  
+**PUT** `/api/v1/staffs/{id}` - Update a staff  
+**DELETE** `/api/v1/staffs/{id}` - Delete a staff  
+
+---
+
+### healthcheck
+**GET** `/health` - Application HealthCheck  
+> Follows the [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)  
 ---
 
 > [!NOTE]
@@ -261,6 +295,11 @@ make compose-run
 4. Set the environment variables: `cp .env.example .env`
 3. Install dependencies by running `make build`
 4. Run the application by running `make run-air` or `make run`
+5. Access the application at `http://localhost:8080`
+6. Dont forget to run the tests by running `make test`
+7. Check the coverage report by running `make coverage`
+8. Check the lint by running `make lint`
+9. Update the swagger documentation by running `make docs-swag`
 
 > [!NOTE]
 > `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose  
@@ -284,12 +323,14 @@ make test
 
 - [Hexagonal Architecture, Ports and Adapters in Go](https://medium.com/@kyodo-tech/hexagonal-architecture-ports-and-adapters-in-go-f1af950726b)
 - [Building RESTful API with Hexagonal Architecture in Go](https://dev.to/bagashiz/building-restful-api-with-hexagonal-architecture-in-go-1mij)
+- [Hexagonal Architecture in Go](https://medium.com/@matiasvarela/hexagonal-architecture-in-go-cfd4e436faa3)
 - [DBML](https://www.dbml.org/)
 - [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
 - [Event Storming](https://www.eventstorming.com/)
 - [Swagger](https://swagger.io/)
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 - [Shields.io](https://shields.io/)
+- [Alistair in the "Hexagone" 1/3](https://www.youtube.com/watch?v=th4AgBcrEHA&list=PLGl1Jc8ErU1w27y8-7Gdcloy1tHO7NriL&ab_channel=DDDFR)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
