@@ -287,6 +287,11 @@ make compose-run
 4. Set the environment variables: `cp .env.example .env`
 3. Install dependencies by running `make build`
 4. Run the application by running `make run-air` or `make run`
+5. Access the application at `http://localhost:8080`
+6. Dont forget to run the tests by running `make test`
+7. Check the coverage report by running `make coverage`
+8. Check the lint by running `make lint`
+9. Update the swagger documentation by running `make docs-swag`
 
 > [!NOTE]
 > `make run` will run the application locally, and will build and run PostgreSQL container using Docker Compose  
@@ -310,12 +315,14 @@ make test
 
 - [Hexagonal Architecture, Ports and Adapters in Go](https://medium.com/@kyodo-tech/hexagonal-architecture-ports-and-adapters-in-go-f1af950726b)
 - [Building RESTful API with Hexagonal Architecture in Go](https://dev.to/bagashiz/building-restful-api-with-hexagonal-architecture-in-go-1mij)
+- [Hexagonal Architecture in Go](https://medium.com/@matiasvarela/hexagonal-architecture-in-go-cfd4e436faa3)
 - [DBML](https://www.dbml.org/)
 - [Health Check Response Format for HTTP APIs](https://datatracker.ietf.org/doc/html/draft-inadarei-api-health-check-06)
 - [Event Storming](https://www.eventstorming.com/)
 - [Swagger](https://swagger.io/)
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 - [Shields.io](https://shields.io/)
+- [Alistair in the "Hexagone" 1/3](https://www.youtube.com/watch?v=th4AgBcrEHA&list=PLGl1Jc8ErU1w27y8-7Gdcloy1tHO7NriL&ab_channel=DDDFR)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
