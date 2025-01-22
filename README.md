@@ -196,14 +196,13 @@ make compose-run
 ## :rocket: Routes
 
 ### sign-up
-**POST** `/api/v1/customers` - Create a customer  
-> 2.b: i.Cadastro do Cliente
+**POST** `/api/v1/customers` - Create a customer  (2.b: i.Cadastro do Cliente)
 **POST** `/api/v1/staffs` - Create a staff  
 
 ---
 
 ### products
-> 2.b: iii. Criar, editar e remover produtos;
+> 2.b: iii. Criar, editar e remover produtos;  
 **POST** `/api/v1/payments/callback` - Update a payment on a order  
 **POST** `/api/v1/payments/{order_id}/checkout` - Create a checkout on a order  
 **GET** `/api/v1/products` - List products  
@@ -214,14 +213,15 @@ make compose-run
 
 ---
 
-### payments (2.b: v. Fake checkout)
+### payments 
+> 2.b: v. Fake checkout  
 **POST** `/api/v1/payments/callback` - Update a payment on a order  
 **POST** `/api/v1/payments/{order_id}/checkout` - Create a checkout on a order  
 
 ---
 
 ### sign-in 
-> 2.b: ii. Identificação do Cliente via CPF
+> 2.b: ii. Identificação do Cliente via CPF  
 **POST** `/api/v1/sign`-in - Sign in a customer  
 
 ---
