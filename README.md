@@ -108,16 +108,20 @@ DBML file can be found [here](docs/db-schema-g20-fast-food.dbml).
 - [x] Unit tests
 - [x] Code coverage
 - [x] Swagger documentation
+- [x] Postman collection
 - [x] Feature branch workflow
 - [x] Air to run go
 - [x] Pagination
-
+- [x] Health Check
+- [x] Lint
+- [x] Vulnerability check
 
 ## :computer: Technologies
 
 - [Go](https://golang.org/)
 - [Gin](https://github.com/gin-gonic/gin)
 - [golangci-lint](https://golangci-lint.run/)
+- [govulncheck](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck)
 - [Docker](https://www.docker.com/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [Make](https://www.gnu.org/software/make/)
