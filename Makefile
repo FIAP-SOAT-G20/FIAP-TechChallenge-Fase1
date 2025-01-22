@@ -5,10 +5,11 @@ MIGRATION_PATH = internal/adapter/storage/postgres/migrations
 MAIN_FILE = cmd/http/main.go
 TEST_PATH = internal/core/service
 
-.PHONE: build run run-air stop install migrate-create migrate-up migrate-down docs-swag docs-fmt compose-build compose-run compose-stop compose-clean test lint help
+.PHONE: build run run-air stop install migrate-create migrate-up migrate-down docs-swag compose-build compose-run compose-stop compose-clean test lint help
 
 build: install
 	@echo  "🟢 Building the application..."
+	go fmt ./...
 	go build -o bin/server ${MAIN_FILE}
 
 run: build
@@ -40,10 +41,8 @@ migrate-down:
 	migrate -path ./${MIGRATION_PATH} -database ${DATABASE_URL} -verbose down
 
 docs-swag:
-	swag init -g ${MAIN_FILE} --parseInternal true
-
-docs-fmt:
 	swag fmt ./...
+	swag init -g ${MAIN_FILE} --parseInternal true
 
 compose-build:
 	@echo "🟢 Building the application with docker compose..."
@@ -78,7 +77,6 @@ help:
 	@echo "compose-build: Build the docker compose"
 	@echo "coverage: Show the coverage"
 	@echo "docs-swag: Generate the swagger documentation"
-	@echo "docs-fmt: Format the swagger documentation"
 	@echo "help: Show this help message"
 	@echo "install: Install the dependencies"
 	@echo "migrate-create [name]: Create a new migration"
